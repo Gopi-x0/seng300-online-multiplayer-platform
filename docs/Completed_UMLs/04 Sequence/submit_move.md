@@ -1,4 +1,8 @@
-The Participants:
+# Submit move, validate, update board, switch turn #
+
+###  Description:
+
+#### The Participants:
 
 Current Player: The human whose turn it is currently in the game
 
@@ -8,6 +12,9 @@ Game Manager: The controller that keeps track of the match and remembers whose t
 
 Game Engine: The rule book that manages which game is being played (tic-tac-toe or connect 4)
 
+===============================================================
+
+#### How it works:
 
 1. Inputting a move
 
@@ -23,19 +30,21 @@ If the move is invalid, the GUI shows an error message
 
 4. Move is valid
 
--If the move is valid, the manager tells the engine to update the board. Also, if this move allows the player to continue playing, win or draw  
+If the move is valid, the manager tells the engine to update the board. Also, if this move allows the player to continue playing, win or draw  
 
 5. Checking turn
 
--The manager checks if the current player finished his turn so that player 2 can have his turn next
+The manager checks if the current player finished his turn so that player 2 can have his turn next
 
 6. Updating the GUI
 
 -The manager gets the data (whether the game is over, player 2’s turn, and updating the board) and sends it to the GUI to update the current situation
 
+===============================================================
 
-PlantUML Code:
-@startuml
+### PlantUML Code:
+
+```@startuml
 title Sequence Diagram - Submit move(Tic-Tac-Toe & Connect 4)
 
 actor "Current Player" as Player
@@ -79,4 +88,4 @@ else isValid == true
   end
 end
 
-@enduml
+@enduml```
