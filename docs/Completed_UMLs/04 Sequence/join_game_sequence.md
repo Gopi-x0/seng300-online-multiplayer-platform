@@ -1,3 +1,8 @@
+# Join matchmaking and start a session #
+
+Description: From the dashboard, the player selects a game type of either tic-tac-toe or connect 4 and queues for matchmaking. The player is notified to confirm that the matchmaking service is finding a match. Once a match is found based on the player's stats for the given game type, the session manager creates a session. The GUI is told to open the Join Game page where the player can join the game.
+
+
 ```uml
 @startuml
 title Sequence - Queue -> Match Found -> Join Game Page
