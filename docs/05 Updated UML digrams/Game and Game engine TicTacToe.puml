@@ -1,0 +1,61 @@
+@startuml
+title 03.1 - Tic Tac Toe Rules & Validation
+
+hide empty members
+skinparam linetype ortho
+
+interface GameEngine <<interface>> {
+  + createInitialState(players): GameState
+  + validateMove(state, move): boolean
+  + applyMove(state, move): GameState
+  + evaluateEnd(state): GameStatus
+}
+
+package "TicTacToe Logic" {
+  class TicTacToeEngine <<implements GameEngine>> {
+    - WINNING_COMBINATIONS: int[][]
+    + createInitialState(players): GameState
+    + validateMove(state, move): boolean
+    + applyMove(state, move): GameState
+    + evaluateEnd(state): GameStatus
+  }
+
+  class GameState<<holds snapshot of current match data transfer object>> {
+- board: Symbol[3][3]
+  - activePlayerId: String  ' Aligns with State Machine
+  - status: GameStatus      ' Aligns with State Machine
+  - lastMoveChanges: Move     ' Stores the last instance of the move class "board snapshot (what changed)"
+  }
+
+  enum Symbol {
+    X
+    O
+    EMPTY
+  }
+
+  class Move {
+    + row: int
+    + col: int
+    + playerSymbol: Symbol
+  }
+
+  enum GameStatus {
+    IN_PROGRESS
+    X_WINS
+    O_WINS
+    DRAW
+  }
+
+  TicTacToeEngine ..> GameState : manages
+  GameState o-- Symbol : contains
+  TicTacToeEngine ..> Move : validates
+}
+
+note right of TicTacToeEngine
+  **Validation Rules:**
+  1. Is the cell (row, col) EMPTY?
+  2. Is it the correct player's turn?
+  3. Is the game already over?
+end note
+
+@enduml
