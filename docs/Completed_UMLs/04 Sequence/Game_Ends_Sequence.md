@@ -19,16 +19,18 @@ When a game reaches its final move, the following sequence occurs:
 
 # High-Level Flow Diagram
 
-```mermaid
-flowchart TD
-    A[Final Move] --> B[Game Engine Detects Winner]
-    B --> C[Result Saved]
-    C --> D[Event Published]
-    D --> E[GUI Shows Result]
-    E --> F[Back to Dashboard]
-```
+>Final Move\
+>   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓\
+>Game Engine detects winner\
+>   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓\
+>Result saved\
+>   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓\
+>Event published\
+>   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓\
+>GUI shows result\
+>   &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↓\
+>Back to dashboard\
 
----
 
 # Architecture Overview
 
