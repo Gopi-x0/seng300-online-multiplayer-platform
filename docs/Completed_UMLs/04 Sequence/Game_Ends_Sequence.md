@@ -57,6 +57,9 @@ The move flows through the system:
  
 Player -> GUI -> Core -> SessionManger
 
+![Step 2 - Final move flow Diagram](../images/step1.png)
+
+
 
 ---
 
@@ -73,6 +76,8 @@ GameEngine -> SessionManger (gameOver)
 - Detects terminal state  
 - Returns result (win/lose/tie)
 
+![Step 2 - GameEngine + SessionManger Diagram](../images/step2.png)
+
 ---
 
 ## Step 3: Save Result
@@ -81,6 +86,8 @@ Once the game is over, the result is saved.
 
 SessionManger -> StatsDatabase (stub)
 StatsDatabase -> SessionManager (saves results and returns ok)
+
+![Step 3 - Save Result Diagram](../images/step3.png)
 
 
 ---
