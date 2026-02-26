@@ -3,32 +3,35 @@
 ## Description:
 
 GameEngine:
--Rulebook that handles the match and logic of the game 
--createInitialState(): Generates the board of the game
--validateMove(state, movePayload): Checks if a move is valid
--applyMove(state, movePayload):  If a move is valid, a turn is used
--evaluateEnd(state): Checks if a move ends the game (Win, Ongoing, or Draw)
+- Rulebook that handles the match and logic of the game 
+- createInitialState(): Generates the board of the game
+- validateMove(state, movePayload): Checks if a move is valid
+- applyMove(state, movePayload):  If a move is valid, a turn is used
+- evaluateEnd(state): Checks if a move ends the game (Win, Ongoing, or Draw)
 
 GameManager:
--Manages the flow of the match
--startGame(gameType, p1, p2): Clicks “start game” and starts by prompting for a gametype and stores player profiles
--submitMove(playerId, movePayload): Checks for a valid move, applies it, and either checks for a win or switches the turn. Sends it to MoveResult when it’s done
--switchActivePlayer(): If a player is still ongoing, it switches to the next player
+- Manages the flow of the match
+- startGame(gameType, p1, p2): Clicks “start game” and starts by prompting for a gametype and stores player profiles
+- submitMove(playerId, movePayload): Checks for a valid move, applies it, and either checks for a win or switches the turn. Sends it to MoveResult when it’s done
+- switchActivePlayer(): If a player is still ongoing, it switches to the next player
+
 
 AuthManager:
--Identifies the people playing the games
--login(credentials): Username and password for player and stores them in player profiles
--getActivePlayers(): Returns the players that are currently playing
+- Identifies the people playing the games
+- login(credentials): Username and password for player and stores them in player profiles
+- getActivePlayers(): Returns the players that are currently playing
 
 LeaderboardManager:
--Leaderboard that tracks a player's data when they play
--recordMatchResult(gameType, winner, loser, isDraw): Checks how a match ends and records the players' win/loss/draw record
--getTopPlayers(gameType): Displays the top ranked players on the leaderboard screen
+- Leaderboard that tracks a player's data when they play
+- recordMatchResult(gameType, winner, loser, isDraw): Checks how a match ends and records the players' win/loss/draw record
+- getTopPlayers(gameType): Displays the top ranked players on the leaderboard screen
+
 
 Database:
--Database for match data and leaderboards
--saveMatchRecord(record): Stores match data
--fetchLeaderboard(gameType): reads and sorts the win/loss/draw records of players on the leaderboard
+- Database for match data and leaderboards
+- saveMatchRecord(record): Stores match data
+- fetchLeaderboard(gameType): reads and sorts the win/loss/draw records of players on the leaderboard
+
 
 
 
