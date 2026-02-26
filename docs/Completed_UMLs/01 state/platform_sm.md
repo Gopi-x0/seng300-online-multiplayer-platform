@@ -1,7 +1,29 @@
 # Platform State Machine
 
-## Description:
+### Description:
 
+1. Authentication:
+- Starts logged out.
+- The user types in their credentials and logs in.
+- From the main menu, they can view the main dashboard and the leaderboards.
+
+
+2. Game Setup 
+- The user clicks "Play" and enter the setup phase
+- First, they pick which game they want to play (Tic-Tac-Toe or Connect 4).
+- Next, the prompt asks Player 2 to log in. Once both players are registered, the game is ready.
+
+3. In-Game Loop 
+- The match begins, defaulting to Player 1's Turn.
+- If Player 1 clicks an invalid spot, the program rejects it and stays on Player 1's turn.
+- If they make a valid move, the program immediately switches to Player 2's Turn.
+- It switches between these two states until a valid move triggers a win or a draw
+
+
+4. Post-Match 
+- The moment the game ends, the program automatically transitions into SubmittingStats. This updates the database
+- Then, it moves the players to the match results screen.
+- From there, the players are given a choice: click "Play Again" to jump right back to the setup screen, or "Quit" to return to the main menu.
 
 
 ## PlantUML Code
