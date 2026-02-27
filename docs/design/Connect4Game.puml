@@ -1,0 +1,59 @@
+@startuml
+
+title Connect 4 - Game Engine Design
+
+interface GameEngine {
+    + createInitialState(players): Object
+    + validateMove(state, move): boolean
+    + applyMove(state, move): Object
+    + evaluateEnd(state): boolean
+}
+
+package "Games & Game Engines" {
+
+    class Connect4Game {
+        - board: Board
+        + createInitialState(players): Connect4State
+        + validateMove(state: Connect4State, move: Move): boolean
+        + applyMove(state: Connect4State, move: Move): Connect4State
+        + evaluateEnd(state: Connect4State): boolean
+    }
+
+    class Connect4State {
+        - board: Board
+        - currentPlayer: Player
+        - status: GameStatus
+        - winner: Player
+    }
+
+    class Board {
+        - grid: char[6][7]
+        + dropPiece(column: int, player: Player): void
+        + isColumnFull(column: int): boolean
+        + isFull(): boolean
+        + checkWin(row: int, column: int): boolean
+    }
+
+    class Move {
+        - column: int
+    }
+
+    enum GameStatus {
+        WAITING
+        ACTIVE
+        FINISHED
+    }
+
+    class Player
+}
+
+GameEngine <|.. Connect4Game
+
+Connect4Game *-- Board
+Connect4Game --> Connect4State
+Connect4State *-- Board
+Connect4State --> Player
+Connect4State --> GameStatus
+Connect4Game --> Move
+
+@enduml
