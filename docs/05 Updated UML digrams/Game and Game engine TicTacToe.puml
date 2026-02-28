@@ -1,61 +1,77 @@
 @startuml
-title 03.1 - Tic Tac Toe Rules & Validation
+title 03.1 - Tic Tac Toe Logic
 
 hide empty members
 skinparam linetype ortho
 
 interface GameEngine <<interface>> {
-  + createInitialState(players): GameState
-  + validateMove(state, move): boolean
-  + applyMove(state, move): GameState
-  + evaluateEnd(state): GameStatus
+  + createInitialState(playerIds: List<String>): GameState
+  + validateMove(state: GameState, move: Move): MoveResult
+  + applyMove(state: GameState, move: Move): GameState
+  + evaluateEnd(state: GameState): GameStatus
 }
 
-package "TicTacToe Logic" {
+package "TicTacToe Logic Core" {
+
   class TicTacToeEngine <<implements GameEngine>> {
-    - WINNING_COMBINATIONS: int[][]
-    + createInitialState(players): GameState
-    + validateMove(state, move): boolean
+    - {static} BOARD_SIZE: int = 3
+    - {static} WIN_LINES: int[][]
+    --
+    + validateMove(state, move): MoveResult
     + applyMove(state, move): GameState
-    + evaluateEnd(state): GameStatus
+    - checkWin(board: Symbol[][]): boolean
+    - isBoardFull(board: Symbol[][]): boolean
   }
 
-  class GameState<<holds snapshot of current match data transfer object>> {
-- board: Symbol[3][3]
-  - activePlayerId: String  ' Aligns with State Machine
-  - status: GameStatus      ' Aligns with State Machine
-  - lastMoveChanges: Move     ' Stores the last instance of the move class "board snapshot (what changed)"
+  class GameState <<DTO>> {
+    - board: Symbol[3][3]
+    - activePlayerId: String
+    - status: GameStatus
+    - moveHistory: List<Move>
+    + getCell(r, c): Symbol
+  }
+
+  class Move <<Value Object>> {
+    + row: int
+    + col: int
+    + playerId: String
+    + symbol: Symbol
+  }
+
+  class MoveResult <<Value Object>> {
+    + isValid: boolean
+    + message: String
+    + errorCode: ValidationCode
+  }
+
+  enum ValidationCode {
+    CELL_OCCUPIED
+    OUT_OF_BOUNDS
+    WRONG_TURN
+    GAME_ALREADY_OVER
+    SUCCESS
   }
 
   enum Symbol {
-    X
-    O
-    EMPTY
-  }
-
-  class Move {
-    + row: int
-    + col: int
-    + playerSymbol: Symbol
+    X, O, EMPTY
   }
 
   enum GameStatus {
-    IN_PROGRESS
-    X_WINS
-    O_WINS
-    DRAW
+    IN_PROGRESS, X_WINS, O_WINS, DRAW
   }
 
-  TicTacToeEngine ..> GameState : manages
-  GameState o-- Symbol : contains
-  TicTacToeEngine ..> Move : validates
+  TicTacToeEngine ..> GameState : transforms
+  TicTacToeEngine ..> MoveResult : produces
+  GameState "1" *-- "9" Symbol : tracks
+  MoveResult --> ValidationCode : categorizes
 }
 
-note right of TicTacToeEngine
-  **Validation Rules:**
-  1. Is the cell (row, col) EMPTY?
-  2. Is it the correct player's turn?
-  3. Is the game already over?
+note bottom of TicTacToeEngine
+  **applyMove Process:**
+  1. Clone current board
+  2. Set board[move.row][move.col] = move.symbol
+  3. Toggle activePlayerId
+  4. Run evaluateEnd() to update GameStatus
 end note
 
 @enduml
