@@ -39,9 +39,10 @@ package "Games & Game Engines" {
     }
 
     enum GameStatus {
-        WAITING
-        ACTIVE
-        FINISHED
+        IN_PROGRESS
+        P1 WINS
+        P2 WINS
+        DRAW
     }
 
     class Player
