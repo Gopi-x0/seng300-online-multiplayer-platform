@@ -1,5 +1,12 @@
 package ca.ucalgary.seng300.screens;
 
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.control.Label;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
+
 import javafx.scene.layout.VBox;
 
 /**
