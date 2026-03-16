@@ -9,8 +9,8 @@ package ca.ucalgary.seng300;
 public enum GameStatus {
     SETUP,     // Game created but not started yet
     ONGOING,   // Players are taking turns
-    WIN,       // A player has won
-    DRAW       // No moves left and no winner
+    WIN,       // A player has won - evaluateEnd() detects a winner
+    DRAW       // No moves left and no winner - When board is full
 }
 
 
