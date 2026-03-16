@@ -25,6 +25,41 @@ public class ProfileDashboard extends VBox {
         getChildren().add(createProfileHeader()); // Adds the profile header section to the screen
     }
 
+    private HBox createProfileHeader() {
+        // Creates label displaying the player's name
+        Label name = new Label("Name Name");
+        name.setStyle("-fx-text-fill:white; -fx-font-size:32px; -fx-font-weight:bold;");// Applies styling to the name text
+
+        Label member = new Label("Member since Month Year"); // Creates label showing membership information
+        member.setStyle("-fx-text-fill:#90a1b9;");// Applies styling for secondary information text
+
+        // Creates a vertical container holding name and membership info
+        VBox left = new VBox(name, member);
+        left.setSpacing(5); // Sets spacing between the labels
+        Label rank = new Label("Rank #Number"); // Creates label for player rank
+        rank.setStyle("-fx-text-fill:white; -fx-font-size:20px;"); // Styles the rank text
+
+        // Creates label for total points
+        Label points = new Label("0000 Points");
+        points.setStyle("-fx-text-fill:#00d3f3;"); // Applies highlight styling to points
+
+        // Creates vertical layout for rank and points, and deals with allignment and spacing
+        VBox right = new VBox(rank, points);
+        right.setAlignment(Pos.CENTER_RIGHT);
+        HBox header = new HBox(left, right);
+        header.setSpacing(40);
+        header.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(left, Priority.ALWAYS);
+        header.setPadding(new Insets(20));
+        header.setStyle(
+                "-fx-background-color: linear-gradient(#0f172b,#1d293d);" +
+                        "-fx-background-radius:10;"
+        );
+
+        // Returns the constructed header
+        return header;
+    }
+
     /**
      * Displays the profile view.
      * This method will later render the full profile UI.
