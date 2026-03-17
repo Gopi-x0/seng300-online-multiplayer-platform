@@ -5,6 +5,8 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
+import javafx.scene.control.ProgressBar;
+
 
 import javafx.scene.layout.VBox;  // VBox is a vertical layout container from JavaFX
 //
@@ -137,17 +139,19 @@ public class ProfileDashboard extends VBox {
         VBox ticTacToe = createGameCard(
                 "Tic Tac Toe",
                 0, 0, 0, 0,
-                "%", "0 wins", "0 wins", "0"
+                "0%", "0 wins", "0 wins", "0"
         );
 
         //game card for Connect 4
         VBox connect4 = createGameCard(
                 "Connect 4",
                 0, 0, 0, 0,
-                "%", "0 wins", "0 wins", "0"
+                "0%", "0 wins", "0 wins", "0"
         );
         //container for both game cards
         HBox container = new HBox(20, ticTacToe, connect4);
+        //to center game cards horizontally
+        container.setAlignment(Pos.CENTER);
         return container;
     }
 
@@ -178,21 +182,44 @@ public class ProfileDashboard extends VBox {
         Label bs = stat("Best Streak", bestStreak);
         Label p = stat("Points Earned", points);
 
-        // Creates container for the game card UI
-        VBox card = new VBox(t, g, w, l, d, wr, cs, bs, p);
+        // Check if winRate is empty and set default value
+        double winRateValue = 0.0; // Default to 0 if empty
+        if (!winRate.isEmpty()) {
+            winRateValue = Double.parseDouble(winRate.replace("%", "")) / 100;
+        }
 
-        // Adds spacing between stats
-        card.setSpacing(8);
-        // Adds padding inside the card
-        card.setPadding(new Insets(20));
+        //make a progress bar for win rate
+        ProgressBar winRateProgress = new ProgressBar(winRateValue);
+        winRateProgress.setStyle("-fx-accent: #00d3f3;"); // Blue color for progress bar
 
-        // Applies gradient styling
-        card.setStyle(
+        //game statistics section
+        VBox gameStats = new VBox(g, w, l, d);
+        gameStats.setSpacing(8);
+
+        //win rate section with progress bar
+        VBox winRateSection = new VBox(wr, winRateProgress);
+        winRateSection.setSpacing(8);
+
+        //streak and points section
+        VBox streaks = new VBox(
+                new Label("Current Streak: " + currentStreak),
+                new Label("Best Streak: " + bestStreak),
+                new Label("Points Earned: " + points)
+        );
+        streaks.setSpacing(8);
+
+        // Combine everything into a single game card layout
+        VBox gameCard = new VBox(t, gameStats, winRateSection, streaks);
+        gameCard.setSpacing(12);
+        gameCard.setPadding(new Insets(20));
+
+        //add gradient styling
+        gameCard.setStyle(
                 "-fx-background-color: linear-gradient(#0f172b,#1d293d);" +
                         "-fx-background-radius:10;"
         );
 
-        return card;
+        return gameCard;
     }
 
     private Label stat(String label, String value) {
