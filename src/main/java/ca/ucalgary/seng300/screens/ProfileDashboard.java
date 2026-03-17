@@ -26,6 +26,8 @@ public class ProfileDashboard extends VBox {
         getChildren().add(createProfileHeader());
         // Adds the player stat cards section
         getChildren().add(createStatCards());
+        //adds game card stats sections
+        getChildren().add(createGameCards());
     }
 
     private HBox createProfileHeader() {
@@ -36,7 +38,7 @@ public class ProfileDashboard extends VBox {
         Label member = new Label("Member since Month Year"); // Creates label showing membership information
         member.setStyle("-fx-text-fill:#90a1b9;");// Applies styling for secondary information text
 
-        // Creates a vertical container holding name and membership info
+        //creates a vertical container holding name and membership info
         VBox left = new VBox(name, member);
         left.setSpacing(5); // Sets spacing between the labels
         Label rank = new Label("\uD83C\uDFC6 Rank #"); // Creates label for player rank
@@ -128,6 +130,77 @@ public class ProfileDashboard extends VBox {
         );
 
         return card;
+    }
+
+    private HBox createGameCards() {
+        //game card for Tic Tac Toe
+        VBox ticTacToe = createGameCard(
+                "Tic Tac Toe",
+                0, 0, 0, 0,
+                "%", "0 wins", "0 wins", "0"
+        );
+
+        //game card for Connect 4
+        VBox connect4 = createGameCard(
+                "Connect 4",
+                0, 0, 0, 0,
+                "%", "0 wins", "0 wins", "0"
+        );
+        //container for both game cards
+        HBox container = new HBox(20, ticTacToe, connect4);
+        return container;
+    }
+
+
+    private VBox createGameCard(
+            String title,
+            int games,
+            int wins,
+            int losses,
+            int draws,
+            String winRate,
+            String currentStreak,
+            String bestStreak,
+            String points
+    ) {
+
+        // Created label displaying game title and styles it
+        Label t = new Label(title);
+        t.setStyle("-fx-text-fill:white; -fx-font-size:20px;");
+
+        // Create labels for various statistics
+        Label g = stat("Games Played", String.valueOf(games));
+        Label w = stat("Wins", String.valueOf(wins));
+        Label l = stat("Losses", String.valueOf(losses));
+        Label d = stat("Draws", String.valueOf(draws));
+        Label wr = stat("Win Rate", winRate);
+        Label cs = stat("Current Streak", currentStreak);
+        Label bs = stat("Best Streak", bestStreak);
+        Label p = stat("Points Earned", points);
+
+        // Creates container for the game card UI
+        VBox card = new VBox(t, g, w, l, d, wr, cs, bs, p);
+
+        // Adds spacing between stats
+        card.setSpacing(8);
+        // Adds padding inside the card
+        card.setPadding(new Insets(20));
+
+        // Applies gradient styling
+        card.setStyle(
+                "-fx-background-color: linear-gradient(#0f172b,#1d293d);" +
+                        "-fx-background-radius:10;"
+        );
+
+        return card;
+    }
+
+    private Label stat(String label, String value) {
+
+        //a label combining stat title and value and applies styling to text
+        Label stat = new Label(label + ": " + value);
+        stat.setStyle("-fx-text-fill:#90a1b9;");
+        return stat;
     }
 
     /**
