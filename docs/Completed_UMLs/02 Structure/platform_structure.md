@@ -27,10 +27,16 @@ LeaderboardManager:
 - getTopPlayers(gameType): Displays the top ranked players on the leaderboard screen
 
 
-Database:
-- Database for match data and leaderboards
+Database (Stub):
+- Simulates database for match data and leaderboards
 - saveMatchRecord(record): Stores match data
 - fetchLeaderboard(gameType): reads and sorts the win/loss/draw records of players on the leaderboard
+
+NetworkHosting (Stub):
+- Simulates connecting to a matchmaking server or cloud host
+- connectToServer(): Displays message that says connection to server is established
+- broadcastStateUpdate(GameState state): Broadcasts message of game state change and displays sessionID
+- disconnect(): Displays message that drops connection to server when app is closed
 
 
 
@@ -114,7 +120,13 @@ class Database <<stub>> {
   + fetchLeaderboard(gameType: String): List<Object>
 }
 
-' Relationships
+class NetworkHosting <<stub>> {
+  + connectToServer(): boolean
+  + broadcastStateUpdate(state: GameState): void
+  + disconnect(): void
+}
+
+
 GameEngine <|.. TicTacToeEngine
 GameEngine <|.. Connect4Engine
 
@@ -123,13 +135,13 @@ GameManager -right-> GameState : manages >
 GameManager ..> MoveResult : returns >
 
 LeaderboardManager -down-> Database : uses >
-GameManager -left-> LeaderboardManager : triggers update on Win/Draw >
+GameManager -left-> LeaderboardManager : triggers >
 
-' --- LAYOUT TRICKS TO PUSH AUTH TO THE BOTTOM ---
-' This invisible line forces AuthManager to render below GameManager
+
+GameManager -up-> NetworkHosting : broadcasts state >
+
 GameManager -[hidden]down-> AuthManager 
 
-' Draw this line horizontally to keep them compact at the bottom
 AuthManager -right-> PlayerProfile : manages >
 
 note right of AuthManager
