@@ -2,10 +2,12 @@ package ca.ucalgary.seng300.screens;
 
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.control.ProgressBar;
+import javafx.scene.layout.Region;
 
 
 import javafx.scene.layout.VBox;  // VBox is a vertical layout container from JavaFX
@@ -24,12 +26,64 @@ public class ProfileDashboard extends VBox {
         setPadding(new Insets(40));
         // Sets dark background color for the profile screen
         setStyle("-fx-background-color: #020b1c;");
+        //adds profile and back buttons on top of the screen
+        getChildren().add(createTopBar());
         // Adds the profile header section to the screen
         getChildren().add(createProfileHeader());
         // Adds the player stat cards section
         getChildren().add(createStatCards());
         //adds game card stats sections
         getChildren().add(createGameCards());
+    }
+
+    //creates buttons for back to home and profile
+    private HBox createTopBar() {
+        //makes buttons and styles them
+        Button back = new Button("← Back to Home");
+        Button settings = new Button("Profile");
+        back.setStyle(
+                "-fx-background-color: transparent;" +
+                        "-fx-text-fill:#00c8ff;" +
+                        "-fx-font-size:14px;"
+        );
+        settings.setStyle(
+                "-fx-background-color: transparent;" +
+                        "-fx-text-fill:#00c8ff;" +
+                        "-fx-font-size:14px;"
+        );
+        //will implement logic for buttons later
+        back.setOnMouseClicked(e -> {
+            System.out.println("Go to Home"); // replace later
+        });
+
+        settings.setOnMouseClicked(e -> {
+            System.out.println("Go to Profile");
+        });
+
+        //styling for when button is used
+        back.setOnMouseEntered(e ->
+                back.setStyle("-fx-text-fill:#33d6ff; -fx-font-size:14px; -fx-cursor: hand;")
+        );
+
+        back.setOnMouseExited(e ->
+                back.setStyle("-fx-text-fill:#00c8ff; -fx-font-size:14px; -fx-cursor: hand;")
+        );
+
+        settings.setOnMouseEntered(e ->
+                settings.setStyle("-fx-text-fill:#33d6ff; -fx-font-size:14px; -fx-cursor: hand;")
+        );
+
+        settings.setOnMouseExited(e ->
+                settings.setStyle("-fx-text-fill:#00c8ff; -fx-font-size:14px; -fx-cursor: hand;")
+        );
+        //positions back to home and profile correctly
+        HBox bar = new HBox();
+        bar.setAlignment(Pos.CENTER_LEFT);
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+        bar.getChildren().addAll(back, spacer, settings);
+
+        return bar;
     }
 
     private HBox createProfileHeader() {
