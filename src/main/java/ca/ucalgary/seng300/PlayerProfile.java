@@ -4,13 +4,22 @@ package ca.ucalgary.seng300;
 class which can be used to reference data from the database relating to players and their stats
  */
 
-public class Player {
+public class PlayerProfile {
+
+    public PlayerProfile(String playerId, String username, boolean isGuest) {
+        this.playerId = playerId;
+        this.username = username;
+        this.isGuest = isGuest;
+    }
 
     public String playerId;
     // used to refer to a player in the database
 
     private String username;
     // display name for the player and their opponents to see
+
+    private boolean isGuest;
+    // true if player is a guest, false otherwise
 
     private String email;
     // email address linked to a player's account
