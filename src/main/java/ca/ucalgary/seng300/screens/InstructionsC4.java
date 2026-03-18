@@ -11,15 +11,22 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 
-public class InstructionsC4 {
+public class InstructionsC4 extends Application {
 
-    public void Instructions(){
-        String text = "Welcome to Connect 4, Here's how the game works : ," +
-                "* RULES : You are allowed to place 1 chip at a time of your corresponding colour," +
-                "* RULES : You can only place a chip where it's physically possible, " +
-                "* OBJECTIVE : Your goal is to place 4 consecutive chips in a line either vertically, horizontally, or diagnally";
+    @Override
+    public void start(Stage stage) {
+        //Create a new label this will be the primary sense of instructions and objectives the user can read.
+        Label displayInstructions = new Label("WELCOME TO CONNECT 4!" +
+                "RULES : You may only place one tile at a time of your corresponding colour" +
+                "RULES : You may only place a tile in a physically possible spot on the grid." +
+                "OBJECTIVE : You must place FOUR consecutive tiles before your opponent either : diagonally, horizontally, or vertically.");
 
+        VBox root = new VBox(); //Initialize a VBox
+        root.setSpacing(10); // Set the spacing of the root
 
+        Scene c4 = new Scene(root ,400 , 200);
+
+        stage.setTitle("Connect 4 : Instructions & Rules");
     }
 
 
