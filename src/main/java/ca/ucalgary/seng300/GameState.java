@@ -29,6 +29,7 @@ public class GameState {
         return boardPayLoad;
     }
 
+
     public void setBoardPayLoad(Object boardPayLoad) {
         this.boardPayLoad = boardPayLoad;
     }
