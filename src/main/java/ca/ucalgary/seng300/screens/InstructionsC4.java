@@ -5,9 +5,11 @@ package ca.ucalgary.seng300.screens;
  * for users to familiarize themselfves with the game.
  */
 
-import javafx.geometry.*;
-import javafx.print.*;
-import javafx.scene.*;
+import javafx.application.Application;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.VBox;
+import javafx.stage.Stage;
 
 public class InstructionsC4 {
 
@@ -21,6 +23,5 @@ public class InstructionsC4 {
     }
 
 
-
-
 }
+
