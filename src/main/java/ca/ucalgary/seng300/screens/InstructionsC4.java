@@ -58,6 +58,26 @@ public class InstructionsC4 extends Application {
         + "-fx-cursor: hand;"
         + "-fx-border-width: 2;");
 
+        playButton.setOnMouseEntered(e -> playButton.setStyle(
+                "-fx-background-color: linear-gradient(#33e0f7, #00a8c9);" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 16px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-padding: 12 40;" +
+                        "-fx-background-radius: 8;" +
+                        "-fx-cursor: hand;"
+        ));
+        playButton.setOnMouseExited(e -> playButton.setStyle(
+                "-fx-background-color: linear-gradient(#00d3f3, #0088a3);" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 16px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-padding: 12 40;" +
+                        "-fx-background-radius: 8;" +
+                        "-fx-cursor: hand;"
+        ));
+
+
 
         //Create a new label this will be the primary sense of instructions and objectives the user can read.
         Label displayInstructions = new Label("WELCOME TO CONNECT 4!" +
