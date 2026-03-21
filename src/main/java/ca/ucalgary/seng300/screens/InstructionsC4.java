@@ -77,19 +77,18 @@ public class InstructionsC4 extends Application {
                         "-fx-cursor: hand;"
         ));
 
-
-
-        //Create a new label this will be the primary sense of instructions and objectives the user can read.
-        Label displayInstructions = new Label("WELCOME TO CONNECT 4!" +
-                "RULES : You may only place one tile at a time of your corresponding colour" +
-                "RULES : You may only place a tile in a physically possible spot on the grid." +
-                "OBJECTIVE : You must place FOUR consecutive tiles before your opponent either : diagonally, horizontally, or vertically.");
+        HBox buttonBox = new HBox(playButton);
+        buttonBox.setAlignment(Pos.CENTER);
+        buttonBox.setPadding(new Insets(10, 0, 0, 0));
 
         VBox root = new VBox(); //Initialize a VBox
         root.setSpacing(10); // Set the spacing of the root
-        root.getChildren().add(displayInstructions);
+        root.setPadding(new Insets(40));
+        root.setAlignment(Pos.CENTER);
+        root.setStyle("-fx-background-color: #020b1c;");
+        root.getChildren().addAll(titleBox, rulesCard, objectiveCard, playCard, buttonBox);
 
-        Scene c4 = new Scene(root ,400 , 200);
+        Scene c4 = new Scene(root ,1000 , 1000);
 
         stage.setTitle("Connect 4 : Instructions & Rules");
         stage.setScene(c4);
