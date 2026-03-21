@@ -1,14 +1,24 @@
 package ca.ucalgary.seng300;
 
+import java.util.List;
+
 public class GameSessionManager {
-    static <GameState, PlayerProfile> GameState startGame(String gameType, PlayerProfile p1, PlayerProfile p2){
-        return null;
-    }
-    static <MoveResult> MoveResult submitMove(String playerID, Object movePayload){
+    static String engine; //String is placeholder for GameEngine class
+
+    static GameState currentState;
+
+    static List<String> players; //String is placeholder for PlayerProfiles class
+
+    public static <PlayerProfile> GameState startGame(String gameType, PlayerProfile p1, PlayerProfile p2){
         return null;
     }
 
-    static void switchActivePlayer(){
+    public static <MoveResult> MoveResult submitMove(String playerID, Object movePayload){
+        return null;
+    }
+
+    public static void switchActivePlayer(){
 
     }
+
 }
