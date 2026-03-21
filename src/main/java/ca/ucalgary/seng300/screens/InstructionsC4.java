@@ -26,6 +26,10 @@ public class InstructionsC4 extends Application {
         Label subTitle = new Label("Instructions & Rules");
         subTitle.setStyle("fx-text-fill : #90a1b9; -fx-font-size: 16px;");
 
+        VBox titleBox = new VBox(title, subTitle);
+        titleBox.setAlignment(Pos.CENTER);
+        titleBox.setSpacing(4);
+
 
         //Create a new label this will be the primary sense of instructions and objectives the user can read.
         Label displayInstructions = new Label("WELCOME TO CONNECT 4!" +
