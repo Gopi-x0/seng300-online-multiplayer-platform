@@ -28,4 +28,16 @@ public class GameState {
     public Object getBoardPayLoad() {
         return boardPayLoad;
     }
+
+    public void setBoardPayLoad(Object boardPayLoad) {
+        this.boardPayLoad = boardPayLoad;
+    }
+
+    public void setGameStatus(GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
+    }
+
+    public void setActivePlayerIndex(int activePlayerIndex) {
+        this.activePlayerIndex = activePlayerIndex;
+    }
 }
