@@ -30,6 +30,12 @@ public class InstructionsC4 extends Application {
         titleBox.setAlignment(Pos.CENTER);
         titleBox.setSpacing(4);
 
+        VBox rules = createCard("Rules",
+                "\u2022 You may only place one title at a time of your corresponding colour.",
+                "\u2022 You may only palce a tile in a physically possible spot on the grid, tiles will file to the lowest available position in the chosen column.",
+                "\u2022 You must place FOUR consecutive tiles before your opponent to win Connect 4, the tiles can be either : diagnal, horizontal, or vertical."
+                );
+
 
         //Create a new label this will be the primary sense of instructions and objectives the user can read.
         Label displayInstructions = new Label("WELCOME TO CONNECT 4!" +
@@ -50,5 +56,25 @@ public class InstructionsC4 extends Application {
 
     public static void main(String[] args) {
         launch(args);
+    }
+
+    private VBox createCard(String title, String text){
+        Label mainTitle = new Label(title);
+        mainTitle.setStyle("-fx-text-fill: #00d3f3; -fx-font-size: 18px; -fx-font-weight: bold;");
+
+        VBox card = new VBox();
+        card.setSpacing(8);
+        card.setPadding(new Insets(20));
+        card.setStyle("-fx-background-color: linear-gradient(#0f172b, #1d293d);" + "-fx-background-radius: 10;");
+        card.getChildren().add(mainTitle);
+
+        for (String line : title.split("\n")) {
+            Label subtext = new Label(line);
+            subtext.setStyle("-fx-text-fill: #c8d6e5; -fx-font-size: 14px;");
+            subtext.setWrapText(true);
+            card.getChildren().add(subtext);
+        }
+
+        return card;
     }
 }
