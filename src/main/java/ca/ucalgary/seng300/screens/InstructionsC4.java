@@ -42,6 +42,12 @@ public class InstructionsC4 extends Application {
                 "\u2022 If there are no four consecutive connections by either sides, then the game ends in a draw."
         );
 
+        VBox playCard = createCard("Play",
+                "\u2022 1. Click on a column to drop your tile.",
+                "\u2022 2. Your disc will fall to the lowest open spot.",
+                "\u2022 3. Alternate turns with your opponent."
+        );
+
 
 
 
