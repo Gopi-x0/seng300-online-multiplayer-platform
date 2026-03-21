@@ -1,0 +1,99 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="760" height="730" viewBox="0 0 760 730">
+
+  <!-- White background -->
+  <rect width="760" height="730" fill="white"/>
+
+  <!-- System Boundary Box -->
+  <rect x="255" y="30" width="475" height="675" rx="12" ry="12"
+        fill="#f0f0f0" stroke="#555" stroke-width="1.5"/>
+
+  <!-- System Label -->
+  <text x="492" y="55" text-anchor="middle" font-family="Arial, sans-serif"
+        font-size="13" font-weight="bold" fill="#333">Multiplayer Game Platform – Authentication</text>
+  <line x1="255" y1="67" x2="730" y2="67" stroke="#555" stroke-width="1"/>
+
+  <defs>
+    <!-- Filled arrowhead for association lines -->
+    <marker id="arr" markerWidth="10" markerHeight="7" refX="9" refY="3.5" orient="auto">
+      <polygon points="0 0, 10 3.5, 0 7" fill="#333"/>
+    </marker>
+    <!-- Hollow triangle for generalization -->
+    <marker id="hollow" markerWidth="14" markerHeight="10" refX="13" refY="5" orient="auto">
+      <polygon points="0 0, 12 5, 0 10" fill="white" stroke="#333" stroke-width="1.3"/>
+    </marker>
+  </defs>
+
+  <!-- ═══════════════ USE CASE OVALS ═══════════════ -->
+  <!-- UC1: Register Account  cy=115 -->
+  <ellipse cx="492" cy="115" rx="108" ry="33" fill="#9B9DD4" stroke="#555" stroke-width="1.2"/>
+  <text x="492" y="115" text-anchor="middle" dominant-baseline="central"
+        font-family="Arial, sans-serif" font-size="13" fill="white">Register Account</text>
+
+  <!-- UC2: Log In  cy=242 -->
+  <ellipse cx="492" cy="242" rx="108" ry="33" fill="#9B9DD4" stroke="#555" stroke-width="1.2"/>
+  <text x="492" y="242" text-anchor="middle" dominant-baseline="central"
+        font-family="Arial, sans-serif" font-size="13" fill="white">Log In</text>
+
+  <!-- UC3: Reset Password  cy=369 -->
+  <ellipse cx="492" cy="369" rx="108" ry="33" fill="#9B9DD4" stroke="#555" stroke-width="1.2"/>
+  <text x="492" y="369" text-anchor="middle" dominant-baseline="central"
+        font-family="Arial, sans-serif" font-size="13" fill="white">Reset Password</text>
+
+  <!-- UC4: View / Edit Profile  cy=496 (NEW) -->
+  <ellipse cx="492" cy="496" rx="108" ry="33" fill="#9B9DD4" stroke="#555" stroke-width="1.2"/>
+  <text x="492" y="496" text-anchor="middle" dominant-baseline="central"
+        font-family="Arial, sans-serif" font-size="13" fill="white">View / Edit Profile</text>
+
+  <!-- UC5: Log Out  cy=623 -->
+  <ellipse cx="492" cy="623" rx="108" ry="33" fill="#9B9DD4" stroke="#555" stroke-width="1.2"/>
+  <text x="492" y="623" text-anchor="middle" dominant-baseline="central"
+        font-family="Arial, sans-serif" font-size="13" fill="white">Log Out</text>
+
+  <!-- ═══════════════ ACTOR 1: Player ═══════════════ -->
+  <circle cx="100" cy="78"  r="16" fill="none" stroke="#333" stroke-width="1.5"/>
+  <line x1="100" y1="94"  x2="100" y2="140" stroke="#333" stroke-width="1.5"/>
+  <line x1="74"  y1="114" x2="126" y2="114" stroke="#333" stroke-width="1.5"/>
+  <line x1="100" y1="140" x2="76"  y2="170" stroke="#333" stroke-width="1.5"/>
+  <line x1="100" y1="140" x2="124" y2="170" stroke="#333" stroke-width="1.5"/>
+  <text x="100" y="188" text-anchor="middle"
+        font-family="Arial, sans-serif" font-size="13" fill="#333">Player</text>
+
+  <!-- ═══════════════ ACTOR 2: Authenticated Player ═══════════════ -->
+  <circle cx="100" cy="383" r="16" fill="none" stroke="#333" stroke-width="1.5"/>
+  <line x1="100" y1="399" x2="100" y2="445" stroke="#333" stroke-width="1.5"/>
+  <line x1="74"  y1="419" x2="126" y2="419" stroke="#333" stroke-width="1.5"/>
+  <line x1="100" y1="445" x2="76"  y2="475" stroke="#333" stroke-width="1.5"/>
+  <line x1="100" y1="445" x2="124" y2="475" stroke="#333" stroke-width="1.5"/>
+  <text x="100" y="494" text-anchor="middle"
+        font-family="Arial, sans-serif" font-size="13" fill="#333">Authenticated</text>
+  <text x="100" y="510" text-anchor="middle"
+        font-family="Arial, sans-serif" font-size="13" fill="#333">Player</text>
+
+  <!-- ═══════════════ GENERALIZATION ARROW ═══════════════ -->
+  <!-- Authenticated Player → Player (hollow triangle up) -->
+  <line x1="100" y1="365" x2="100" y2="192"
+        stroke="#333" stroke-width="1.5" marker-end="url(#hollow)"/>
+
+  <!-- ═══════════════ ASSOCIATION LINES ═══════════════ -->
+  <!-- Player → Register Account -->
+  <line x1="126" y1="114" x2="384" y2="115"
+        stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Authenticated Player → Log In -->
+  <line x1="126" y1="417" x2="384" y2="245"
+        stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Authenticated Player → Reset Password -->
+  <line x1="126" y1="419" x2="384" y2="369"
+        stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Authenticated Player → View / Edit Profile -->
+  <line x1="126" y1="421" x2="384" y2="496"
+        stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+
+  <!-- Authenticated Player → Log Out -->
+  <line x1="126" y1="423" x2="384" y2="620"
+        stroke="#333" stroke-width="1.5" marker-end="url(#arr)"/>
+
+</svg>
