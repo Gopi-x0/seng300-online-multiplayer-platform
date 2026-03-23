@@ -1,9 +1,15 @@
 package ca.ucalgary.seng300.screens;
 
+import javafx.beans.property.SimpleIntegerProperty;
+import javafx.beans.property.SimpleStringProperty;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
@@ -41,6 +47,7 @@ public class MainGameDashboard extends BorderPane {
 
         content.getChildren().add(buildHeader());
         content.getChildren().add(buildGameCardSection());
+        content.getChildren().add(buildLeaderboardSection());
         return content;
     }
 
@@ -147,5 +154,88 @@ public class MainGameDashboard extends BorderPane {
                 "-fx-cursor: hand;"
         );
         return playButton;
+    }
+
+    private VBox buildLeaderboardSection() {
+        // leaderboard block under the game cards
+        Label heading = new Label("LEADERBOARD");
+        heading.setTextFill(Color.WHITE);
+        heading.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+
+        TableView<LeaderboardRow> table = buildLeaderboardTable();
+
+        VBox section = new VBox(14, heading, table);
+        section.setPadding(new Insets(8, 0, 0, 0));
+        return section;
+    }
+
+    private TableView<LeaderboardRow> buildLeaderboardTable() {
+        TableView<LeaderboardRow> table = new TableView<>();
+
+        TableColumn<LeaderboardRow, Number> rankColumn = new TableColumn<>("RANK");
+        rankColumn.setCellValueFactory(data -> data.getValue().rankProperty());
+
+        TableColumn<LeaderboardRow, String> playerColumn = new TableColumn<>("PLAYER");
+        playerColumn.setCellValueFactory(data -> data.getValue().playerProperty());
+
+        TableColumn<LeaderboardRow, Number> pointsColumn = new TableColumn<>("POINTS");
+        pointsColumn.setCellValueFactory(data -> data.getValue().pointsProperty());
+
+        TableColumn<LeaderboardRow, Number> scoreColumn = new TableColumn<>("SCORE");
+        scoreColumn.setCellValueFactory(data -> data.getValue().scoreProperty());
+
+        TableColumn<LeaderboardRow, String> gameColumn = new TableColumn<>("GAME");
+        gameColumn.setCellValueFactory(data -> data.getValue().gameProperty());
+
+        table.getColumns().addAll(rankColumn, playerColumn, pointsColumn, scoreColumn, gameColumn);
+        table.setItems(FXCollections.observableArrayList(
+                new LeaderboardRow(1, "Bilal Ahmed", 2780, 47, "Tic Tac Toe"),
+                new LeaderboardRow(2, "Shayan Sheikh", 2680, 42, "Connect 4"),
+                new LeaderboardRow(3, "Muhammad Abad", 2510, 39, "Tic Tac Toe"),
+                new LeaderboardRow(4, "npc", 2340, 35, "Connect 4"),
+                new LeaderboardRow(5, "npc", 2190, 31, "Tic Tac Toe"),
+                new LeaderboardRow(6, "npc", 2050, 28, "Connect 4"),
+                new LeaderboardRow(7, "npc", 1830, 25, "Tic Tac Toe"),
+                new LeaderboardRow(8, "haris Naveed", 1792, 23, "Connect 4")
+        ));
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        table.setPrefHeight(260);
+        return table;
+    }
+
+    private static class LeaderboardRow {
+        private final SimpleIntegerProperty rank;
+        private final SimpleStringProperty player;
+        private final SimpleIntegerProperty points;
+        private final SimpleIntegerProperty score;
+        private final SimpleStringProperty game;
+
+        private LeaderboardRow(int rank, String player, int points, int score, String game) {
+            this.rank = new SimpleIntegerProperty(rank);
+            this.player = new SimpleStringProperty(player);
+            this.points = new SimpleIntegerProperty(points);
+            this.score = new SimpleIntegerProperty(score);
+            this.game = new SimpleStringProperty(game);
+        }
+
+        private SimpleIntegerProperty rankProperty() {
+            return rank;
+        }
+
+        private SimpleStringProperty playerProperty() {
+            return player;
+        }
+
+        private SimpleIntegerProperty pointsProperty() {
+            return points;
+        }
+
+        private SimpleIntegerProperty scoreProperty() {
+            return score;
+        }
+
+        private SimpleStringProperty gameProperty() {
+            return game;
+        }
     }
 }
