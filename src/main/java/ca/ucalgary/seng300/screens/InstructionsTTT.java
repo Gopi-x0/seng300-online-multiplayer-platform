@@ -14,7 +14,16 @@ public class InstructionsTTT extends Application {
 
     @Override
     public void start(Stage stage){
-        stage.setTitle("Instructions TTT");
+        //Title Label
+        Label title = new Label("Tic-Tac-Toe");
+        title.setStyle("-fx-text-fill : white; -fx-font-size: 48px; -fx-font-weight: bold;");
+
+        Label subTitle = new Label("Instructions & Rules");
+        subTitle.setStyle("-fx-text-fill : white; -fx-font-size: 32px;");
+
+        VBox titleBox = new VBox(title, subTitle);
+        titleBox.setAlignment(Pos.CENTER);
+        titleBox.setSpacing(4);
     }
 
 
