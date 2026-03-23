@@ -47,9 +47,11 @@ public class MainGameDashboard extends BorderPane {
         Label logoBlock = buildLogoBlock();
         Label profileLink = buildProfileLink();
 
+        // this just pushes the profile text over to the right side
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
 
+        // header row spacing is a bit loose rn so it feels more like the mockup
         HBox header = new HBox(18, logoBlock, spacer, profileLink);
         header.setAlignment(Pos.TOP_LEFT);
         header.setPadding(new Insets(6, 4, 10, 4));
@@ -72,6 +74,7 @@ public class MainGameDashboard extends BorderPane {
     }
 
     private Label buildProfileLink() {
+        // simple profile text for now not making it clickable yet
         Label profile = new Label("Profile");
         profile.setTextFill(Color.web("#3ed3ff"));
         profile.setFont(Font.font("Arial", FontWeight.NORMAL, 13));
