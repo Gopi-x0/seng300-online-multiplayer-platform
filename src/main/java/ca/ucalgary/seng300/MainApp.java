@@ -1,8 +1,8 @@
 package ca.ucalgary.seng300;
 
+import ca.ucalgary.seng300.screens.WelcomePage;
 import javafx.application.Application;
 import javafx.scene.Scene;
-import javafx.scene.control.Label;
 import javafx.stage.Stage;
 
 
@@ -10,10 +10,9 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) {
-        Label label = new Label("JavaFX 25 + JDK 25 OK");
-        Scene scene = new Scene(label, 600, 400);
+        Scene scene = new Scene(new WelcomePage(), 1386, 781);
         stage.setScene(scene);
-        stage.setTitle("Starter");
+        stage.setTitle("Welcome Page - Haris");
         stage.show();
     }
 
