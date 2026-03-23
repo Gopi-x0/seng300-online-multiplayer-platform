@@ -35,7 +35,7 @@ public class PlayerProfile {
 
     }
 
-    public GeneralStats getStats(String gameType) {
+    public generalStats getStats(String gameType) {
         // retrieves the stats for the player
     }
 
