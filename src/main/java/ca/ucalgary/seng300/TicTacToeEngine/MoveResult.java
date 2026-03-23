@@ -13,11 +13,11 @@ public class MoveResult {
 
     private final boolean isValid;
     private final String message;
-    private final validationCode errorCode;
+    private final ValidationCode errorCode;
 
 
 //Made it a private constructor to restrict class instatiation outside of this class
-    private MoveResult(boolean isValid, String message, validationCode errorCode){
+    private MoveResult(boolean isValid, String message, ValidationCode errorCode){
         this.isValid = isValid;
         this.message = message;
         this.errorCode = errorCode;
@@ -27,13 +27,13 @@ public class MoveResult {
      *Factory method to create an instance of the 'success' move result
      */
     public static MoveResult success(){
-        return new MoveResult(true, "Move is valid", validationCode.SUCCESS);
+        return new MoveResult(true, "Move is valid", ValidationCode.SUCCESS);
     }
 
     /**
      * Factory method to create an instance of a 'failed' move result
      */
-    public static MoveResult failure(validationCode errorCode, String message){
+    public static MoveResult failure(ValidationCode errorCode, String message){
         return new MoveResult(false, message, errorCode);
     }
 
@@ -46,7 +46,7 @@ public class MoveResult {
         return message;
     }
 
-    public validationCode getErrorCode() {
+    public ValidationCode getErrorCode() {
         return errorCode;
     }
 

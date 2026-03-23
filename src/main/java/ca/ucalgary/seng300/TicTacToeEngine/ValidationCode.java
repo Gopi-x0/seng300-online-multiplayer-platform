@@ -5,7 +5,7 @@ package ca.ucalgary.seng300.TicTacToeEngine;
  * Success status if a move is valid
  */
 
-public enum validationCode {
+public enum ValidationCode {
     CELL_OCCUPIED,
     OUT_OF_BOUNDS,
     WRONG_TURN,
