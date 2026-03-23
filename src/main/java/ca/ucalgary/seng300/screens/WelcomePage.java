@@ -36,17 +36,7 @@ public class WelcomePage extends StackPane {
     }
 
     private VBox buildCenteredContent() {
-        // using a text logo for now till we hook up the real one properlly
-        Label logo = new Label("SGP");
-        logo.setTextFill(Color.web("#f4f8ff"));
-        logo.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 54));
-        logo.setStyle(
-                "-fx-background-color: linear-gradient(to bottom, rgba(37, 122, 214, 0.24), rgba(4, 10, 25, 0.08));" +
-                "-fx-border-color: #2dbdff;" +
-                "-fx-border-radius: 20;" +
-                "-fx-background-radius: 20;" +
-                "-fx-padding: 12 34 12 34;"
-        );
+        Label logo = buildLogo();
 
         Label title = new Label("Welcome to");
         title.setTextFill(Color.web("#6f95c5"));
@@ -56,38 +46,8 @@ public class WelcomePage extends StackPane {
         subtitle.setTextFill(Color.web("#7f94b4"));
         subtitle.setFont(Font.font("Arial", 14));
 
-        // click handler stays empty rn cause no nav logic yet
-        Button loginButton = new Button("Login");
-        loginButton.setPrefWidth(140);
-        loginButton.setPrefHeight(40);
-        loginButton.setOnAction(event -> {
-        });
-        loginButton.setStyle(
-                "-fx-background-color: linear-gradient(to right, #1d4ed8, #2563eb);" +
-                "-fx-text-fill: white;" +
-                "-fx-font-size: 14px;" +
-                "-fx-font-weight: bold;" +
-                "-fx-background-radius: 10;" +
-                "-fx-cursor: hand;"
-        );
-
-        // same thing here just styling for now no backend stuff
-        Button signUpButton = new Button("Sign Up");
-        signUpButton.setPrefWidth(140);
-        signUpButton.setPrefHeight(40);
-        signUpButton.setOnAction(event -> {
-        });
-        signUpButton.setStyle(
-                "-fx-background-color: transparent;" +
-                "-fx-text-fill: #dce9ff;" +
-                "-fx-font-size: 14px;" +
-                "-fx-font-weight: bold;" +
-                "-fx-border-color: #4b6b97;" +
-                "-fx-border-width: 1.2;" +
-                "-fx-border-radius: 10;" +
-                "-fx-background-radius: 10;" +
-                "-fx-cursor: hand;"
-        );
+        Button loginButton = createLoginButton();
+        Button signUpButton = createSignUpButton();
 
         HBox buttonRow = new HBox(14, loginButton, signUpButton);
         buttonRow.setAlignment(Pos.CENTER);
@@ -108,5 +68,59 @@ public class WelcomePage extends StackPane {
         );
 
         return content;
+    }
+
+    private Label buildLogo() {
+        // using a text logo for now till we hook up the real one properlly
+        Label logo = new Label("SGP");
+        logo.setTextFill(Color.web("#f4f8ff"));
+        logo.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 54));
+        logo.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, rgba(37, 122, 214, 0.24), rgba(4, 10, 25, 0.08));" +
+                "-fx-border-color: #2dbdff;" +
+                "-fx-border-radius: 20;" +
+                "-fx-background-radius: 20;" +
+                "-fx-padding: 12 34 12 34;"
+        );
+        return logo;
+    }
+
+    private Button createLoginButton() {
+        // click handler stays empty rn cause no nav logic yet
+        Button loginButton = new Button("Login");
+        loginButton.setPrefWidth(140);
+        loginButton.setPrefHeight(40);
+        loginButton.setOnAction(event -> {
+        });
+        loginButton.setStyle(
+                "-fx-background-color: linear-gradient(to right, #1d4ed8, #2563eb);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-background-radius: 10;" +
+                "-fx-cursor: hand;"
+        );
+        return loginButton;
+    }
+
+    private Button createSignUpButton() {
+        // same thing here just styling for now no backend stuff
+        Button signUpButton = new Button("Sign Up");
+        signUpButton.setPrefWidth(140);
+        signUpButton.setPrefHeight(40);
+        signUpButton.setOnAction(event -> {
+        });
+        signUpButton.setStyle(
+                "-fx-background-color: transparent;" +
+                "-fx-text-fill: #dce9ff;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-border-color: #4b6b97;" +
+                "-fx-border-width: 1.2;" +
+                "-fx-border-radius: 10;" +
+                "-fx-background-radius: 10;" +
+                "-fx-cursor: hand;"
+        );
+        return signUpButton;
     }
 }
