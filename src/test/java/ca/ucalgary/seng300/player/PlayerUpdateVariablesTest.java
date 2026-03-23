@@ -35,4 +35,19 @@ public class PlayerUpdateVariablesTest {
         assertEquals("originalUser", player.getUsername());
     }
 
+    /*  NOT SURE IF IT WILL ALLOW SWITCHING USER NAME TO THE SAME THING
+    @Test
+    void testUpdateUsernameToSameThrowError() {
+        assertDoesNotThrow(() -> player.updateUsername("originalUser", "originalUser"),
+                "updateUsername should handle updating to the same value without error");
+    }
+    */
+
+    @Test
+    void testUpdateUsernameMultipleTimesReflectsLatestValue() {
+        player.updateUsername("originalUser", "secondName");
+        player.updateUsername("secondName", "thirdName");
+        assertEquals("thirdName", player.getUsername());
+    }
+
 }
