@@ -9,6 +9,7 @@ import javafx.scene.layout.VBox;
 public class MainGameDashboard extends BorderPane {
 
     public MainGameDashboard() {
+        // keeping the constructor simple and pushing the setup into one method
         initializeLayout();
     }
 
@@ -21,10 +22,12 @@ public class MainGameDashboard extends BorderPane {
         );
 
         VBox mainContent = buildMainContent();
+        // center is where the whole dashboard stack will live
         setCenter(mainContent);
     }
 
     private VBox buildMainContent() {
+        // this will hold the header cards and leaderboard later
         VBox content = new VBox(24);
         content.setPadding(new Insets(8));
         content.setFillWidth(true);

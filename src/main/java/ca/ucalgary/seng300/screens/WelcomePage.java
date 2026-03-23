@@ -36,6 +36,7 @@ public class WelcomePage extends StackPane {
     }
 
     private VBox buildCenteredContent() {
+        // pulling each piece separate so this section stays easier to read
         Label logo = buildLogo();
         Label title = buildTitle();
         Label subtitle = buildSubtitle();
@@ -68,6 +69,7 @@ public class WelcomePage extends StackPane {
     }
 
     private Label buildSubtitle() {
+        // smaller text under the welcome heading
         Label subtitle = new Label("Student Gaming Platform");
         subtitle.setTextFill(Color.web("#7f94b4"));
         subtitle.setFont(Font.font("Arial", 14));
@@ -75,6 +77,7 @@ public class WelcomePage extends StackPane {
     }
 
     private HBox buildButtonRow() {
+        // putting both buttons in one row so they stay centered together
         Button loginButton = createLoginButton();
         Button signUpButton = createSignUpButton();
 
