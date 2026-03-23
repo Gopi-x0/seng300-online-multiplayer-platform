@@ -1,5 +1,7 @@
 package ca.ucalgary.seng300.player;
 
+import static org.junit.jupiter.api.Assertions.*;
+
 import ca.ucalgary.seng300.Player;
 import ca.ucalgary.seng300.Rank;
 import org.junit.jupiter.api.BeforeEach;
@@ -14,12 +16,23 @@ public class PlayerUpdateVariablesTest {
     @BeforeEach
     void setUp() {
         player = new Player();
+        player.playerId = "1111";
+        player.setUsername("testUser");
+        player.setEmail("test@example.com");
+        player.setRanking(Rank.BRONZE);
     }
 
     @Test
-    void usernameChangeTestBasic(){
-        //assertEquals("Username succesfully changed to 'test2'", player.updateUsername("test1", "test2"));
-        //^ that function does return anything yet so I just have this greyed out so its not lighting up a bunch of errors.
+    void testUpdateUsernameWithCorrectOldNameChangesUsername() {
+        player.updateUsername("originalUser", "newUser");
+        assertEquals("newUser", player.getUsername(),
+                "updateUsername should change the username when the old name matches");
+    }
+
+    @Test
+    void testUpdateUsernameWithIncorrectOldNameDoesNotChange() {
+        player.updateUsername("wrongUserName", "newUsername");  //One username is wrong, username change should be rejected
+        assertEquals("originalUser", player.getUsername());
     }
 
 }
