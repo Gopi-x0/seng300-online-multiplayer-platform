@@ -1,5 +1,14 @@
 package ca.ucalgary.seng300.TicTacToeEngine;
 
-public enum validationCode {
+/**
+ * List of error types when an invalid move is made
+ * Success status if a move is valid
+ */
 
+public enum validationCode {
+    CELL_OCCUPIED,
+    OUT_OF_BOUNDS,
+    WRONG_TURN,
+    GAME_ALREADY_OVER,
+    SUCCESS;
 }
