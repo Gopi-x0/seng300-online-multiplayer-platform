@@ -109,8 +109,6 @@ public class InstructionsTTT extends Application {
 
         return card;
     }
-
-
 }
 
 
@@ -121,4 +119,4 @@ public class InstructionsTTT extends Application {
 
 
 
-}
+
