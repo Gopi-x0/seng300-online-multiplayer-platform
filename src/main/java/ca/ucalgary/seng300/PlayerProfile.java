@@ -36,6 +36,8 @@ public class PlayerProfile {
     }
 
     public generalStats getStats(String gameType) {
+        generalStats stats = new generalStats(playerId, gameType);
+        return stats;
         // retrieves the stats for the player
     }
 

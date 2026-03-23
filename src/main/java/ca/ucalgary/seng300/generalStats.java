@@ -2,7 +2,7 @@ package ca.ucalgary.seng300;
 
 public class generalStats {
 
-    public generalStats(String gameType) {
+    public generalStats(String playerId, String gameType) {
         this.gameType = gameType;
     }
 
