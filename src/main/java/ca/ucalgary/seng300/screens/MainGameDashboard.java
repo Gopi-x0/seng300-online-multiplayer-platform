@@ -158,13 +158,9 @@ public class MainGameDashboard extends BorderPane {
 
     private VBox buildLeaderboardSection() {
         // leaderboard block under the game cards
-        Label heading = new Label("LEADERBOARD");
-        heading.setTextFill(Color.WHITE);
-        heading.setFont(Font.font("Arial", FontWeight.BOLD, 16));
-
         TableView<LeaderboardRow> table = buildLeaderboardTable();
 
-        VBox section = new VBox(14, heading, table);
+        VBox section = new VBox(14, buildLeaderboardHeading(), table);
         section.setPadding(new Insets(8, 0, 0, 0));
         return section;
     }
@@ -187,6 +183,12 @@ public class MainGameDashboard extends BorderPane {
         TableColumn<LeaderboardRow, String> gameColumn = new TableColumn<>("GAME");
         gameColumn.setCellValueFactory(data -> data.getValue().gameProperty());
 
+        styleLeaderboardColumn(rankColumn);
+        styleLeaderboardColumn(playerColumn);
+        styleLeaderboardColumn(pointsColumn);
+        styleLeaderboardColumn(scoreColumn);
+        styleLeaderboardColumn(gameColumn);
+
         table.getColumns().addAll(rankColumn, playerColumn, pointsColumn, scoreColumn, gameColumn);
         table.setItems(FXCollections.observableArrayList(
                 new LeaderboardRow(1, "Bilal Ahmed", 2780, 47, "Tic Tac Toe"),
@@ -200,7 +202,43 @@ public class MainGameDashboard extends BorderPane {
         ));
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
         table.setPrefHeight(260);
+        styleLeaderboardTable(table);
         return table;
+    }
+
+    private HBox buildLeaderboardHeading() {
+        // little heading row so the leaderboard doesnt just start plain
+        Label icon = new Label("♛");
+        icon.setTextFill(Color.web("#42d7ff"));
+        icon.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+
+        Label heading = new Label("LEADERBOARD");
+        heading.setTextFill(Color.WHITE);
+        heading.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+
+        HBox headingRow = new HBox(8, icon, heading);
+        headingRow.setAlignment(Pos.CENTER_LEFT);
+        return headingRow;
+    }
+
+    private void styleLeaderboardTable(TableView<LeaderboardRow> table) {
+        // keeping the table dark so it fits the rest of the dashboard better
+        table.setStyle(
+                "-fx-background-color: rgba(12, 22, 42, 0.95);" +
+                "-fx-control-inner-background: rgba(12, 22, 42, 0.95);" +
+                "-fx-table-cell-border-color: rgba(75, 105, 150, 0.18);" +
+                "-fx-table-header-border-color: transparent;" +
+                "-fx-background-radius: 14;" +
+                "-fx-border-color: rgba(63, 97, 145, 0.45);" +
+                "-fx-border-radius: 14;"
+        );
+    }
+
+    private void styleLeaderboardColumn(TableColumn<LeaderboardRow, ?> column) {
+        // tiny bit of cleanup for the header labels
+        column.setSortable(false);
+        column.setResizable(false);
+        column.setStyle("-fx-alignment: CENTER-LEFT;");
     }
 
     private static class LeaderboardRow {
