@@ -21,31 +21,31 @@ public class InstructionsC4 extends Application {
     public void start(Stage stage) {
         //Title Label
         Label title = new Label("Connect 4");
-        title.setStyle("-fx-text-fill : #00d3f3; - fx-font-size: 36px; -fx-font-weight: bold;");
+        title.setStyle("-fx-text-fill : #00000; - fx-font-size: 48px; -fx-font-weight: bold;");
 
         Label subTitle = new Label("Instructions & Rules");
-        subTitle.setStyle("fx-text-fill : #90a1b9; -fx-font-size: 16px;");
+        subTitle.setStyle("fx-text-fill : #00000; -fx-font-size: 32px;");
 
         VBox titleBox = new VBox(title, subTitle);
         titleBox.setAlignment(Pos.CENTER);
         titleBox.setSpacing(4);
 
         VBox rulesCard = createCard("Rules",
-                "\u2022  Each player takes turns dropping one disc at a time into the grid.",
-                "\u2022  Discs fall to the lowest available position in the chosen column.",
-                "\u2022  You may only place a disc in a column that is not full."
+                "•  Each player takes turns dropping one disc at a time into the grid.",
+                "•  Discs fall to the lowest available position in the chosen column.",
+                "•  You may only place a disc in a column that is not full."
         );
 
         VBox objectiveCard = createCard("Objective",
-                "\u2022 Be the first to connect FOUR of your tiles in a row.",
-                "\u2022 Connections can be horizontal, vertical, or diagonal.",
-                "\u2022 If there are no four consecutive connections by either sides, then the game ends in a draw."
+                "• Be the first to connect FOUR of your tiles in a row.",
+                "• Connections can be horizontal, vertical, or diagonal.",
+                "• If there are no four consecutive connections by either sides, then the game ends in a draw."
         );
 
         VBox playCard = createCard("Play",
-                "\u2022 1. Click on a column to drop your tile.",
-                "\u2022 2. Your disc will fall to the lowest open spot.",
-                "\u2022 3. Alternate turns with your opponent."
+                " 1. Click on a column to drop your tile.",
+                " 2. Your disc will fall to the lowest open spot.",
+                " 3. Alternate turns with your opponent."
         );
 
         Button playButton = new Button("PLAY");
@@ -109,7 +109,7 @@ public class InstructionsC4 extends Application {
         card.setStyle("-fx-background-color: linear-gradient(#0f172b, #1d293d);" + "-fx-background-radius: 10;");
         card.getChildren().add(mainTitle);
 
-        for (String line : title.split("\n")) {
+        for (String line : lines) {
             Label subtext = new Label(line);
             subtext.setStyle("-fx-text-fill: #c8d6e5; -fx-font-size: 14px;");
             subtext.setWrapText(true);
