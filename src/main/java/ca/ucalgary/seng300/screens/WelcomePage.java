@@ -16,16 +16,19 @@ import javafx.scene.text.FontWeight;
 public class WelcomePage extends StackPane {
 
     public WelcomePage() {
+        // just calling the main layout stuff here so constructor stays simple
         initializeLayout();
     }
 
     private void initializeLayout() {
+        // little bit of padding so the screen doesnt feel jammed to the edges
         setPadding(new Insets(32));
         setStyle(
                 "-fx-background-color: radial-gradient(center 50% 35%, radius 85%, #102749 0%, #08172e 45%, #040b19 100%);" +
                 "-fx-background-insets: 0;"
         );
 
+        // this is the main centered box with logo text and buttons
         VBox centeredContent = buildCenteredContent();
         centeredContent.maxWidthProperty().bind(widthProperty().multiply(0.6));
 
@@ -33,6 +36,7 @@ public class WelcomePage extends StackPane {
     }
 
     private VBox buildCenteredContent() {
+        // using a text logo for now till we hook up the real one properlly
         Label logo = new Label("SGP");
         logo.setTextFill(Color.web("#f4f8ff"));
         logo.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 54));
@@ -52,6 +56,7 @@ public class WelcomePage extends StackPane {
         subtitle.setTextFill(Color.web("#7f94b4"));
         subtitle.setFont(Font.font("Arial", 14));
 
+        // click handler stays empty rn cause no nav logic yet
         Button loginButton = new Button("Login");
         loginButton.setPrefWidth(140);
         loginButton.setPrefHeight(40);
@@ -66,6 +71,7 @@ public class WelcomePage extends StackPane {
                 "-fx-cursor: hand;"
         );
 
+        // same thing here just styling for now no backend stuff
         Button signUpButton = new Button("Sign Up");
         signUpButton.setPrefWidth(140);
         signUpButton.setPrefHeight(40);
@@ -86,6 +92,7 @@ public class WelcomePage extends StackPane {
         HBox buttonRow = new HBox(14, loginButton, signUpButton);
         buttonRow.setAlignment(Pos.CENTER);
 
+        // these spacers help keep the card feeling centered even when resized
         Region spacerTop = new Region();
         Region spacerBottom = new Region();
         VBox.setVgrow(spacerTop, Priority.ALWAYS);
