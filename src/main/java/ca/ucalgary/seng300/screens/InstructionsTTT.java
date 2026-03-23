@@ -72,7 +72,22 @@ public class InstructionsTTT extends Application {
                         "-fx-cursor: hand;"
         ));
 
+        HBox buttonBox = new HBox(playButton);
+        buttonBox.setAlignment(Pos.CENTER);
+        buttonBox.setPadding(new Insets(10, 0, 0, 0));
 
+        VBox root = new VBox(); //Initialize a VBox
+        root.setSpacing(10); // Set the spacing of the root
+        root.setPadding(new Insets(40));
+        root.setAlignment(Pos.CENTER);
+        root.setStyle("-fx-background-color: #020b1c;");
+        root.getChildren().addAll(titleBox, rulesCard, objectiveCard, playCard, buttonBox);
+
+        Scene ttt = new Scene(root ,1000 , 1000);
+
+        stage.setTitle("Tic-Tac-Toe : Instructions & Rules");
+        stage.setScene(ttt);
+        stage.show();
     }
 
     private VBox createCard(String title, String... lines){
