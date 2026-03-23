@@ -43,6 +43,35 @@ public class InstructionsTTT extends Application {
                 " 3. Alternate turns with your opponent."
         );
 
+        Button playButton = new Button("PLAY");
+        playButton.setStyle("-fx-background-color: linear-gradient(#00d3f3, #0088a3);"
+                + "-fx-text-fill: white;"
+                + "-fx-font-size: 16px;"
+                + "-fx-font-weight: bold;"
+                + "-fx-padding: 12 40;"
+                + "-fx-background-radius: 8;"
+                + "-fx-cursor: hand;"
+                + "-fx-border-width: 2;");
+
+        playButton.setOnMouseEntered(e -> playButton.setStyle(
+                "-fx-background-color: linear-gradient(#33e0f7, #00a8c9);" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 16px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-padding: 12 40;" +
+                        "-fx-background-radius: 8;" +
+                        "-fx-cursor: hand;"
+        ));
+        playButton.setOnMouseExited(e -> playButton.setStyle(
+                "-fx-background-color: linear-gradient(#00d3f3, #0088a3);" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 16px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-padding: 12 40;" +
+                        "-fx-background-radius: 8;" +
+                        "-fx-cursor: hand;"
+        ));
+
 
     }
 
