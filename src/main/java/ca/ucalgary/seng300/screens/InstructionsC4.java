@@ -21,10 +21,10 @@ public class InstructionsC4 extends Application {
     public void start(Stage stage) {
         //Title Label
         Label title = new Label("Connect 4");
-        title.setStyle("-fx-text-fill : #00000; - fx-font-size: 48px; -fx-font-weight: bold;");
+        title.setStyle("-fx-text-fill : white; -fx-font-size: 48px; -fx-font-weight: bold;");
 
         Label subTitle = new Label("Instructions & Rules");
-        subTitle.setStyle("fx-text-fill : #00000; -fx-font-size: 32px;");
+        subTitle.setStyle("-fx-text-fill : white; -fx-font-size: 32px;");
 
         VBox titleBox = new VBox(title, subTitle);
         titleBox.setAlignment(Pos.CENTER);
