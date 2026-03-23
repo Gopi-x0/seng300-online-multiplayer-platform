@@ -37,20 +37,9 @@ public class WelcomePage extends StackPane {
 
     private VBox buildCenteredContent() {
         Label logo = buildLogo();
-
-        Label title = new Label("Welcome to");
-        title.setTextFill(Color.web("#6f95c5"));
-        title.setFont(Font.font("Arial", FontWeight.NORMAL, 36));
-
-        Label subtitle = new Label("Student Gaming Platform");
-        subtitle.setTextFill(Color.web("#7f94b4"));
-        subtitle.setFont(Font.font("Arial", 14));
-
-        Button loginButton = createLoginButton();
-        Button signUpButton = createSignUpButton();
-
-        HBox buttonRow = new HBox(14, loginButton, signUpButton);
-        buttonRow.setAlignment(Pos.CENTER);
+        Label title = buildTitle();
+        Label subtitle = buildSubtitle();
+        HBox buttonRow = buildButtonRow();
 
         // these spacers help keep the card feeling centered even when resized
         Region spacerTop = new Region();
@@ -68,6 +57,30 @@ public class WelcomePage extends StackPane {
         );
 
         return content;
+    }
+
+    private Label buildTitle() {
+        // keeping the heading seperate so its easier to tweak later
+        Label title = new Label("Welcome to");
+        title.setTextFill(Color.web("#6f95c5"));
+        title.setFont(Font.font("Arial", FontWeight.NORMAL, 36));
+        return title;
+    }
+
+    private Label buildSubtitle() {
+        Label subtitle = new Label("Student Gaming Platform");
+        subtitle.setTextFill(Color.web("#7f94b4"));
+        subtitle.setFont(Font.font("Arial", 14));
+        return subtitle;
+    }
+
+    private HBox buildButtonRow() {
+        Button loginButton = createLoginButton();
+        Button signUpButton = createSignUpButton();
+
+        HBox buttonRow = new HBox(14, loginButton, signUpButton);
+        buttonRow.setAlignment(Pos.CENTER);
+        return buttonRow;
     }
 
     private Label buildLogo() {
