@@ -34,9 +34,9 @@ public class MainGameDashboard extends BorderPane {
 
     private void initializeLayout() {
         // setting up the dashboard shell first so we can drop sections in one by one
-        setPadding(new Insets(30));
+        setPadding(new Insets(28));
         setStyle(
-                "-fx-background-color: radial-gradient(center 25% 15%, radius 120%, #12263d 0%, #081526 38%, #040c17 100%);" +
+                "-fx-background-color: linear-gradient(to bottom, #0c1d31, #081221 60%, #050c17 100%);" +
                 "-fx-background-insets: 0;"
         );
 
@@ -47,9 +47,14 @@ public class MainGameDashboard extends BorderPane {
 
     private VBox buildMainContent() {
         // this will hold the header cards and leaderboard later
-        VBox content = new VBox(24);
-        content.setPadding(new Insets(8));
+        VBox content = new VBox(26);
+        content.setPadding(new Insets(14, 22, 18, 22));
         content.setFillWidth(true);
+        content.setMaxWidth(1120);
+        content.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, rgba(7, 18, 34, 0.97), rgba(4, 12, 23, 0.98));" +
+                "-fx-background-radius: 6;"
+        );
 
         content.getChildren().add(buildHeader());
         content.getChildren().add(buildGameCardSection());
@@ -96,9 +101,13 @@ public class MainGameDashboard extends BorderPane {
         VBox ticTacToeCard = createGameCard("Tic Tac Toe", "Take on the classic game of Tic Tac Toe!", buildTicTacToePreview());
         VBox connectFourCard = createGameCard("Connect 4", "Outsmart your opponent in a game of Connect 4", buildConnectFourPreview());
 
+        ticTacToeCard.setPrefWidth(355);
+        connectFourCard.setPrefWidth(355);
+
         HBox row = new HBox(18, ticTacToeCard, connectFourCard);
         HBox.setHgrow(ticTacToeCard, Priority.ALWAYS);
         HBox.setHgrow(connectFourCard, Priority.ALWAYS);
+        row.setMaxWidth(740);
         return row;
     }
 
