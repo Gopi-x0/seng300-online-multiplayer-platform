@@ -52,12 +52,7 @@ public class WelcomePage extends StackPane {
 
         VBox content = new VBox(18, spacerTop, logo, title, subtitle, buttonRow, spacerBottom);
         content.setAlignment(Pos.CENTER);
-        content.setMaxWidth(520);
-        content.setPadding(new Insets(36));
-        content.setStyle(
-                "-fx-background-color: rgba(5, 11, 24, 0.35);" +
-                "-fx-background-radius: 28;"
-        );
+        styleMainContent(content);
 
         return content;
     }
@@ -65,17 +60,29 @@ public class WelcomePage extends StackPane {
     private Label buildTitle() {
         // keeping the heading seperate so its easier to tweak later
         Label title = new Label("Welcome to");
-        title.setTextFill(Color.web("#6f95c5"));
-        title.setFont(Font.font("Arial", FontWeight.NORMAL, 36));
+        title.setTextFill(Color.web("#5f87b7"));
+        title.setFont(Font.font("Arial", FontWeight.NORMAL, 34));
         return title;
     }
 
     private Label buildSubtitle() {
         // smaller text under the welcome heading
         Label subtitle = new Label("Student Gaming Platform");
-        subtitle.setTextFill(Color.web("#7f94b4"));
-        subtitle.setFont(Font.font("Arial", 14));
+        subtitle.setTextFill(Color.web("#6f86a7"));
+        subtitle.setFont(Font.font("Arial", 12));
         return subtitle;
+    }
+
+    private void styleMainContent(VBox content) {
+        // main card in the middle of the welcome page
+        content.setMaxWidth(560);
+        content.setPadding(new Insets(42, 40, 42, 40));
+        content.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, rgba(5, 11, 24, 0.62), rgba(3, 9, 20, 0.78));" +
+                "-fx-background-radius: 30;" +
+                "-fx-border-color: rgba(53, 94, 145, 0.28);" +
+                "-fx-border-radius: 30;"
+        );
     }
 
     private HBox buildButtonRow() {
