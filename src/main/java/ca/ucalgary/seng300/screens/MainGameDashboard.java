@@ -73,8 +73,8 @@ public class MainGameDashboard extends BorderPane {
 
         // header row spacing is a bit loose rn so it feels more like the mockup
         HBox header = new HBox(18, logoBlock, spacer, profileLink);
-        header.setAlignment(Pos.TOP_LEFT);
-        header.setPadding(new Insets(6, 4, 10, 4));
+        header.setAlignment(Pos.CENTER_LEFT);
+        header.setPadding(new Insets(2, 4, 8, 4));
         return header;
     }
 
@@ -83,7 +83,7 @@ public class MainGameDashboard extends BorderPane {
         Image image = new Image(getClass().getResourceAsStream("/ca/ucalgary/seng300/images/sgp-logo.png"));
         ImageView logo = new ImageView(image);
         logo.setPreserveRatio(true);
-        logo.setFitWidth(190);
+        logo.setFitWidth(210);
         logo.setSmooth(true);
         return logo;
     }
@@ -92,7 +92,12 @@ public class MainGameDashboard extends BorderPane {
         // simple profile text for now not making it clickable yet
         Label profile = new Label("Profile");
         profile.setTextFill(Color.web("#3ed3ff"));
-        profile.setFont(Font.font("Arial", FontWeight.NORMAL, 13));
+        profile.setFont(Font.font("Arial", FontWeight.NORMAL, 12));
+        profile.setStyle(
+                "-fx-background-color: rgba(10, 32, 54, 0.45);" +
+                "-fx-background-radius: 12;" +
+                "-fx-padding: 4 10 4 10;"
+        );
         return profile;
     }
 
@@ -121,17 +126,10 @@ public class MainGameDashboard extends BorderPane {
                 "-fx-padding: 18;"
         );
 
-        Label title = new Label(titleText);
-        title.setTextFill(Color.WHITE);
-        title.setFont(Font.font("Arial", FontWeight.BOLD, 15));
-
-        Label subtitle = new Label(subtitleText);
-        subtitle.setTextFill(Color.web("#89a4c6"));
-        subtitle.setFont(Font.font("Arial", 11));
-
         Button playButton = createPlayButton();
+        VBox textBlock = buildGameTextBlock(titleText, subtitleText);
 
-        VBox card = new VBox(10, preview, title, subtitle, playButton);
+        VBox card = new VBox(10, preview, textBlock, playButton);
         card.setPadding(new Insets(0, 0, 14, 0));
         card.setMaxWidth(Double.MAX_VALUE);
         card.setStyle(
@@ -212,16 +210,7 @@ public class MainGameDashboard extends BorderPane {
         playButton.setMaxWidth(Double.MAX_VALUE);
         playButton.setOnAction(event -> {
         });
-        playButton.setStyle(
-                "-fx-background-color: transparent;" +
-                "-fx-text-fill: #66dbff;" +
-                "-fx-font-size: 11px;" +
-                "-fx-font-weight: bold;" +
-                "-fx-border-color: #2eaed8;" +
-                "-fx-border-radius: 4;" +
-                "-fx-background-radius: 4;" +
-                "-fx-cursor: hand;"
-        );
+        stylePlayButton(playButton);
         return playButton;
     }
 
@@ -230,7 +219,13 @@ public class MainGameDashboard extends BorderPane {
         TableView<LeaderboardRow> table = buildLeaderboardTable();
 
         VBox section = new VBox(14, buildLeaderboardHeading(), table);
-        section.setPadding(new Insets(8, 0, 0, 0));
+        section.setPadding(new Insets(10, 0, 0, 0));
+        section.setMaxWidth(980);
+        section.setStyle(
+                "-fx-background-color: rgba(8, 18, 34, 0.55);" +
+                "-fx-background-radius: 12;" +
+                "-fx-padding: 12 12 14 12;"
+        );
         return section;
     }
 
@@ -270,9 +265,42 @@ public class MainGameDashboard extends BorderPane {
                 new LeaderboardRow(8, "haris Naveed", 1792, 23, "Connect 4")
         ));
         table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        table.setPrefHeight(260);
+        table.setMaxWidth(Double.MAX_VALUE);
+        table.setPrefHeight(248);
         styleLeaderboardTable(table);
         return table;
+    }
+
+    private VBox buildGameTextBlock(String titleText, String subtitleText) {
+        // keeping the card text grouped so spacing is easier to tweak
+        Label title = new Label(titleText);
+        title.setTextFill(Color.WHITE);
+        title.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+
+        Label subtitle = new Label(subtitleText);
+        subtitle.setWrapText(true);
+        subtitle.setTextFill(Color.web("#89a4c6"));
+        subtitle.setFont(Font.font("Arial", 10.5));
+
+        VBox textBlock = new VBox(5, title, subtitle);
+        textBlock.setPadding(new Insets(0, 12, 0, 12));
+        return textBlock;
+    }
+
+    private void stylePlayButton(Button playButton) {
+        // button is meant to feel like a thin outlined action bar
+        playButton.setStyle(
+                "-fx-background-color: transparent;" +
+                "-fx-text-fill: #66dbff;" +
+                "-fx-font-size: 10.5px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-border-color: #2eaed8;" +
+                "-fx-border-width: 1.1;" +
+                "-fx-border-radius: 3;" +
+                "-fx-background-radius: 3;" +
+                "-fx-padding: 7 0 7 0;" +
+                "-fx-cursor: hand;"
+        );
     }
 
     private HBox buildLeaderboardHeading() {
@@ -287,6 +315,7 @@ public class MainGameDashboard extends BorderPane {
 
         HBox headingRow = new HBox(8, icon, heading);
         headingRow.setAlignment(Pos.CENTER_LEFT);
+        headingRow.setPadding(new Insets(0, 0, 2, 2));
         return headingRow;
     }
 
@@ -295,6 +324,7 @@ public class MainGameDashboard extends BorderPane {
         table.setStyle(
                 "-fx-background-color: rgba(12, 22, 42, 0.95);" +
                 "-fx-control-inner-background: rgba(12, 22, 42, 0.95);" +
+                "-fx-control-inner-background-alt: rgba(10, 19, 36, 0.95);" +
                 "-fx-table-cell-border-color: rgba(75, 105, 150, 0.18);" +
                 "-fx-table-header-border-color: transparent;" +
                 "-fx-background-radius: 14;" +
