@@ -1,6 +1,6 @@
 package ca.ucalgary.seng300;
 
-import ca.ucalgary.seng300.screens.WelcomePage;
+import ca.ucalgary.seng300.screens.MainGameDashboard;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
@@ -10,11 +10,11 @@ public class MainApp extends Application {
 
     @Override
     public void start(Stage stage) {
-        // for now just launching the welcome page first so we can style it and test it easier
-        Scene scene = new Scene(new WelcomePage(), 1386, 781);
+        // temporary switch so we can preview the dashboard screen easier
+        Scene scene = new Scene(new MainGameDashboard(), 1386, 781);
         stage.setScene(scene);
-        // just making the window title match the screen we are looking at rn
-        stage.setTitle("Welcome Page - Haris");
+        // matching the title to the screen we are previewing
+        stage.setTitle("Main game dashboard - Haris");
         stage.show();
     }
 

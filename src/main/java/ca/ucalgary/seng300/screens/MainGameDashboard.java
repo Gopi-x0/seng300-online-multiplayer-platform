@@ -8,13 +8,19 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
+import javafx.scene.layout.GridPane;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
+import javafx.scene.shape.Circle;
+import javafx.scene.shape.Rectangle;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
@@ -53,7 +59,7 @@ public class MainGameDashboard extends BorderPane {
 
     private HBox buildHeader() {
         // top row with the logo on the left and profile text on the right
-        Label logoBlock = buildLogoBlock();
+        ImageView logoBlock = buildLogoBlock();
         Label profileLink = buildProfileLink();
 
         // this just pushes the profile text over to the right side
@@ -67,18 +73,13 @@ public class MainGameDashboard extends BorderPane {
         return header;
     }
 
-    private Label buildLogoBlock() {
-        // text placeholder for the logo area till we swap in the real asset
-        Label logo = new Label("SGP\nSTUDENT GAMING PLATFORM");
-        logo.setTextFill(Color.web("#f1f7ff"));
-        logo.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 26));
-        logo.setStyle(
-                "-fx-background-color: linear-gradient(to bottom, rgba(34, 118, 204, 0.20), rgba(5, 12, 25, 0.10));" +
-                "-fx-border-color: #25c3ff;" +
-                "-fx-border-radius: 18;" +
-                "-fx-background-radius: 18;" +
-                "-fx-padding: 12 22 12 22;"
-        );
+    private ImageView buildLogoBlock() {
+        // using the real logo here too so the dashboard feels closer to the mockup
+        Image image = new Image(getClass().getResourceAsStream("/ca/ucalgary/seng300/images/sgp-logo.png"));
+        ImageView logo = new ImageView(image);
+        logo.setPreserveRatio(true);
+        logo.setFitWidth(190);
+        logo.setSmooth(true);
         return logo;
     }
 
@@ -92,8 +93,8 @@ public class MainGameDashboard extends BorderPane {
 
     private HBox buildGameCardSection() {
         // this row will hold the two game cards side by side
-        VBox ticTacToeCard = createGameCard("Tic Tac Toe", "Take on the classic game of Tic Tac Toe!", "X O\nX O\nX O");
-        VBox connectFourCard = createGameCard("Connect 4", "Outsmart your opponent in a game of Connect 4", "o o o o\no o o o\no o o o");
+        VBox ticTacToeCard = createGameCard("Tic Tac Toe", "Take on the classic game of Tic Tac Toe!", buildTicTacToePreview());
+        VBox connectFourCard = createGameCard("Connect 4", "Outsmart your opponent in a game of Connect 4", buildConnectFourPreview());
 
         HBox row = new HBox(18, ticTacToeCard, connectFourCard);
         HBox.setHgrow(ticTacToeCard, Priority.ALWAYS);
@@ -101,13 +102,9 @@ public class MainGameDashboard extends BorderPane {
         return row;
     }
 
-    private VBox createGameCard(String titleText, String subtitleText, String previewText) {
+    private VBox createGameCard(String titleText, String subtitleText, Region preview) {
         // one reusable card so both game boxes stay styled the same
-        Label preview = new Label(previewText);
-        preview.setTextFill(Color.web("#38cfff"));
-        preview.setFont(Font.font("Courier New", FontWeight.BOLD, 22));
         preview.setMinHeight(120);
-        preview.setAlignment(Pos.CENTER);
         preview.setMaxWidth(Double.MAX_VALUE);
         preview.setStyle(
                 "-fx-background-color: linear-gradient(to bottom, rgba(34, 54, 107, 0.55), rgba(9, 18, 38, 0.85));" +
@@ -135,6 +132,69 @@ public class MainGameDashboard extends BorderPane {
                 "-fx-border-radius: 14;"
         );
         return card;
+    }
+
+    private Region buildTicTacToePreview() {
+        // quick mini tic tac toe board so the card looks more like the design
+        GridPane board = new GridPane();
+        board.setHgap(6);
+        board.setVgap(6);
+        board.setAlignment(Pos.CENTER);
+
+        String[][] marks = {
+                {"X", "O", ""},
+                {"X", "", ""},
+                {"X", "O", ""}
+        };
+
+        for (int row = 0; row < 3; row++) {
+            for (int column = 0; column < 3; column++) {
+                StackPane cell = new StackPane();
+                cell.setPrefSize(26, 26);
+                cell.setStyle(
+                        "-fx-background-color: rgba(11, 30, 58, 0.95);" +
+                        "-fx-border-color: #32c8ff;" +
+                        "-fx-border-radius: 4;" +
+                        "-fx-background-radius: 4;"
+                );
+
+                Label mark = new Label(marks[row][column]);
+                mark.setTextFill(Color.web("#38cfff"));
+                mark.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+                cell.getChildren().add(mark);
+                board.add(cell, column, row);
+            }
+        }
+
+        return board;
+    }
+
+    private Region buildConnectFourPreview() {
+        // same idea here but with circles so it feels closer to connect 4
+        GridPane board = new GridPane();
+        board.setHgap(5);
+        board.setVgap(5);
+        board.setAlignment(Pos.CENTER);
+        Color[][] tokens = {
+                {Color.web("#ff4b4b"), Color.web("#ffd93d"), Color.TRANSPARENT, Color.web("#4ea1ff"), Color.TRANSPARENT, Color.web("#ff4b4b"), Color.web("#ffd93d")},
+                {Color.web("#4ea1ff"), Color.TRANSPARENT, Color.web("#ff4b4b"), Color.web("#ffd93d"), Color.web("#4ea1ff"), Color.TRANSPARENT, Color.web("#ff4b4b")},
+                {Color.TRANSPARENT, Color.web("#ff4b4b"), Color.web("#ffd93d"), Color.TRANSPARENT, Color.web("#ff4b4b"), Color.web("#ffd93d"), Color.TRANSPARENT},
+                {Color.web("#ffd93d"), Color.web("#4ea1ff"), Color.TRANSPARENT, Color.web("#ff4b4b"), Color.TRANSPARENT, Color.web("#4ea1ff"), Color.web("#ffd93d")},
+                {Color.TRANSPARENT, Color.web("#ffd93d"), Color.web("#4ea1ff"), Color.TRANSPARENT, Color.web("#ffd93d"), Color.web("#ff4b4b"), Color.TRANSPARENT},
+                {Color.web("#ff4b4b"), Color.TRANSPARENT, Color.web("#ffd93d"), Color.web("#4ea1ff"), Color.TRANSPARENT, Color.web("#ffd93d"), Color.web("#4ea1ff")}
+        };
+
+        for (int row = 0; row < tokens.length; row++) {
+            for (int column = 0; column < tokens[row].length; column++) {
+                Circle token = new Circle(6.5);
+                token.setFill(tokens[row][column]);
+                token.setStroke(Color.web("#31c6ff"));
+                token.setStrokeWidth(1);
+                board.add(token, column, row);
+            }
+        }
+
+        return board;
     }
 
     private Button createPlayButton() {

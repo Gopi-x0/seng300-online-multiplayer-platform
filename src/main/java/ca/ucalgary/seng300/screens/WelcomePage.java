@@ -4,6 +4,8 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.Region;
@@ -37,7 +39,7 @@ public class WelcomePage extends StackPane {
 
     private VBox buildCenteredContent() {
         // pulling each piece separate so this section stays easier to read
-        Label logo = buildLogo();
+        ImageView logo = buildLogo();
         Label title = buildTitle();
         Label subtitle = buildSubtitle();
         HBox buttonRow = buildButtonRow();
@@ -86,18 +88,13 @@ public class WelcomePage extends StackPane {
         return buttonRow;
     }
 
-    private Label buildLogo() {
-        // using a text logo for now till we hook up the real one properlly
-        Label logo = new Label("SGP");
-        logo.setTextFill(Color.web("#f4f8ff"));
-        logo.setFont(Font.font("Arial", FontWeight.EXTRA_BOLD, 54));
-        logo.setStyle(
-                "-fx-background-color: linear-gradient(to bottom, rgba(37, 122, 214, 0.24), rgba(4, 10, 25, 0.08));" +
-                "-fx-border-color: #2dbdff;" +
-                "-fx-border-radius: 20;" +
-                "-fx-background-radius: 20;" +
-                "-fx-padding: 12 34 12 34;"
-        );
+    private ImageView buildLogo() {
+        // using the real logo now and still keeping a safe fallback size
+        Image image = new Image(getClass().getResourceAsStream("/ca/ucalgary/seng300/images/sgp-logo.png"));
+        ImageView logo = new ImageView(image);
+        logo.setPreserveRatio(true);
+        logo.setFitWidth(300);
+        logo.setSmooth(true);
         return logo;
     }
 
