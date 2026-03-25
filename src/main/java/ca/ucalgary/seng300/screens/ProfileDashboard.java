@@ -26,6 +26,7 @@ public class ProfileDashboard extends VBox {
         setPadding(new Insets(40));
         // Sets dark background color for the profile screen
         setStyle("-fx-background-color: #020b1c;");
+        setFillWidth(true);
         //adds profile and back buttons on top of the screen
         getChildren().add(createTopBar());
         // Adds the profile header section to the screen
@@ -38,50 +39,56 @@ public class ProfileDashboard extends VBox {
 
     //creates buttons for back to home and profile
     private HBox createTopBar() {
-        //makes buttons and styles them
+
+        //styles for base hover and pressed
+        String baseStyle =
+                "-fx-background-color: transparent;" +
+                        "-fx-text-fill: #00c8ff;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-cursor: hand;";
+
+        String hoverStyle =
+                "-fx-background-color: rgba(0,200,255,0.1);" +
+                        "-fx-text-fill: #33d6ff;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-cursor: hand;";
+
+        String pressedStyle =
+                "-fx-background-color: rgba(0,200,255,0.2);" +
+                        "-fx-text-fill: #66e0ff;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-cursor: hand;";
+
+        //makes buttons
         Button back = new Button("← Back to Home");
-        Button settings = new Button("Profile");
-        back.setStyle(
-                "-fx-background-color: transparent;" +
-                        "-fx-text-fill:#00c8ff;" +
-                        "-fx-font-size:14px;"
-        );
-        settings.setStyle(
-                "-fx-background-color: transparent;" +
-                        "-fx-text-fill:#00c8ff;" +
-                        "-fx-font-size:14px;"
-        );
-        //will implement logic for buttons later
-        back.setOnMouseClicked(e -> {
-            System.out.println("Go to Home"); // replace later
-        });
+        Button profile = new Button("Profile");
 
-        settings.setOnMouseClicked(e -> {
-            System.out.println("Go to Profile");
-        });
+        //apply base style
+        back.setStyle(baseStyle);
+        profile.setStyle(baseStyle);
 
-        //styling for when button is used
-        back.setOnMouseEntered(e ->
-                back.setStyle("-fx-text-fill:#33d6ff; -fx-font-size:14px; -fx-cursor: hand;")
-        );
+        //interactions for the back button
+        back.setOnMouseEntered(e -> back.setStyle(hoverStyle));
+        back.setOnMouseExited(e -> back.setStyle(baseStyle));
+        back.setOnMousePressed(e -> back.setStyle(pressedStyle));
+        back.setOnMouseReleased(e -> back.setStyle(hoverStyle));
 
-        back.setOnMouseExited(e ->
-                back.setStyle("-fx-text-fill:#00c8ff; -fx-font-size:14px; -fx-cursor: hand;")
-        );
+        //interaction for profile button
+        profile.setOnMouseEntered(e -> profile.setStyle(hoverStyle));
+        profile.setOnMouseExited(e -> profile.setStyle(baseStyle));
+        profile.setOnMousePressed(e -> profile.setStyle(pressedStyle));
+        profile.setOnMouseReleased(e -> profile.setStyle(hoverStyle));
 
-        settings.setOnMouseEntered(e ->
-                settings.setStyle("-fx-text-fill:#33d6ff; -fx-font-size:14px; -fx-cursor: hand;")
-        );
+        //button actions, will implement real actions later
+        back.setOnAction(e -> System.out.println("Go to Home"));
+        profile.setOnAction(e -> System.out.println("Go to Profile"));
 
-        settings.setOnMouseExited(e ->
-                settings.setStyle("-fx-text-fill:#00c8ff; -fx-font-size:14px; -fx-cursor: hand;")
-        );
         //positions back to home and profile correctly
         HBox bar = new HBox();
         bar.setAlignment(Pos.CENTER_LEFT);
         Region spacer = new Region();
         HBox.setHgrow(spacer, Priority.ALWAYS);
-        bar.getChildren().addAll(back, spacer, settings);
+        bar.getChildren().addAll(back, spacer, profile);
 
         return bar;
     }
@@ -204,7 +211,10 @@ public class ProfileDashboard extends VBox {
         );
         //container for both game cards
         HBox container = new HBox(24, ticTacToe, connect4);
-        container.setAlignment(Pos.CENTER);
+        container.setAlignment(Pos.CENTER_LEFT);
+        container.setMaxWidth(Double.MAX_VALUE);
+        HBox.setHgrow(ticTacToe, Priority.ALWAYS);
+        HBox.setHgrow(connect4, Priority.ALWAYS);
         return container;
     }
 
@@ -320,7 +330,8 @@ public class ProfileDashboard extends VBox {
         gameCard.setSpacing(16);
         gameCard.setPadding(new Insets(20));
         gameCard.setPrefWidth(300);
-
+        gameCard.setMaxWidth(Double.MAX_VALUE);
+        VBox.setVgrow(gameCard, Priority.NEVER);
         //add gradient styling
         gameCard.setStyle(
                 "-fx-background-color: linear-gradient(#0f172b,#1d293d);" +
