@@ -16,7 +16,6 @@ public class GameboardC4 extends Application{
     //Circle Primitatives
     private int ROWS = 6;
     private int COLS = 7;
-    private int CAPACITY = ROWS * COLS;
     private int CELLSPACING = 75;
     private int CIRCLERADIUS = 60;
 
@@ -27,6 +26,10 @@ public class GameboardC4 extends Application{
     private int diameter = CIRCLERADIUS * 2;
     private int length = (diameter * COLS) + CELLSPACING;
     private int width = (diameter * ROWS) + CELLSPACING;
+
+    //Logic
+    private int CAPACITY = ROWS * COLS;
+    private int CONSECUTIVE = 4;
 
     @Override
     public void start(Stage primaryStage){
@@ -46,12 +49,30 @@ public class GameboardC4 extends Application{
         //Create the gameboard grid of circle tiles
         VBox grid = createGrid(ROWS, COLS, CELLSPACING, CIRCLERADIUS, cells, length, width);
 
-        //UI Layout stacks both the title labels and the grid
-        VBox layout = new VBox(titleBox, grid);
-        layout.setAlignment(Pos.CENTER);
+        //Create both user's consecutive streak they need to win for visual clarity
+        VBox streakUserLeft = createPlayerCurrentTiles(CONSECUTIVE, CIRCLERADIUS);
+        streakUserLeft.setAlignment(Pos.BOTTOM_LEFT);
+        VBox streakUserRight = createPlayerCurrentTiles(CONSECUTIVE, CIRCLERADIUS);
+        streakUserRight.setAlignment(Pos.BOTTOM_RIGHT);
+
+        //BorderPane - multi-dimensional VBox
+        BorderPane mainLayout = new BorderPane();
+        mainLayout.setTop(titleBox);
+        BorderPane.setAlignment(titleBox, Pos.CENTER);
+
+        //Add Left and Right User Streaks
+        mainLayout.setLeft(streakUserLeft);
+        BorderPane.setAlignment(streakUserLeft,  Pos.BOTTOM_RIGHT);
+
+        mainLayout.setRight(streakUserRight);
+        BorderPane.setAlignment(streakUserRight,  Pos.BOTTOM_CENTER);
+
+        //Place the grid in the main middle
+        mainLayout.setCenter(grid);
+        mainLayout.setPadding(new Insets(20));
 
         //Stackpane Root for centering and resizing
-        StackPane root = new StackPane(layout);
+        StackPane root = new StackPane(mainLayout);
         root.setAlignment(Pos.CENTER);
         Scene scene = new Scene(root, 800, 800);
         primaryStage.setScene(scene);
@@ -100,6 +121,27 @@ public class GameboardC4 extends Application{
 
         return outer;
     }
+
+    /**
+     * This displays the current consecutive tiles streak the player has ( x in a row), default at 0 tiles filled.
+     * @return a VBox to display with root in the BorderPane
+     */
+    private VBox createPlayerCurrentTiles(int tiles, int radius){
+        VBox streak = new VBox();
+        float space =  9.50f;
+        streak.setSpacing(space);
+
+        for(int j = 0; j < tiles; j++){
+            Circle circle = new Circle(radius);
+            circle.setFill(Color.GREY);
+            StackPane cell = new StackPane(circle);
+            cell.setPrefSize(space, space );
+            streak.getChildren().add(cell);
+        }
+        return streak;
+    }
+
+
 
     static void main(String[] args){
         launch(args);
