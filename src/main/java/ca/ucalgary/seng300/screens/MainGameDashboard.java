@@ -121,9 +121,9 @@ public class MainGameDashboard extends BorderPane {
         preview.setMinHeight(120);
         preview.setMaxWidth(Double.MAX_VALUE);
         preview.setStyle(
-                "-fx-background-color: linear-gradient(to bottom, rgba(34, 54, 107, 0.55), rgba(9, 18, 38, 0.85));" +
+                "-fx-background-color: linear-gradient(to bottom, rgba(31, 50, 102, 0.72), rgba(11, 20, 40, 0.96));" +
                 "-fx-background-radius: 14 14 0 0;" +
-                "-fx-padding: 18;"
+                "-fx-padding: 22 18 18 18;"
         );
 
         Button playButton = createPlayButton();
@@ -144,8 +144,8 @@ public class MainGameDashboard extends BorderPane {
     private Region buildTicTacToePreview() {
         // quick mini tic tac toe board so the card looks more like the design
         GridPane board = new GridPane();
-        board.setHgap(6);
-        board.setVgap(6);
+        board.setHgap(7);
+        board.setVgap(7);
         board.setAlignment(Pos.CENTER);
 
         String[][] marks = {
@@ -157,17 +157,17 @@ public class MainGameDashboard extends BorderPane {
         for (int row = 0; row < 3; row++) {
             for (int column = 0; column < 3; column++) {
                 StackPane cell = new StackPane();
-                cell.setPrefSize(26, 26);
+                cell.setPrefSize(28, 28);
                 cell.setStyle(
-                        "-fx-background-color: rgba(11, 30, 58, 0.95);" +
-                        "-fx-border-color: #32c8ff;" +
+                        "-fx-background-color: rgba(9, 25, 48, 0.98);" +
+                        "-fx-border-color: #39cfff;" +
                         "-fx-border-radius: 4;" +
                         "-fx-background-radius: 4;"
                 );
 
                 Label mark = new Label(marks[row][column]);
                 mark.setTextFill(Color.web("#38cfff"));
-                mark.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+                mark.setFont(Font.font("Arial", FontWeight.BOLD, 14));
                 cell.getChildren().add(mark);
                 board.add(cell, column, row);
             }
@@ -179,8 +179,8 @@ public class MainGameDashboard extends BorderPane {
     private Region buildConnectFourPreview() {
         // same idea here but with circles so it feels closer to connect 4
         GridPane board = new GridPane();
-        board.setHgap(5);
-        board.setVgap(5);
+        board.setHgap(6);
+        board.setVgap(6);
         board.setAlignment(Pos.CENTER);
         Color[][] tokens = {
                 {Color.web("#ff4b4b"), Color.web("#ffd93d"), Color.TRANSPARENT, Color.web("#4ea1ff"), Color.TRANSPARENT, Color.web("#ff4b4b"), Color.web("#ffd93d")},
@@ -193,7 +193,7 @@ public class MainGameDashboard extends BorderPane {
 
         for (int row = 0; row < tokens.length; row++) {
             for (int column = 0; column < tokens[row].length; column++) {
-                Circle token = new Circle(6.5);
+                Circle token = new Circle(7);
                 token.setFill(tokens[row][column]);
                 token.setStroke(Color.web("#31c6ff"));
                 token.setStrokeWidth(1);
