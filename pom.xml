@@ -27,12 +27,6 @@
       <artifactId>javafx-fxml</artifactId>
       <version>${javafx.version}</version>
     </dependency>
-  
-    <dependency>
-      <groupId>com.mservicetech</groupId>
-      <artifactId>business-validation-common</artifactId>
-      <version>1.0.1</version>
-    </dependency>
   </dependencies>
 
   <build>
