@@ -19,7 +19,9 @@ public class SettingsScreen extends ScrollPane {
         content.setStyle("-fx-background-color: #020b1c;"); // dark background
         content.setFillWidth(true); // stretch children to full width
 
-
+        //Add top bar and title first
+        content.getChildren().add(createTopBar());
+        content.getChildren().add(createTitle());
         // Put VBox inside scrollpane so we can scroll
         setContent(content);
 
@@ -31,6 +33,37 @@ public class SettingsScreen extends ScrollPane {
                 "-fx-background: #020b1c;" +
                         "-fx-background-color: #020b1c;"
         );
+    }
+
+    /**
+     * Creates the top navigation bar
+     */
+    private HBox createTopBar() {
+        // basic styling for button
+        String style =
+                "-fx-background-color: transparent;" +
+                        "-fx-text-fill: #00c8ff;" +
+                        "-fx-font-size: 15px;" +
+                        "-fx-cursor: hand;";
+
+        Button back = new Button("← Back to Home");
+        back.setStyle(style);
+        // placeholder functionality
+        back.setOnAction(e -> System.out.println("Go to Home"));
+        HBox bar = new HBox(back);
+        bar.setAlignment(Pos.CENTER_LEFT);
+
+        return bar;
+    }
+
+    /**
+     * Creates page title
+     */
+    private Label createTitle() {
+        Label title = new Label("Settings");
+        // big bold title
+        title.setStyle("-fx-text-fill:white; -fx-font-size:34px; -fx-font-weight:bold;");
+        return title;
     }
 
 }
