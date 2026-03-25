@@ -53,9 +53,24 @@ public class SettingsScreen extends ScrollPane {
                         "-fx-text-fill: #00c8ff;" +
                         "-fx-font-size: 15px;" +
                         "-fx-cursor: hand;";
-
         Button back = new Button("← Back to Home");
         back.setStyle(style);
+        // hover effect
+        back.setOnMouseEntered(e ->
+                back.setStyle(style + "-fx-background-color: rgba(0,200,255,0.1);")
+        );
+        // remove hover
+        back.setOnMouseExited(e ->
+                back.setStyle(style)
+        );
+        // click effect
+        back.setOnMousePressed(e ->
+                back.setStyle(style + "-fx-background-color: rgba(0,200,255,0.2);")
+        );
+        // release
+        back.setOnMouseReleased(e ->
+                back.setStyle(style + "-fx-background-color: rgba(0,200,255,0.1);")
+        );
         // placeholder functionality
         back.setOnAction(e -> System.out.println("Go to Home"));
         HBox bar = new HBox(back);
@@ -129,14 +144,35 @@ public class SettingsScreen extends ScrollPane {
      */
     private Button styledPrimaryButton(String text) {
         Button btn = new Button(text);
+
+
         // blue themed button for primary actions
-        btn.setStyle(
+        // base style
+        String baseStyle =
                 "-fx-background-color:#0092b8;" +
                         "-fx-text-fill:white;" +
                         "-fx-background-radius:6;" +
                         "-fx-cursor: hand;" +
                         "-fx-font-size:15px;" +
-                        "-fx-font-weight:bold;"
+                        "-fx-font-weight:bold;";
+
+        btn.setStyle(baseStyle);
+        btn.setPrefHeight(40);
+        //  hover effect (lighter blue)
+        btn.setOnMouseEntered(e ->
+                btn.setStyle(baseStyle + "-fx-background-color:#00a6cc;")
+        );
+        //  remove hover
+        btn.setOnMouseExited(e ->
+                btn.setStyle(baseStyle)
+        );
+        //  click effect (darker press)
+        btn.setOnMousePressed(e ->
+                btn.setStyle(baseStyle + "-fx-background-color:#007a99;")
+        );
+        //  release back to hover
+        btn.setOnMouseReleased(e ->
+                btn.setStyle(baseStyle + "-fx-background-color:#00a6cc;")
         );
         btn.setPrefHeight(40);
         return btn;
@@ -158,6 +194,7 @@ public class SettingsScreen extends ScrollPane {
                 "-fx-background-color: linear-gradient(#0f172b,#1d293d);" +
                         "-fx-background-radius:10;"
         );
+        card.setMaxWidth(Double.MAX_VALUE);
         return card;
     }
 
@@ -250,15 +287,33 @@ public class SettingsScreen extends ScrollPane {
         logoutBtn.setOnAction(e -> {
             System.out.println("Logout");
         });
-        logoutBtn.setStyle(
+        // base red style
+        String baseStyle =
                 "-fx-background-color:#e7000b;" +
                         "-fx-text-fill:white;" +
                         "-fx-background-radius:6;" +
                         "-fx-cursor: hand;" +
                         "-fx-font-size:15px;" +
-                        "-fx-font-weight:bold;"
-        );
+                        "-fx-font-weight:bold;";
+
+        logoutBtn.setStyle(baseStyle);
         logoutBtn.setPrefHeight(40);
+        // hover
+        logoutBtn.setOnMouseEntered(e ->
+                logoutBtn.setStyle(baseStyle + "-fx-background-color:#ff1a1a;")
+        );
+        // exit
+        logoutBtn.setOnMouseExited(e ->
+                logoutBtn.setStyle(baseStyle)
+        );
+        // press
+        logoutBtn.setOnMousePressed(e ->
+                logoutBtn.setStyle(baseStyle + "-fx-background-color:#b80000;")
+        );
+        // release
+        logoutBtn.setOnMouseReleased(e ->
+                logoutBtn.setStyle(baseStyle + "-fx-background-color:#ff1a1a;")
+        );
         VBox content = new VBox(desc, logoutBtn);
         content.setSpacing(12);
         return createCard("Logout", content);
