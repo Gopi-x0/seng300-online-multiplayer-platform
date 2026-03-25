@@ -22,6 +22,8 @@ public class SettingsScreen extends ScrollPane {
         //Add top bar and title first
         content.getChildren().add(createTopBar());
         content.getChildren().add(createTitle());
+        //add username Card
+        content.getChildren().add(createUsernameCard());
         // Put VBox inside scrollpane so we can scroll
         setContent(content);
 
@@ -52,7 +54,6 @@ public class SettingsScreen extends ScrollPane {
         back.setOnAction(e -> System.out.println("Go to Home"));
         HBox bar = new HBox(back);
         bar.setAlignment(Pos.CENTER_LEFT);
-
         return bar;
     }
 
@@ -70,13 +71,10 @@ public class SettingsScreen extends ScrollPane {
      * Creates styled label for form fields
      */
     private Label fieldLabel(String text) {
-
         // label used for inputs like username, password
         Label label = new Label(text);
-
         // soft gray-blue color for readability
         label.setStyle("-fx-text-fill:#cad5e2; -fx-font-size:15px;");
-
         return label;
     }
 
@@ -84,10 +82,8 @@ public class SettingsScreen extends ScrollPane {
      * Creates styled text input field
      */
     private TextField styledTextField(String placeholder) {
-
         TextField field = new TextField();
         field.setPromptText(placeholder);
-
         // dark themed input styling
         field.setStyle(
                 "-fx-background-color:#020618;" +
@@ -98,9 +94,7 @@ public class SettingsScreen extends ScrollPane {
                         "-fx-border-radius:8;" +
                         "-fx-font-size:15px;"
         );
-
         field.setPrefHeight(40); // makes it easier to click
-
         return field;
     }
 
@@ -108,10 +102,8 @@ public class SettingsScreen extends ScrollPane {
      * Creates styled password input field
      */
     private PasswordField styledPasswordField(String placeholder) {
-
         PasswordField field = new PasswordField();
         field.setPromptText(placeholder);
-
         // same styling as text field for consistency
         field.setStyle(
                 "-fx-background-color:#020618;" +
@@ -122,9 +114,7 @@ public class SettingsScreen extends ScrollPane {
                         "-fx-border-radius:8;" +
                         "-fx-font-size:15px;"
         );
-
         field.setPrefHeight(40);
-
         return field;
     }
 
@@ -132,9 +122,7 @@ public class SettingsScreen extends ScrollPane {
      * Creates primary action button
      */
     private Button styledPrimaryButton(String text) {
-
         Button btn = new Button(text);
-
         // blue themed button for primary actions
         btn.setStyle(
                 "-fx-background-color:#0092b8;" +
@@ -144,9 +132,7 @@ public class SettingsScreen extends ScrollPane {
                         "-fx-font-size:15px;" +
                         "-fx-font-weight:bold;"
         );
-
         btn.setPrefHeight(40);
-
         return btn;
     }
 
@@ -154,24 +140,44 @@ public class SettingsScreen extends ScrollPane {
      * Creates reusable card container
      */
     private VBox createCard(String titleText, VBox content) {
-
         // title at top of card
         Label title = new Label(titleText);
         title.setStyle("-fx-text-fill:white; -fx-font-size:18px; -fx-font-weight:bold;");
-
         VBox card = new VBox(title, content);
-
         // spacing inside card
         card.setSpacing(16);
         card.setPadding(new Insets(24));
-
         //gradient background to match dashboard
         card.setStyle(
                 "-fx-background-color: linear-gradient(#0f172b,#1d293d);" +
                         "-fx-background-radius:10;"
         );
-
         return card;
+    }
+
+    /**
+     * Creates username update section
+     */
+    private VBox createUsernameCard() {
+        // input field for username
+        TextField usernameField = styledTextField("Username");
+
+        // button to save username
+        Button saveBtn = styledPrimaryButton("Save Username");
+
+        //  prints updated username when clicked
+        saveBtn.setOnAction(e ->
+                System.out.println("Username updated: " + usernameField.getText())
+        );
+
+        // layout for this section
+        VBox content = new VBox(
+                fieldLabel("Username"),
+                usernameField,
+                saveBtn
+        );
+        content.setSpacing(10); // spacing between elements
+        return createCard("Change Username", content);
     }
 
 }
