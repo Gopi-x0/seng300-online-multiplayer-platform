@@ -1,4 +1,4 @@
-package ca.ucalgary.seng300;
+package ca.ucalgary.seng300.interfaces;
 
 import ca.ucalgary.seng300.TicTacToeEngine.GameState;
 import ca.ucalgary.seng300.TicTacToeEngine.Move;
