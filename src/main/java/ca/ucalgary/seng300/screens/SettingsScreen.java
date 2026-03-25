@@ -104,4 +104,50 @@ public class SettingsScreen extends ScrollPane {
         return field;
     }
 
+    /**
+     * Creates styled password input field
+     */
+    private PasswordField styledPasswordField(String placeholder) {
+
+        PasswordField field = new PasswordField();
+        field.setPromptText(placeholder);
+
+        // same styling as text field for consistency
+        field.setStyle(
+                "-fx-background-color:#020618;" +
+                        "-fx-text-fill:white;" +
+                        "-fx-prompt-text-fill:#90a1b9;" +
+                        "-fx-background-radius:8;" +
+                        "-fx-border-color:#314158;" +
+                        "-fx-border-radius:8;" +
+                        "-fx-font-size:15px;"
+        );
+
+        field.setPrefHeight(40);
+
+        return field;
+    }
+
+    /**
+     * Creates primary action button
+     */
+    private Button styledPrimaryButton(String text) {
+
+        Button btn = new Button(text);
+
+        // blue themed button for primary actions
+        btn.setStyle(
+                "-fx-background-color:#0092b8;" +
+                        "-fx-text-fill:white;" +
+                        "-fx-background-radius:6;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-font-size:15px;" +
+                        "-fx-font-weight:bold;"
+        );
+
+        btn.setPrefHeight(40);
+
+        return btn;
+    }
+
 }
