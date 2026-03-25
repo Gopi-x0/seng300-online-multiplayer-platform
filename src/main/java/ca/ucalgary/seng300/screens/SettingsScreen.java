@@ -150,4 +150,28 @@ public class SettingsScreen extends ScrollPane {
         return btn;
     }
 
+    /**
+     * Creates reusable card container
+     */
+    private VBox createCard(String titleText, VBox content) {
+
+        // title at top of card
+        Label title = new Label(titleText);
+        title.setStyle("-fx-text-fill:white; -fx-font-size:18px; -fx-font-weight:bold;");
+
+        VBox card = new VBox(title, content);
+
+        // spacing inside card
+        card.setSpacing(16);
+        card.setPadding(new Insets(24));
+
+        //gradient background to match dashboard
+        card.setStyle(
+                "-fx-background-color: linear-gradient(#0f172b,#1d293d);" +
+                        "-fx-background-radius:10;"
+        );
+
+        return card;
+    }
+
 }
