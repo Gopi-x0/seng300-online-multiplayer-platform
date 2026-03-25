@@ -79,4 +79,29 @@ public class SettingsScreen extends ScrollPane {
 
         return label;
     }
+
+    /**
+     * Creates styled text input field
+     */
+    private TextField styledTextField(String placeholder) {
+
+        TextField field = new TextField();
+        field.setPromptText(placeholder);
+
+        // dark themed input styling
+        field.setStyle(
+                "-fx-background-color:#020618;" +
+                        "-fx-text-fill:white;" +
+                        "-fx-prompt-text-fill:#90a1b9;" +
+                        "-fx-background-radius:8;" +
+                        "-fx-border-color:#314158;" +
+                        "-fx-border-radius:8;" +
+                        "-fx-font-size:15px;"
+        );
+
+        field.setPrefHeight(40); // makes it easier to click
+
+        return field;
+    }
+
 }
