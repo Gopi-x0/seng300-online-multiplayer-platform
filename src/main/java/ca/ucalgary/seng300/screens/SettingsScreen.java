@@ -144,8 +144,6 @@ public class SettingsScreen extends ScrollPane {
      */
     private Button styledPrimaryButton(String text) {
         Button btn = new Button(text);
-
-
         // blue themed button for primary actions
         // base style
         String baseStyle =
