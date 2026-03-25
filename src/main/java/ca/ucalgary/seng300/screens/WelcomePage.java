@@ -15,6 +15,8 @@ import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 
+import java.util.List;
+
 public class WelcomePage extends StackPane {
 
     public WelcomePage() {
@@ -26,7 +28,7 @@ public class WelcomePage extends StackPane {
         // little bit of padding so the screen doesnt feel jammed to the edges
         setPadding(new Insets(32));
         setStyle(
-                "-fx-background-color: radial-gradient(center 50% 35%, radius 85%, #102749 0%, #08172e 45%, #040b19 100%);" +
+                "-fx-background-color: #081221;" +
                 "-fx-background-insets: 0;"
         );
 
@@ -50,7 +52,10 @@ public class WelcomePage extends StackPane {
         VBox.setVgrow(spacerTop, Priority.ALWAYS);
         VBox.setVgrow(spacerBottom, Priority.ALWAYS);
 
-        VBox content = new VBox(8, spacerTop, logo, title, subtitle, buttonRow, spacerBottom);
+        VBox headerGroup = new VBox(-34, logo, title);
+        headerGroup.setAlignment(Pos.CENTER);
+
+        VBox content = new VBox(6, spacerTop, headerGroup, subtitle, buttonRow, spacerBottom);
         content.setAlignment(Pos.CENTER);
         styleMainContent(content);
 
@@ -61,7 +66,8 @@ public class WelcomePage extends StackPane {
         // keeping the heading seperate so its easier to tweak later
         Label title = new Label("Welcome to");
         title.setTextFill(Color.web("#5f87b7"));
-        title.setFont(Font.font("Arial", FontWeight.NORMAL, 34));
+        title.setFont(resolveHeadingFont(FontWeight.BOLD, 34));
+        title.setTranslateY(-10);
         return title;
     }
 
@@ -69,19 +75,18 @@ public class WelcomePage extends StackPane {
         // smaller text under the welcome heading
         Label subtitle = new Label("Student Gaming Platform");
         subtitle.setTextFill(Color.web("#6f86a7"));
-        subtitle.setFont(Font.font("Arial", 12));
+        subtitle.setFont(resolveBodyFont(FontWeight.MEDIUM, 12));
+        subtitle.setTranslateY(-8);
         return subtitle;
     }
 
     private void styleMainContent(VBox content) {
         // main card in the middle of the welcome page
         content.setMaxWidth(560);
-        content.setPadding(new Insets(34, 40, 38, 40));
+        content.setPadding(new Insets(22, 40, 34, 40));
         content.setStyle(
-                "-fx-background-color: linear-gradient(to bottom, rgba(5, 11, 24, 0.62), rgba(3, 9, 20, 0.78));" +
-                "-fx-background-radius: 30;" +
-                "-fx-border-color: rgba(53, 94, 145, 0.28);" +
-                "-fx-border-radius: 30;"
+                "-fx-background-color: #081221;" +
+                "-fx-background-radius: 30;"
         );
     }
 
@@ -100,7 +105,7 @@ public class WelcomePage extends StackPane {
         Image image = new Image(getClass().getResourceAsStream("/ca/ucalgary/seng300/images/sgp-logo.png"));
         ImageView logo = new ImageView(image);
         logo.setPreserveRatio(true);
-        logo.setFitWidth(365);
+        logo.setFitWidth(395);
         logo.setSmooth(true);
         return logo;
     }
@@ -112,14 +117,19 @@ public class WelcomePage extends StackPane {
         loginButton.setPrefHeight(40);
         loginButton.setOnAction(event -> {
         });
-        loginButton.setStyle(
+        loginButton.setFont(resolveBodyFont(FontWeight.SEMI_BOLD, 14));
+        String defaultStyle =
                 "-fx-background-color: linear-gradient(to right, #1d4ed8, #2563eb);" +
                 "-fx-text-fill: white;" +
-                "-fx-font-size: 14px;" +
-                "-fx-font-weight: bold;" +
                 "-fx-background-radius: 10;" +
-                "-fx-cursor: hand;"
-        );
+                "-fx-cursor: hand;";
+        String hoverStyle =
+                "-fx-background-color: linear-gradient(to right, #2563eb, #3b82f6);" +
+                "-fx-text-fill: white;" +
+                "-fx-background-radius: 10;" +
+                "-fx-cursor: hand;";
+        loginButton.setStyle(defaultStyle);
+        applyHoverStyle(loginButton, defaultStyle, hoverStyle);
         return loginButton;
     }
 
@@ -130,17 +140,47 @@ public class WelcomePage extends StackPane {
         signUpButton.setPrefHeight(40);
         signUpButton.setOnAction(event -> {
         });
-        signUpButton.setStyle(
+        signUpButton.setFont(resolveBodyFont(FontWeight.SEMI_BOLD, 14));
+        String defaultStyle =
                 "-fx-background-color: transparent;" +
                 "-fx-text-fill: #dce9ff;" +
-                "-fx-font-size: 14px;" +
-                "-fx-font-weight: bold;" +
                 "-fx-border-color: #4b6b97;" +
                 "-fx-border-width: 1.2;" +
                 "-fx-border-radius: 10;" +
                 "-fx-background-radius: 10;" +
-                "-fx-cursor: hand;"
-        );
+                "-fx-cursor: hand;";
+        String hoverStyle =
+                "-fx-background-color: rgba(32, 58, 95, 0.45);" +
+                "-fx-text-fill: white;" +
+                "-fx-border-color: #6f9ad1;" +
+                "-fx-border-width: 1.2;" +
+                "-fx-border-radius: 10;" +
+                "-fx-background-radius: 10;" +
+                "-fx-cursor: hand;";
+        signUpButton.setStyle(defaultStyle);
+        applyHoverStyle(signUpButton, defaultStyle, hoverStyle);
         return signUpButton;
+    }
+
+    private void applyHoverStyle(Button button, String defaultStyle, String hoverStyle) {
+        // small hover effect so the buttons feel a bit more alive
+        button.setOnMouseEntered(event -> button.setStyle(hoverStyle));
+        button.setOnMouseExited(event -> button.setStyle(defaultStyle));
+    }
+
+    private Font resolveHeadingFont(FontWeight weight, double size) {
+        List<String> families = Font.getFamilies();
+        if (families.contains("Rajdhani")) {
+            return Font.font("Rajdhani", weight, size);
+        }
+        return Font.font("Trebuchet MS", weight, size);
+    }
+
+    private Font resolveBodyFont(FontWeight weight, double size) {
+        List<String> families = Font.getFamilies();
+        if (families.contains("Inter")) {
+            return Font.font("Inter", weight, size);
+        }
+        return Font.font("Verdana", weight, size);
     }
 }
