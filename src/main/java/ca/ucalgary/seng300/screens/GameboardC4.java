@@ -21,7 +21,7 @@ public class GameboardC4 extends Application{
     private int COLS = 7;
     private int CAPACITY = ROWS * COLS;
     private int CELLSPACING = 75;
-    private int CIRCLERADIUS = 30;
+    private int CIRCLERADIUS = 60;
 
     private StackPane[][] cells = new StackPane[ROWS][COLS];
 
@@ -34,6 +34,11 @@ public class GameboardC4 extends Application{
         primaryStage.setTitle("Connect 4");
         primaryStage.resizableProperty().setValue(true);
         primaryStage.show();
+
+        //DYNAMIC RESIZING
+        primaryStage.widthProperty().addListener((o,old,newW) -> root.requestLayout());
+        primaryStage.heightProperty().addListener((o,old,newH) -> root.requestLayout());
+
     }
 
     static void main(String[] args){
@@ -44,10 +49,14 @@ public class GameboardC4 extends Application{
         //Create an outer vbox to stack the rows vertically
 
         VBox outer = new  VBox();
+        float space = 9.50f;
+        outer.setAlignment(Pos.CENTER);
+        outer.setSpacing(space);
 
         //For loop that iterates through the rows, creates an HBox for rows, then nested for loop to create a circle in a stackplane for it.
         for(int i = 0; i < rows; i++){
-            HBox row = new HBox();
+            HBox row = new HBox(12);
+            row.setAlignment(Pos.CENTER);
             for(int j = 0; j < cols; j++){
                 Circle circle = new Circle(rad);
                 circle.setFill(Color.GREY); //Grey because we are going to make it empty by default
