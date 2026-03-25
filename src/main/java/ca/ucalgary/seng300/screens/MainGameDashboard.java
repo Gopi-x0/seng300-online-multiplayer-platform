@@ -222,8 +222,10 @@ public class MainGameDashboard extends BorderPane {
         section.setPadding(new Insets(10, 0, 0, 0));
         section.setMaxWidth(980);
         section.setStyle(
-                "-fx-background-color: rgba(8, 18, 34, 0.55);" +
+                "-fx-background-color: linear-gradient(to bottom, rgba(9, 19, 36, 0.88), rgba(7, 15, 28, 0.96));" +
                 "-fx-background-radius: 12;" +
+                "-fx-border-color: rgba(53, 84, 127, 0.38);" +
+                "-fx-border-radius: 12;" +
                 "-fx-padding: 12 12 14 12;"
         );
         return section;
@@ -307,11 +309,11 @@ public class MainGameDashboard extends BorderPane {
         // little heading row so the leaderboard doesnt just start plain
         Label icon = new Label("♛");
         icon.setTextFill(Color.web("#42d7ff"));
-        icon.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        icon.setFont(Font.font("Arial", FontWeight.BOLD, 13));
 
         Label heading = new Label("LEADERBOARD");
         heading.setTextFill(Color.WHITE);
-        heading.setFont(Font.font("Arial", FontWeight.BOLD, 16));
+        heading.setFont(Font.font("Arial", FontWeight.BOLD, 15));
 
         HBox headingRow = new HBox(8, icon, heading);
         headingRow.setAlignment(Pos.CENTER_LEFT);
@@ -322,14 +324,16 @@ public class MainGameDashboard extends BorderPane {
     private void styleLeaderboardTable(TableView<LeaderboardRow> table) {
         // keeping the table dark so it fits the rest of the dashboard better
         table.setStyle(
-                "-fx-background-color: rgba(12, 22, 42, 0.95);" +
-                "-fx-control-inner-background: rgba(12, 22, 42, 0.95);" +
-                "-fx-control-inner-background-alt: rgba(10, 19, 36, 0.95);" +
+                "-fx-background-color: rgba(10, 19, 37, 0.98);" +
+                "-fx-control-inner-background: rgba(10, 19, 37, 0.98);" +
+                "-fx-control-inner-background-alt: rgba(8, 16, 31, 0.98);" +
                 "-fx-table-cell-border-color: rgba(75, 105, 150, 0.18);" +
                 "-fx-table-header-border-color: transparent;" +
-                "-fx-background-radius: 14;" +
-                "-fx-border-color: rgba(63, 97, 145, 0.45);" +
-                "-fx-border-radius: 14;"
+                "-fx-selection-bar: rgba(31, 110, 170, 0.30);" +
+                "-fx-selection-bar-non-focused: rgba(31, 110, 170, 0.20);" +
+                "-fx-background-radius: 10;" +
+                "-fx-border-color: rgba(63, 97, 145, 0.32);" +
+                "-fx-border-radius: 10;"
         );
     }
 
