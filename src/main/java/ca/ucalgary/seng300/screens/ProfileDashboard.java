@@ -393,3 +393,4 @@ public class ProfileDashboard extends VBox {
         // Game-specific stats logic will go here
     }
 }
+//
