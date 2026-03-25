@@ -21,6 +21,11 @@ AuthManager:
 - login(credentials): Username and password for player and stores them in player profiles
 - getActivePlayers(): Returns the players that are currently playing
 
+PlayerProfile:
+- Stores player information
+- playerId(): ID that separates players from one another 
+- username(): in-game name that Identifies player 
+
 LeaderboardManager:
 - Leaderboard that tracks a player's data when they play
 - recordMatchResult(gameType, winner, loser, isDraw): Checks how a match ends and records the players' win/loss/draw record
@@ -62,7 +67,6 @@ enum GameStatus {
 class PlayerProfile {
   + playerId: String
   + username: String
-  + isGuest: boolean
 }
 
 class GameState {

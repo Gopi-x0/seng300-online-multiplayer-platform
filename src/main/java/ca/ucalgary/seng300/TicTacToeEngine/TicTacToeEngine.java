@@ -1,6 +1,6 @@
 package ca.ucalgary.seng300.TicTacToeEngine;
 
-import ca.ucalgary.seng300.GameEngine;
+import ca.ucalgary.seng300.interfaces.GameEngine;
 
 import java.util.List;
 
