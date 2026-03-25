@@ -50,7 +50,7 @@ public class WelcomePage extends StackPane {
         VBox.setVgrow(spacerTop, Priority.ALWAYS);
         VBox.setVgrow(spacerBottom, Priority.ALWAYS);
 
-        VBox content = new VBox(18, spacerTop, logo, title, subtitle, buttonRow, spacerBottom);
+        VBox content = new VBox(8, spacerTop, logo, title, subtitle, buttonRow, spacerBottom);
         content.setAlignment(Pos.CENTER);
         styleMainContent(content);
 
@@ -76,7 +76,7 @@ public class WelcomePage extends StackPane {
     private void styleMainContent(VBox content) {
         // main card in the middle of the welcome page
         content.setMaxWidth(560);
-        content.setPadding(new Insets(42, 40, 42, 40));
+        content.setPadding(new Insets(34, 40, 38, 40));
         content.setStyle(
                 "-fx-background-color: linear-gradient(to bottom, rgba(5, 11, 24, 0.62), rgba(3, 9, 20, 0.78));" +
                 "-fx-background-radius: 30;" +
@@ -90,7 +90,7 @@ public class WelcomePage extends StackPane {
         Button loginButton = createLoginButton();
         Button signUpButton = createSignUpButton();
 
-        HBox buttonRow = new HBox(14, loginButton, signUpButton);
+        HBox buttonRow = new HBox(10, loginButton, signUpButton);
         buttonRow.setAlignment(Pos.CENTER);
         return buttonRow;
     }
@@ -100,7 +100,7 @@ public class WelcomePage extends StackPane {
         Image image = new Image(getClass().getResourceAsStream("/ca/ucalgary/seng300/images/sgp-logo.png"));
         ImageView logo = new ImageView(image);
         logo.setPreserveRatio(true);
-        logo.setFitWidth(300);
+        logo.setFitWidth(365);
         logo.setSmooth(true);
         return logo;
     }
