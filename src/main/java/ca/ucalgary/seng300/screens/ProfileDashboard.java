@@ -378,7 +378,7 @@ public class ProfileDashboard extends VBox {
 
     /**
      * Displays the profile view.
-     * This method will later render the full profile UI
+     * This method will later render the full profile UI.
      */
     public void displayProfileView() {
         // UI rendering logic will go here
