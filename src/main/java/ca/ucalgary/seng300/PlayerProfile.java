@@ -35,11 +35,14 @@ public class PlayerProfile {
 
     }
 
-    public GeneralStats getStats(String gameType) {
+    public generalStats getStats(String gameType) {
+        generalStats stats = new generalStats(playerId, gameType);
+        return stats;
         // retrieves the stats for the player
     }
 
-    public void updateUsername(String oldName, String newName) {
+    public void updateUsername(String newName) {
+        this.username = newName;
         // updates a user's username (should require a password)
     }
 
