@@ -66,4 +66,17 @@ public class SettingsScreen extends ScrollPane {
         return title;
     }
 
+    /**
+     * Creates styled label for form fields
+     */
+    private Label fieldLabel(String text) {
+
+        // label used for inputs like username, password
+        Label label = new Label(text);
+
+        // soft gray-blue color for readability
+        label.setStyle("-fx-text-fill:#cad5e2; -fx-font-size:15px;");
+
+        return label;
+    }
 }
