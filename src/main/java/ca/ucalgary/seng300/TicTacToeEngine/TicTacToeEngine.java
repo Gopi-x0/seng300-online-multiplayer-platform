@@ -11,5 +11,9 @@ import ca.ucalgary.seng300.GameEngine;
  */
 
 public class TicTacToeEngine implements GameEngine {
+    private static final int BOARD_SIZE = 3;
+
+
+
     
 }
