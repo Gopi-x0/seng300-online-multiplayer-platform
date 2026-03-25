@@ -25,7 +25,7 @@ public interface GameEngine {
      * @param playerIds ordered list of player IDs; index 0 goes first
      * @return a brand-new GameState with an empty board
      */
-    GameState createInitialState(List<String> playerids);
+    GameState createInitialState(List<String> playerIds);
     /**
      * Validates a player's Move against the current GameState.
      * Does NOT modify state — purely a read operation.
