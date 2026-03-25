@@ -17,7 +17,7 @@ public class NetworkStub {
 
     // Broadcasts message of game state change and displays sessionID
     public void broadcastStateUpdate(GameState state) {
-        System.out.println("Broadcasting new board state to " + state.sessionId);
+        System.out.println("Broadcasting new board state to current game...");
     }
 
     // Drops the connection when the app closes
