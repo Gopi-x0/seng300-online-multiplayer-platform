@@ -17,26 +17,29 @@ import javafx.stage.Stage;
 
 public class GameboardC4 extends Application{
 
-    int ROWS = 6;
-    int COLS = 7;
-    int CAPACITY = ROWS * COLS;
-    int CELLSPACING = 75;
-    int CIRCLERADIUS = 30;
+    private int ROWS = 6;
+    private int COLS = 7;
+    private int CAPACITY = ROWS * COLS;
+    private int CELLSPACING = 75;
+    private int CIRCLERADIUS = 30;
+
+    private StackPane[][] cells = new StackPane[ROWS][COLS];
 
     public void start(Stage primaryStage){
-        VBox grid = createGrid(ROWS, COLS, CELLSPACING, CIRCLERADIUS);
+        VBox grid = createGrid(ROWS, COLS, CELLSPACING, CIRCLERADIUS, cells);
         Scene scene = new Scene(grid);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Connect 4");
         primaryStage.show();
     }
 
-    public static void main(String[] args){
+    static void main(String[] args){
         launch(args);
     }
 
-    private VBox createGrid(int rows, int cols, int spacing, int rad){
+    private VBox createGrid(int rows, int cols, int spacing, int rad, StackPane[][] grid){
         //Create an outer vbox to stack the rows vertically
+
         VBox outer = new  VBox();
 
         //For loop that iterates through the rows, creates an HBox for rows, then nested for loop to create a circle in a stackplane for it.
@@ -47,10 +50,15 @@ public class GameboardC4 extends Application{
                 circle.setFill(Color.GREY); //Grey because we are going to make it empty by default
                 StackPane cell = new StackPane(circle);
                 cell.setPrefSize(spacing, spacing);
+
+                grid[rows][cols] = cell; // Map our visual grid numerically in this 2D StackPane
+
                 row.getChildren().add(cell); //add the cells to HBox row
+
             }
             outer.getChildren().add(row); //add cells to outer
         }
+
 
         return outer;
     }
