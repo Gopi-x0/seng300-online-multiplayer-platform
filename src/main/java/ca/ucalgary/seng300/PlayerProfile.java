@@ -41,7 +41,8 @@ public class PlayerProfile {
         // retrieves the stats for the player
     }
 
-    public void updateUsername(String oldName, String newName) {
+    public void updateUsername(String newName) {
+        this.username = newName;
         // updates a user's username (should require a password)
     }
 
