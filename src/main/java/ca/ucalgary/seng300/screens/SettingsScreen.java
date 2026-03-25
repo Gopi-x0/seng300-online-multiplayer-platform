@@ -23,9 +23,10 @@ public class SettingsScreen extends ScrollPane {
         content.getChildren().add(createTopBar());
         content.getChildren().add(createTitle());
 
-        //add username and email Card
+        //add username and email and password Card
         content.getChildren().add(createUsernameCard());
         content.getChildren().add(createEmailCard());
+        content.getChildren().add(createPasswordCard());
 
         // Put VBox inside scrollpane so we can scroll
         setContent(content);
@@ -200,6 +201,30 @@ public class SettingsScreen extends ScrollPane {
         );
         content.setSpacing(10);
         return createCard("Change Email", content);
+    }
+
+    /**
+     * Creates password update section
+     */
+    private VBox createPasswordCard() {
+        // password fields
+        PasswordField current = styledPasswordField("Current Password");
+        PasswordField newPass = styledPasswordField("New Password");
+        PasswordField confirm = styledPasswordField("Confirm New Password");
+        // button to trigger password change
+        Button changeBtn = styledPrimaryButton("Change Password");
+        // layout for password section
+        VBox content = new VBox(
+                fieldLabel("Current Password"),
+                current,
+                fieldLabel("New Password"),
+                newPass,
+                fieldLabel("Confirm New Password"),
+                confirm,
+                changeBtn
+        );
+        content.setSpacing(10); //spacing between inputs
+        return createCard("Change Password", content);
     }
 
 }
