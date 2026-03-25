@@ -27,6 +27,8 @@ public class SettingsScreen extends ScrollPane {
         content.getChildren().add(createUsernameCard());
         content.getChildren().add(createEmailCard());
         content.getChildren().add(createPasswordCard());
+        //logout card
+        content.getChildren().add(createLogoutCard());
 
         // Put VBox inside scrollpane so we can scroll
         setContent(content);
@@ -233,6 +235,33 @@ public class SettingsScreen extends ScrollPane {
         );
         content.setSpacing(10); //spacing between inputs
         return createCard("Change Password", content);
+    }
+
+    /**
+     * Creates logout section
+     */
+    private VBox createLogoutCard() {
+        // description text
+        Label desc = new Label("End your current session and return to the login screen.");
+        desc.setStyle("-fx-text-fill:#90a1b9; -fx-font-size:14px;");
+        // logout button
+        Button logoutBtn = new Button("Logout");
+        // prints logout action
+        logoutBtn.setOnAction(e -> {
+            System.out.println("Logout");
+        });
+        logoutBtn.setStyle(
+                "-fx-background-color:#e7000b;" +
+                        "-fx-text-fill:white;" +
+                        "-fx-background-radius:6;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-font-size:15px;" +
+                        "-fx-font-weight:bold;"
+        );
+        logoutBtn.setPrefHeight(40);
+        VBox content = new VBox(desc, logoutBtn);
+        content.setSpacing(12);
+        return createCard("Logout", content);
     }
 
 }
