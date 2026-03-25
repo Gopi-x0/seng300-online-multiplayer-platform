@@ -54,9 +54,9 @@ public class GameboardC4 extends Application{
                 StackPane cell = new StackPane(circle);
                 cell.setPrefSize(spacing, spacing);
 
-                grid[rows][cols] = cell; // Map our visual grid numerically in this 2D StackPane
-
                 row.getChildren().add(cell); //add the cells to HBox row
+
+                grid[i][j] = cell; // Map our visual grid numerically in this 2D StackPane
 
             }
             outer.getChildren().add(row); //add cells to outer
