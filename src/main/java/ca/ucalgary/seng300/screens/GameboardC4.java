@@ -27,9 +27,12 @@ public class GameboardC4 extends Application{
 
     public void start(Stage primaryStage){
         VBox grid = createGrid(ROWS, COLS, CELLSPACING, CIRCLERADIUS, cells);
-        Scene scene = new Scene(grid);
+        StackPane root = new StackPane(grid);
+        root.setAlignment(Pos.CENTER);
+        Scene scene = new Scene(root, 800, 800);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Connect 4");
+        primaryStage.resizableProperty().setValue(true);
         primaryStage.show();
     }
 
