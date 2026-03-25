@@ -22,8 +22,11 @@ public class SettingsScreen extends ScrollPane {
         //Add top bar and title first
         content.getChildren().add(createTopBar());
         content.getChildren().add(createTitle());
-        //add username Card
+
+        //add username and email Card
         content.getChildren().add(createUsernameCard());
+        content.getChildren().add(createEmailCard());
+
         // Put VBox inside scrollpane so we can scroll
         setContent(content);
 
@@ -161,15 +164,12 @@ public class SettingsScreen extends ScrollPane {
     private VBox createUsernameCard() {
         // input field for username
         TextField usernameField = styledTextField("Username");
-
         // button to save username
         Button saveBtn = styledPrimaryButton("Save Username");
-
         //  prints updated username when clicked
         saveBtn.setOnAction(e ->
                 System.out.println("Username updated: " + usernameField.getText())
         );
-
         // layout for this section
         VBox content = new VBox(
                 fieldLabel("Username"),
@@ -178,6 +178,28 @@ public class SettingsScreen extends ScrollPane {
         );
         content.setSpacing(10); // spacing between elements
         return createCard("Change Username", content);
+    }
+
+    /**
+     * Creates email update section
+     */
+    private VBox createEmailCard() {
+        // input field for email
+        TextField emailField = styledTextField("Email Address");
+        // button to save email
+        Button saveBtn = styledPrimaryButton("Save Email");
+        // prints updated email when clicked
+        saveBtn.setOnAction(e ->
+                System.out.println("Email updated: " + emailField.getText())
+        );
+        // layout for email section
+        VBox content = new VBox(
+                fieldLabel("Email Address"),
+                emailField,
+                saveBtn
+        );
+        content.setSpacing(10);
+        return createCard("Change Email", content);
     }
 
 }
