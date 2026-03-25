@@ -30,8 +30,28 @@ public class GameboardC4 extends Application{
 
     @Override
     public void start(Stage primaryStage){
+        //Title Label
+        Label title = new Label("Connect 4");
+        title.setStyle("-fx-text-fill : black; -fx-font-size: 48px; -fx-font-weight: bold;");
+
+        //Subtitle Label
+        Label subTitle = new Label("Your turn");
+        subTitle.setStyle("-fx-text-fill : black; -fx-font-size: 32px;");
+
+        //Vbox for label
+        VBox titleBox = new VBox(title, subTitle);
+        titleBox.setAlignment(Pos.CENTER);
+        titleBox.setSpacing(5);
+
+        //Create the gameboard grid of circle tiles
         VBox grid = createGrid(ROWS, COLS, CELLSPACING, CIRCLERADIUS, cells, length, width);
-        StackPane root = new StackPane(grid);
+
+        //UI Layout stacks both the title labels and the grid
+        VBox layout = new VBox(titleBox, grid);
+        layout.setAlignment(Pos.CENTER);
+
+        //Stackpane Root for centering and resizing
+        StackPane root = new StackPane(layout);
         root.setAlignment(Pos.CENTER);
         Scene scene = new Scene(root, 800, 800);
         primaryStage.setScene(scene);
