@@ -1,16 +1,22 @@
 package ca.ucalgary.seng300;
 
 public class GameState {
+    public String sessionId;
     private String gameType;
     private GameStatus gameStatus;
     private int activePlayerIndex;
     private Object boardPayLoad;
 
-    public GameState(String gameType, GameStatus gameStatus, int activePlayerIndex, Object boardPayLoad) {
+    public GameState(String sessionId, String gameType, GameStatus gameStatus, int activePlayerIndex, Object boardPayLoad) {
+        this.sessionId = sessionId;
         this.gameType = gameType;
         this.gameStatus = gameStatus;
         this.activePlayerIndex = activePlayerIndex;
         this.boardPayLoad = boardPayLoad;
+    }
+
+    public String getSessionId() {
+        return sessionId;
     }
 
     public String getGameType() {
