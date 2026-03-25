@@ -1,12 +1,12 @@
 package ca.ucalgary.seng300;
 
 public class GameState {
-    public static String gameType;
+    public String gameType;
 
-    public static GameStatus status;
+    public GameStatus status;
 
-    public static int activePlayerIndex;
+    public String activePlayerIndex;
 
-    public static Object boardPayload;
+    public Object boardPayload;
 
 }
