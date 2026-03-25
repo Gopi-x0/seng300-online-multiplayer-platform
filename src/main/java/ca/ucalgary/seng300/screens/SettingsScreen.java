@@ -213,6 +213,14 @@ public class SettingsScreen extends ScrollPane {
         PasswordField confirm = styledPasswordField("Confirm New Password");
         // button to trigger password change
         Button changeBtn = styledPrimaryButton("Change Password");
+        //basic validation for matching passwords
+        changeBtn.setOnAction(e -> {
+            if (!newPass.getText().equals(confirm.getText())) {
+                System.out.println("Passwords do not match");
+            } else {
+                System.out.println("Password changed successfully");
+            }
+        });
         // layout for password section
         VBox content = new VBox(
                 fieldLabel("Current Password"),
