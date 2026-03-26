@@ -88,5 +88,72 @@ public class WinScreen extends StackPane {
         setOpacity(0);
     }
 
+    // Layer 0: Backgrounds
+
+    private Region buildTTTBackground() {
+        javafx.scene.layout.GridPane board = new javafx.scene.layout.GridPane();
+        board.setHgap(14);
+        board.setVgap(14);
+        board.setAlignment(Pos.CENTER);
+        board.setStyle("-fx-background-color: #020b1c;");
+        board.setMaxWidth(Double.MAX_VALUE);
+        board.setMaxHeight(Double.MAX_VALUE);
+        board.setPadding(new Insets(50));
+
+        String[][] marks = {
+                {"X", "O", ""},
+                {"X", "O", ""},
+                {"X", "",  "O"}
+        };
+
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 3; c++) {
+                StackPane cell = new StackPane();
+                cell.setPrefSize(160, 160);
+                cell.setStyle(
+                        "-fx-background-color: rgba(9,25,48,0.98);" +
+                                "-fx-border-color: #39cfff;" +
+                                "-fx-border-radius: 8;" +
+                                "-fx-background-radius: 8;"
+                );
+                Label mark = new Label(marks[r][c]);
+                mark.setTextFill(Color.web("#38cfff"));
+                mark.setFont(Font.font("Arial", FontWeight.BOLD, 72));
+                cell.getChildren().add(mark);
+                board.add(cell, c, r);
+            }
+        }
+        return board;
+    }
+
+    private Region () {
+        javafx.scene.layout.GridPane board = new javafx.scene.layout.GridPane();
+        board.setHgap(18);
+        board.setVgap(18);
+        board.setAlignment(Pos.CENTER);
+        board.setStyle("-fx-background-color: #020b1c;");
+        board.setMaxWidth(Double.MAX_VALUE);
+        board.setMaxHeight(Double.MAX_VALUE);
+        board.setPadding(new Insets(50));
+
+        Color[][] tokens = {
+                {Color.TRANSPARENT,   Color.web("#ff4b4b"), Color.web("#ffd93d"), Color.TRANSPARENT,   Color.web("#4ea1ff")},
+                {Color.web("#ffd93d"), Color.TRANSPARENT,   Color.web("#ff4b4b"), Color.web("#4ea1ff"), Color.TRANSPARENT  },
+                {Color.web("#ff4b4b"), Color.web("#ffd93d"), Color.TRANSPARENT,   Color.web("#ff4b4b"), Color.web("#ffd93d")},
+                {Color.web("#4ea1ff"), Color.web("#ff4b4b"), Color.web("#ffd93d"), Color.TRANSPARENT,   Color.web("#ff4b4b")}
+        };
+
+        for (int r = 0; r < tokens.length; r++) {
+            for (int c = 0; c < tokens[r].length; c++) {
+                Circle token = new Circle(46);
+                token.setFill(tokens[r][c]);
+                token.setStroke(Color.web("#31c6ff"));
+                token.setStrokeWidth(2);
+                board.add(token, c, r);
+            }
+        }
+        return board;
+    }
+
 
 }
