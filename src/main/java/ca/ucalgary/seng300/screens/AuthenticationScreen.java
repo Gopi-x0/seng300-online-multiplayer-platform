@@ -70,5 +70,64 @@ public class AuthenticationScreen extends StackPane {
         return row;
     }
 
+    // UML Method: displayRegistrationScreen()
+    // Builds the Register card
+
+    /**
+     * Displays the registration panel.
+     * Per TA feedback: registration must include its own submit action for consistency.
+     *
+     * @author Muhammad Ahmad
+     * @email muham.ahmad@ucalgary.ca
+     */
+    public void displayRegistrationScreen() {
+        // Stub TODO: registration display logic will connect to backend in future iteration
+        System.out.println("AuthenticationScreen: displayRegistrationScreen() called");
+    }
+
+    private VBox buildRegisterCard() {
+        Label title = cardTitle("Register");
+
+        // Email field
+        Label emailLabel = fieldLabel("Email");
+        TextField emailField = styledTextField("balamia@gmail.com");
+
+        // Password field with show/hide toggle
+        Label passLabel = fieldLabel("Create Password");
+        Label forgotLabel = forgotLabel();
+        HBox passHeader = new HBox(passLabel, spacer(), forgotLabel);
+        passHeader.setAlignment(Pos.CENTER_LEFT);
+
+        PasswordField passField = styledPasswordField("Enter your password");
+        TextField passVisible = styledTextField("Enter your password");
+        passVisible.setManaged(false);
+        passVisible.setVisible(false);
+        Button eyeBtn = eyeToggleButton(passField, passVisible);
+
+        StackPane passStack = new StackPane(passField, passVisible);
+        HBox passRow = new HBox(6, passStack, eyeBtn);
+        passRow.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(passStack, Priority.ALWAYS);
+
+        // Submit button - calls displayRegistrationScreen()
+        Button submitBtn = primaryButton("Submit Registration");
+        submitBtn.setOnAction(e -> {
+            displayRegistrationScreen();
+            System.out.println("Register attempt — email: " + emailField.getText());
+        });
+
+        VBox content = new VBox(10,
+                title,
+                emailLabel, emailField,
+                passHeader, passRow,
+                submitBtn
+        );
+        content.setPadding(new Insets(30));
+        content.setSpacing(10);
+        content.setMaxWidth(Double.MAX_VALUE);
+        styleCard(content);
+        return content;
+    }
+
 
 }
