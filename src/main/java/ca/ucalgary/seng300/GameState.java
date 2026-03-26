@@ -13,6 +13,7 @@ public class GameState {
         this.boardPayLoad = boardPayLoad;
     }
 
+
     public String getGameType() {
         return gameType;
     }
