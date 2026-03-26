@@ -318,4 +318,78 @@ public class HomePage extends BorderPane {
         return btn;
     }
 
+    // Record Table Section
+
+    private VBox buildRecordSection() {
+        // Heading row
+        Label icon = new Label("🏆");
+        icon.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        Label heading = new Label("RECORD");
+        heading.setTextFill(Color.WHITE);
+        heading.setFont(Font.font("Arial", FontWeight.BOLD, 15));
+        HBox headingRow = new HBox(8, icon, heading);
+        headingRow.setAlignment(Pos.CENTER_LEFT);
+
+        TableView<RecordRow> table = buildRecordTable();
+
+        VBox section = new VBox(10, headingRow, table);
+        section.setPadding(new Insets(14));
+        section.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, rgba(9,19,36,0.88), rgba(7,15,28,0.96));" +
+                        "-fx-background-radius: 12;" +
+                        "-fx-border-color: rgba(53,84,127,0.38);" +
+                        "-fx-border-radius: 12;"
+        );
+        return section;
+    }
+
+    private TableView<RecordRow> buildRecordTable() {
+        TableView<RecordRow> table = new TableView<>();
+
+        TableColumn<RecordRow, Number> kdCol = new TableColumn<>("KD");
+        kdCol.setCellValueFactory(d -> d.getValue().kdProperty());
+
+        TableColumn<RecordRow, String> playerCol = new TableColumn<>("PLAYER");
+        playerCol.setCellValueFactory(d -> d.getValue().playerProperty());
+
+        TableColumn<RecordRow, Number> acsCol = new TableColumn<>("ACS");
+        acsCol.setCellValueFactory(d -> d.getValue().acsProperty());
+
+        TableColumn<RecordRow, Number> hsCol = new TableColumn<>("Headshot Count");
+        hsCol.setCellValueFactory(d -> d.getValue().headshotProperty());
+
+        TableColumn<RecordRow, String> gameCol = new TableColumn<>("Game");
+        gameCol.setCellValueFactory(d -> d.getValue().gameProperty());
+
+        for (TableColumn<RecordRow, ?> col : new TableColumn[]{kdCol, playerCol, acsCol, hsCol, gameCol}) {
+            col.setSortable(false);
+            col.setResizable(false);
+            col.setStyle("-fx-alignment: CENTER-LEFT;");
+        }
+
+        table.getColumns().addAll(kdCol, playerCol, acsCol, hsCol, gameCol);
+
+        // Stub data TODO - will be replaced by PlatformCore query in future iteration
+        table.setItems(javafx.collections.FXCollections.observableArrayList(
+                new RecordRow(1.78, "Muhammad Ahmad", 2850, 47, "Tic Tac Toe"),
+                new RecordRow(1.24, "Muhammad Ahmad", 2620, 42, "Connect 4")
+        ));
+
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
+        table.setMaxWidth(Double.MAX_VALUE);
+        table.setPrefHeight(110);
+        table.setStyle(
+                "-fx-background-color: rgba(10,19,37,0.98);" +
+                        "-fx-control-inner-background: rgba(10,19,37,0.98);" +
+                        "-fx-control-inner-background-alt: rgba(8,16,31,0.98);" +
+                        "-fx-table-cell-border-color: rgba(75,105,150,0.18);" +
+                        "-fx-table-header-border-color: transparent;" +
+                        "-fx-selection-bar: rgba(31,110,170,0.30);" +
+                        "-fx-background-radius: 8;" +
+                        "-fx-border-color: rgba(63,97,145,0.32);" +
+                        "-fx-border-radius: 8;"
+        );
+        return table;
+    }
+
 }
