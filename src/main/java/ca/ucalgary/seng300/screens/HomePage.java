@@ -12,6 +12,9 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.application.Platform;
+import javafx.scene.Node;
+import javafx.scene.shape.Rectangle;
 
 /**
  * HomePage displays the main game selection hub and recent match records.
@@ -322,8 +325,9 @@ public class HomePage extends BorderPane {
 
     private VBox buildRecordSection() {
         // Heading row
-        Label icon = new Label("🏆");
-        icon.setFont(Font.font("Arial", FontWeight.BOLD, 14));
+        Label icon = new Label("⟡");
+        icon.setTextFill(Color.web("#00c8ff"));
+        icon.setFont(Font.font("Arial", FontWeight.BOLD, 18));
         Label heading = new Label("RECORD");
         heading.setTextFill(Color.WHITE);
         heading.setFont(Font.font("Arial", FontWeight.BOLD, 15));
@@ -331,6 +335,13 @@ public class HomePage extends BorderPane {
         headingRow.setAlignment(Pos.CENTER_LEFT);
 
         TableView<RecordRow> table = buildRecordTable();
+
+        Rectangle clip = new Rectangle();
+        clip.arcWidthProperty().set(20);
+        clip.arcHeightProperty().set(20);
+        clip.widthProperty().bind(table.widthProperty());
+        clip.heightProperty().bind(table.heightProperty());
+        table.setClip(clip);
 
         VBox section = new VBox(10, headingRow, table);
         section.setPadding(new Insets(14));
@@ -355,10 +366,10 @@ public class HomePage extends BorderPane {
         TableColumn<RecordRow, Number> acsCol = new TableColumn<>("ACS");
         acsCol.setCellValueFactory(d -> d.getValue().acsProperty());
 
-        TableColumn<RecordRow, Number> hsCol = new TableColumn<>("Headshot Count");
+        TableColumn<RecordRow, Number> hsCol = new TableColumn<>("HEADSHOT COUNT");
         hsCol.setCellValueFactory(d -> d.getValue().headshotProperty());
 
-        TableColumn<RecordRow, String> gameCol = new TableColumn<>("Game");
+        TableColumn<RecordRow, String> gameCol = new TableColumn<>("GAME");
         gameCol.setCellValueFactory(d -> d.getValue().gameProperty());
 
         for (TableColumn<RecordRow, ?> col : new TableColumn[]{kdCol, playerCol, acsCol, hsCol, gameCol}) {
@@ -367,28 +378,75 @@ public class HomePage extends BorderPane {
             col.setStyle("-fx-alignment: CENTER-LEFT;");
         }
 
+        kdCol.setPrefWidth(90);
+        playerCol.setPrefWidth(220);
+        acsCol.setPrefWidth(100);
+        hsCol.setPrefWidth(190);
+        gameCol.setPrefWidth(150);
+
+        kdCol.setCellFactory(col -> createStyledCell(false));
+        playerCol.setCellFactory(col -> createStyledCell(false));
+        acsCol.setCellFactory(col -> createStyledCell(true));
+        hsCol.setCellFactory(col -> createStyledCell(false));
+        gameCol.setCellFactory(col -> createStyledCell(false));
+
         table.getColumns().addAll(kdCol, playerCol, acsCol, hsCol, gameCol);
 
         // Stub data TODO - will be replaced by PlatformCore query in future iteration
         table.setItems(javafx.collections.FXCollections.observableArrayList(
-                new RecordRow(1.78, "Muhammad Ahmad", 2850, 47, "Tic Tac Toe"),
-                new RecordRow(1.24, "Muhammad Ahmad", 2620, 42, "Connect 4")
+                new RecordRow(1.82, "Muhammad Ahmad", 2850, 47, "Tic Tac Toe"),
+                new RecordRow(1.36, "Haris Naveed", 2410, 39, "Connect 4"),
+                new RecordRow(1.58, "Bilal Ahmed", 2675, 44, "Tic Tac Toe"),
+                new RecordRow(1.21, "Shayan Shaikh", 2290, 36, "Connect 4"),
+                new RecordRow(1.47, "Haris Naveed", 2550, 41, "Tic Tac Toe"),
+                new RecordRow(1.69, "Bilal Ahmed", 2780, 45, "Connect 4"),
+                new RecordRow(1.33, "Shayan Shaikh", 2380, 38, "Tic Tac Toe"),
+                new RecordRow(1.75, "Muhammad Ahmad", 2905, 49, "Connect 4")
         ));
 
-        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_ALL_COLUMNS);
-        table.setMaxWidth(Double.MAX_VALUE);
-        table.setPrefHeight(110);
         table.setStyle(
-                "-fx-background-color: rgba(10,19,37,0.98);" +
-                        "-fx-control-inner-background: rgba(10,19,37,0.98);" +
-                        "-fx-control-inner-background-alt: rgba(8,16,31,0.98);" +
-                        "-fx-table-cell-border-color: rgba(75,105,150,0.18);" +
-                        "-fx-table-header-border-color: transparent;" +
-                        "-fx-selection-bar: rgba(31,110,170,0.30);" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-border-color: rgba(63,97,145,0.32);" +
-                        "-fx-border-radius: 8;"
+                "-fx-background-color: #06152b;" +
+                        "-fx-background-insets: 0;" +
+                        "-fx-control-inner-background: #07162d;" +
+                        "-fx-control-inner-background-alt: #061226;" +
+                        "-fx-table-cell-border-color: rgba(0,200,255,0.08);" +
+                        "-fx-selection-bar: rgba(16,52,95,0.95);" +
+                        "-fx-selection-bar-non-focused: rgba(16,52,95,0.95);" +
+                        "-fx-border-color: rgba(22,54,95,0.95);" +
+                        "-fx-border-radius: 10;" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-padding: 0;"
         );
+
+        table.setRowFactory(tv -> new TableRow<>() {
+            @Override
+            protected void updateItem(RecordRow item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setStyle(
+                            "-fx-background-color: transparent;" +
+                                    "-fx-border-color: transparent;"
+                    );
+                } else {
+                    setStyle(
+                            "-fx-background-color: #06152b;" +
+                                    "-fx-border-color: transparent transparent rgba(0,200,255,0.08) transparent;" +
+                                    "-fx-table-cell-border-color: rgba(0,200,255,0.05);"
+                    );
+                }
+            }
+        });
+
+        Platform.runLater(() -> styleTableInternals(table));
+
+        table.setColumnResizePolicy(TableView.CONSTRAINED_RESIZE_POLICY_FLEX_LAST_COLUMN);
+        table.setFixedCellSize(34);
+        table.setPrefHeight(28 + (34 * 6));
+        table.setMinHeight(28 + (34 * 6));
+        table.setMaxHeight(28 + (34 * 6));
+        table.setMaxWidth(Double.MAX_VALUE);
+
         return table;
     }
 
@@ -464,5 +522,120 @@ public class HomePage extends BorderPane {
         SimpleIntegerProperty acsProperty()                       { return acs; }
         SimpleIntegerProperty headshotProperty()                  { return headshot; }
         SimpleStringProperty gameProperty()                       { return game; }
+    }
+
+    // Helper Methods
+
+    private void styleTableInternals(TableView<RecordRow> table) {
+        table.applyCss();
+        table.layout();
+
+        // Header Background
+        for (Node node : table.lookupAll(".column-header-background")) {
+            node.setStyle(
+                    "-fx-background-color: #10284a;" +
+                            "-fx-background-radius: 8 8 0 0;"
+            );
+        }
+
+        // Filler right side
+        for (Node node : table.lookupAll(".filler")) {
+            node.setStyle("-fx-background-color: #10284a;");
+        }
+
+        // Corner top-right box
+        for (Node node : table.lookupAll(".corner")) {
+            node.setStyle("-fx-background-color: #10284a;");
+        }
+
+        // Header column dividers (softer)
+        for (Node node : table.lookupAll(".column-header")) {
+            node.setStyle(
+                    "-fx-background-color: transparent;" +
+                            "-fx-border-color: transparent rgba(111,147,200,0.18) transparent transparent;"
+            );
+        }
+
+        // Header Text
+        for (Node node : table.lookupAll(".column-header .label")) {
+            node.setStyle(
+                    "-fx-text-fill: #6f93c8;" +
+                            "-fx-font-weight: bold;" +
+                            "-fx-font-size: 12px;" +
+                            "-fx-alignment: CENTER-LEFT;" +
+                            "-fx-padding: 0 0 0 8;"
+            );
+        }
+
+        // Table body background
+        for (Node node : table.lookupAll(".virtual-flow .clipped-container")) {
+            node.setStyle("-fx-background-color: #06152b;");
+        }
+
+        // Scroll bar
+        for (Node node : table.lookupAll(".scroll-bar")) {
+            node.setStyle("-fx-background-color: #06152b;");
+        }
+
+        for (Node node : table.lookupAll(".scroll-bar .track")) {
+            node.setStyle("-fx-background-color: #0b1d36;");
+        }
+
+        for (Node node : table.lookupAll(".scroll-bar .thumb")) {
+            node.setStyle("-fx-background-color: #174a7a; -fx-background-radius: 8;");
+        }
+
+        for (Node node : table.lookupAll(".scroll-bar .increment-button")) {
+            node.setStyle("-fx-background-color: #06152b;");
+        }
+
+        for (Node node : table.lookupAll(".scroll-bar .decrement-button")) {
+            node.setStyle("-fx-background-color: #06152b;");
+        }
+
+        for (Node node : table.lookupAll(".scroll-bar .increment-arrow")) {
+            node.setStyle("-fx-background-color: #6f93c8;");
+        }
+
+        for (Node node : table.lookupAll(".scroll-bar .decrement-arrow")) {
+            node.setStyle("-fx-background-color: #6f93c8;");
+        }
+    }
+
+    private <T> TableCell<RecordRow, T> createStyledCell(boolean accentBlue) {
+        return new TableCell<>() {
+            @Override
+            protected void updateItem(T item, boolean empty) {
+                super.updateItem(item, empty);
+
+                if (empty || item == null) {
+                    setText(null);
+                    setGraphic(null);
+                    setStyle(
+                            "-fx-background-color: transparent;" +
+                                    "-fx-border-color: transparent rgba(0,200,255,0.05) transparent transparent;" +
+                                    "-fx-padding: 8 10 8 10;"
+                    );
+                } else {
+                    Label label = new Label(String.valueOf(item));
+                    label.setWrapText(true);
+                    label.setMaxWidth(getTableColumn().getWidth() - 10);
+                    label.setTextFill(Color.web(accentBlue ? "#00c8ff" : "white"));
+                    if (accentBlue) {
+                        label.setFont(Font.font("Arial", FontWeight.BOLD, 13));
+                    } else {
+                        label.setFont(Font.font("Arial", 13));
+                    }
+
+                    setGraphic(label);
+                    setText(null);
+                    setStyle(
+                            "-fx-background-color: transparent;" +
+                                    "-fx-border-color: transparent rgba(0,200,255,0.05) transparent transparent;" +
+                                    "-fx-padding: 8 10 8 10;"
+                    );
+                }
+            }
+        };
     }
 }

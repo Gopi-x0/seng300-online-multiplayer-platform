@@ -27,7 +27,7 @@ public class MainApp extends Application {
         // Default screen temp
         showAuthenticationScreen();
 
-        Scene scene = new Scene(appShell, 1100, 700);
+        Scene scene = new Scene(appShell, 1100, 900);
         stage.setScene(scene);
         stage.setTitle("SGP - UI Navigation Test");
         stage.show();
