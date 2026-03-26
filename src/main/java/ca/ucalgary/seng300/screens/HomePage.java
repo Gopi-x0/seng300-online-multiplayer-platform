@@ -392,4 +392,77 @@ public class HomePage extends BorderPane {
         return table;
     }
 
+    // UML Methods
+
+    /**
+     * Displays the current user's own match records.
+     * Will query PlatformCore for player history in a future iteration.
+     *
+     * @author Muhammad Ahmad
+     * @email muham.ahmad@ucalgary.ca
+     */
+    public void viewYourOwnRecords() {
+        System.out.println("HomePage: viewYourOwnRecords() called");
+        // TODO: fetch and display this player's match history from PlatformCore
+    }
+
+    /**
+     * Displays other players' records - e.g. for profile browsing or rivalry.
+     * Will query PlatformCore in a future iteration.
+     *
+     * @author Muhammad Ahmad
+     * @email muham.ahmad@ucalgary.ca
+     */
+    public void viewOtherPlayerRecords() {
+        System.out.println("HomePage: viewOtherPlayerRecords() called");
+        // TODO: open player search or leaderboard view via PlatformCore
+    }
+
+    /**
+     * Navigates to the Settings screen.
+     * Returns a Settings instance per UML contract.
+     *
+     * @author Muhammad Ahmad
+     * @email muham.ahmad@ucalgary.ca
+     */
+    public void viewSettings() {
+        System.out.println("HomePage: viewSettings() called - navigating to SettingsScreen");
+        // TODO: wire actual screen navigation to SettingsScreen
+    }
+
+    /**
+     * Handles game selection - triggered by PLAY NOW button on a game card.
+     * Will route to PlayGame via PlatformCore joinQueue() in a future iteration.
+     *
+     * @author Muhammad Ahmad
+     * @email muham.ahmad@ucalgary.ca
+     */
+    public void chooseGame() {
+        System.out.println("HomePage: chooseGame() called - routing to PlayGame");
+        // TODO: call PlatformCore.joinQueue(gameType) and navigate to PlayGame
+    }
+
+    // RecordRow data model for the table
+
+    private static class RecordRow {
+        private final javafx.beans.property.SimpleDoubleProperty kd;
+        private final SimpleStringProperty player;
+        private final SimpleIntegerProperty acs;
+        private final SimpleIntegerProperty headshot;
+        private final SimpleStringProperty game;
+
+        RecordRow(double kd, String player, int acs, int headshot, String game) {
+            this.kd       = new javafx.beans.property.SimpleDoubleProperty(kd);
+            this.player   = new SimpleStringProperty(player);
+            this.acs      = new SimpleIntegerProperty(acs);
+            this.headshot = new SimpleIntegerProperty(headshot);
+            this.game     = new SimpleStringProperty(game);
+        }
+
+        javafx.beans.property.SimpleDoubleProperty kdProperty()  { return kd; }
+        SimpleStringProperty playerProperty()                     { return player; }
+        SimpleIntegerProperty acsProperty()                       { return acs; }
+        SimpleIntegerProperty headshotProperty()                  { return headshot; }
+        SimpleStringProperty gameProperty()                       { return game; }
+    }
 }
