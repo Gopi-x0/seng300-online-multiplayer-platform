@@ -46,5 +46,21 @@ public class WinScreen extends StackPane {
         initializeOverlay();
     }
 
+    // UML Method: displayWinner()
+
+    /**
+     * Triggers the overlay fade-in animation.
+     * Called from PlayGame.displayWinner() per UML contract (Diagram 04).
+     *
+     * @author Muhammad Ahmad
+     * @email muham.ahmad@ucalgary.ca
+     */
+    public void displayWinner() {
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(300), this);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+        fadeIn.play();
+    }
+
 
 }
