@@ -55,5 +55,62 @@ public class HomePage extends BorderPane {
         setCenter(mainContent);
     }
 
+    // Top Bar - Logo + Settings link
+
+    private HBox buildTopBar() {
+        ImageView logo = buildLogo();
+
+        // Settings link - calls viewSettings()
+        Label settingsLink = new Label("Settings");
+        settingsLink.setStyle(
+                "-fx-text-fill: #00c8ff;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-background-color: rgba(0,200,255,0.07);" +
+                        "-fx-background-radius: 10;" +
+                        "-fx-padding: 4 14 4 14;"
+        );
+        settingsLink.setOnMouseEntered(e ->
+                settingsLink.setStyle(
+                        "-fx-text-fill: #33e0ff;" +
+                                "-fx-font-size: 14px;" +
+                                "-fx-cursor: hand;" +
+                                "-fx-background-color: rgba(0,200,255,0.15);" +
+                                "-fx-background-radius: 10;" +
+                                "-fx-padding: 4 14 4 14;"
+                )
+        );
+        settingsLink.setOnMouseExited(e ->
+                settingsLink.setStyle(
+                        "-fx-text-fill: #00c8ff;" +
+                                "-fx-font-size: 14px;" +
+                                "-fx-cursor: hand;" +
+                                "-fx-background-color: rgba(0,200,255,0.07);" +
+                                "-fx-background-radius: 10;" +
+                                "-fx-padding: 4 14 4 14;"
+                )
+        );
+        settingsLink.setOnMouseClicked(e -> viewSettings());
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        HBox bar = new HBox(spacer, settingsLink);
+        bar.setAlignment(Pos.CENTER_LEFT);
+        // Add logo on the left
+        bar.getChildren().add(0, logo);
+        return bar;
+    }
+
+    private ImageView buildLogo() {
+        Image image = new Image(
+                getClass().getResourceAsStream("/ca/ucalgary/seng300/images/sgp-logo.png")
+        );
+        ImageView logo = new ImageView(image);
+        logo.setPreserveRatio(true);
+        logo.setFitWidth(180);
+        logo.setSmooth(true);
+        return logo;
+    }
 
 }

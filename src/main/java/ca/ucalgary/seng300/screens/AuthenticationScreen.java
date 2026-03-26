@@ -14,6 +14,8 @@ import javafx.scene.text.FontWeight;
  * AuthenticationScreen displays the login and registration UI side by side.
  * Implements the AuthenticationScreen contract from the UI & Navigation Layer UML (Diagram 04).
  *
+ * Navigation: AuthenticationScreen --> WelcomePage
+ *
  * @author Muhammad Ahmad
  * @email muham.ahmad@ucalgary.ca
  */
@@ -113,7 +115,7 @@ public class AuthenticationScreen extends StackPane {
         Button submitBtn = primaryButton("Submit Registration");
         submitBtn.setOnAction(e -> {
             displayRegistrationScreen();
-            System.out.println("Register attempt — email: " + emailField.getText());
+            System.out.println("Register attempt - email: " + emailField.getText());
         });
 
         VBox content = new VBox(10,
@@ -171,7 +173,7 @@ public class AuthenticationScreen extends StackPane {
         Button submitBtn = primaryButton("Submit Login");
         submitBtn.setOnAction(e -> {
             submitLogin();
-            System.out.println("Login attempt — email: " + emailField.getText());
+            System.out.println("Login attempt - email: " + emailField.getText());
         });
 
         VBox content = new VBox(10,
@@ -198,7 +200,7 @@ public class AuthenticationScreen extends StackPane {
      */
     public void submitLogin() {
         // Stub TODO: backend login call will replace this in iteration 3
-        System.out.println("AuthenticationScreen: submitLogin() called — navigating to HomePage");
+        System.out.println("AuthenticationScreen: submitLogin() called - navigating to HomePage");
         // TODO: validate credentials via PlatformCore, then navigate to HomePage
     }
 
