@@ -202,5 +202,154 @@ public class AuthenticationScreen extends StackPane {
         // TODO: validate credentials via PlatformCore, then navigate to HomePage
     }
 
+    // Reusable UI helpers
 
+    /** Card title label */
+    private Label cardTitle(String text) {
+        Label label = new Label(text);
+        label.setTextFill(Color.WHITE);
+        label.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+        return label;
+    }
+
+    /** Small field label */
+    private Label fieldLabel(String text) {
+        Label label = new Label(text);
+        label.setStyle("-fx-text-fill: #cad5e2; -fx-font-size: 13px;");
+        return label;
+    }
+
+    /** "Forgot ?" link-style label */
+    private Label forgotLabel() {
+        Label label = new Label("Forgot ?");
+        label.setStyle(
+                "-fx-text-fill: #00c8ff;" +
+                        "-fx-font-size: 12px;" +
+                        "-fx-cursor: hand;"
+        );
+        label.setOnMouseClicked(e ->
+                System.out.println("Forgot password clicked")
+        );
+        return label;
+    }
+
+    /** Styled text input */
+    private TextField styledTextField(String placeholder) {
+        TextField field = new TextField();
+        field.setPromptText(placeholder);
+        field.setStyle(
+                "-fx-background-color: #0d1b2e;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-prompt-text-fill: #607a99;" +
+                        "-fx-background-radius: 6;" +
+                        "-fx-border-color: #1e3a5f;" +
+                        "-fx-border-radius: 6;" +
+                        "-fx-font-size: 13px;"
+        );
+        field.setPrefHeight(38);
+        field.setMaxWidth(Double.MAX_VALUE);
+        return field;
+    }
+
+    /** Styled password input */
+    private PasswordField styledPasswordField(String placeholder) {
+        PasswordField field = new PasswordField();
+        field.setPromptText(placeholder);
+        field.setStyle(
+                "-fx-background-color: #0d1b2e;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-prompt-text-fill: #607a99;" +
+                        "-fx-background-radius: 6;" +
+                        "-fx-border-color: #1e3a5f;" +
+                        "-fx-border-radius: 6;" +
+                        "-fx-font-size: 13px;"
+        );
+        field.setPrefHeight(38);
+        field.setMaxWidth(Double.MAX_VALUE);
+        return field;
+    }
+
+    /**
+     * Eye toggle button that swaps between hidden and visible password fields.
+     * passField and passVisible are kept in a StackPane overlay.
+     */
+    private Button eyeToggleButton(PasswordField hidden, TextField visible) {
+        Button btn = new Button("👁");
+        btn.setStyle(
+                "-fx-background-color: transparent;" +
+                        "-fx-text-fill: #607a99;" +
+                        "-fx-cursor: hand;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-padding: 0 4 0 4;"
+        );
+        btn.setOnAction(e -> {
+            boolean showing = visible.isVisible();
+            if (showing) {
+                // Switch back to hidden
+                hidden.setText(visible.getText());
+                hidden.setVisible(true);
+                hidden.setManaged(true);
+                visible.setVisible(false);
+                visible.setManaged(false);
+            } else {
+                // Switch to visible
+                visible.setText(hidden.getText());
+                visible.setVisible(true);
+                visible.setManaged(true);
+                hidden.setVisible(false);
+                hidden.setManaged(false);
+            }
+        });
+        return btn;
+    }
+
+    /** Primary blue action button */
+    private Button primaryButton(String text) {
+        Button btn = new Button(text);
+        btn.setMaxWidth(Double.MAX_VALUE);
+        btn.setPrefHeight(40);
+        String base =
+                "-fx-background-color: linear-gradient(to right, #1d4ed8, #2563eb);" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-background-radius: 8;" +
+                        "-fx-cursor: hand;";
+        String hover =
+                "-fx-background-color: linear-gradient(to right, #2563eb, #3b82f6);" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-background-radius: 8;" +
+                        "-fx-cursor: hand;";
+        btn.setStyle(base);
+        btn.setOnMouseEntered(e -> btn.setStyle(hover));
+        btn.setOnMouseExited(e -> btn.setStyle(base));
+        btn.setOnMousePressed(e -> btn.setStyle(
+                "-fx-background-color: #1e40af;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 14px;" +
+                        "-fx-background-radius: 8;" +
+                        "-fx-cursor: hand;"
+        ));
+        btn.setOnMouseReleased(e -> btn.setStyle(hover));
+        return btn;
+    }
+
+    /** Applies dark gradient card style to a VBox */
+    private void styleCard(VBox card) {
+        card.setStyle(
+                "-fx-background-color: linear-gradient(#0f172b, #1d293d);" +
+                        "-fx-background-radius: 14;" +
+                        "-fx-border-color: rgba(72, 114, 170, 0.35);" +
+                        "-fx-border-radius: 14;"
+        );
+    }
+
+    /** Flexible spacer that pushes elements apart in an HBox */
+    private Region spacer() {
+        Region r = new Region();
+        HBox.setHgrow(r, Priority.ALWAYS);
+        return r;
+    }
 }
