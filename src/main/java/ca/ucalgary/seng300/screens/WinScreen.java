@@ -126,7 +126,7 @@ public class WinScreen extends StackPane {
         return board;
     }
 
-    private Region () {
+    private Region buildC4Background() {
         javafx.scene.layout.GridPane board = new javafx.scene.layout.GridPane();
         board.setHgap(18);
         board.setVgap(18);
