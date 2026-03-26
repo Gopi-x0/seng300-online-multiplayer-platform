@@ -14,7 +14,7 @@ public class PlayerProfile {
     public String playerId;
     // used to refer to a player in the database
 
-    private String username;
+    String username;
     // display name for the player and their opponents to see
 
     private String email;
