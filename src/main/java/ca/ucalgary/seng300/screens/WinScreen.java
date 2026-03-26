@@ -155,5 +155,84 @@ public class WinScreen extends StackPane {
         return board;
     }
 
+    // Layer 2: Result card
+
+    private VBox buildResultCard() {
+        Label icon = new Label(isWin ? "👑" : "✗");
+        icon.setFont(Font.font("Arial", FontWeight.BOLD, isWin ? 60 : 68));
+        icon.setTextFill(isWin ? Color.web("#FFD700") : Color.web("#e7000b"));
+        icon.setAlignment(Pos.CENTER);
+
+        Label resultText = new Label(isWin ? "You\nWin!" : "You\nLose!");
+        resultText.setTextFill(Color.WHITE);
+        resultText.setFont(Font.font("Arial", FontWeight.BOLD, 40));
+        resultText.setAlignment(Pos.CENTER);
+        resultText.setStyle("-fx-text-alignment: center;");
+
+        Button returnBtn = buildReturnButton();
+
+        VBox card = new VBox(22, icon, resultText, returnBtn);
+        card.setAlignment(Pos.CENTER);
+        card.setPadding(new Insets(46, 60, 46, 60));
+
+        card.setMinWidth(300);
+        card.setMaxWidth(300);
+        card.setMinHeight(400);
+        card.setMaxHeight(400);
+
+        card.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #0d1f40, #162d55);" +
+                        "-fx-background-radius: 18;" +
+                        "-fx-border-color: rgba(80, 140, 220, 0.55);" +
+                        "-fx-border-radius: 18;" +
+                        "-fx-border-width: 1.5;"
+        );
+
+        ScaleTransition pop = new ScaleTransition(Duration.millis(300), card);
+        pop.setFromX(0.78);
+        pop.setFromY(0.78);
+        pop.setToX(1.0);
+        pop.setToY(1.0);
+        pop.play();
+
+        return card;
+    }
+
+    private Button buildReturnButton() {
+        Button btn = new Button("RETURN");
+        btn.setPrefWidth(188);
+        btn.setPrefHeight(44);
+
+        String base =
+                "-fx-background-color: #e7000b;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 15px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-background-radius: 8;" +
+                        "-fx-cursor: hand;";
+        String hover =
+                "-fx-background-color: #ff1a1a;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 15px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-background-radius: 8;" +
+                        "-fx-cursor: hand;";
+        String press =
+                "-fx-background-color: #b80000;" +
+                        "-fx-text-fill: white;" +
+                        "-fx-font-size: 15px;" +
+                        "-fx-font-weight: bold;" +
+                        "-fx-background-radius: 8;" +
+                        "-fx-cursor: hand;";
+
+        btn.setStyle(base);
+        btn.setOnMouseEntered(e -> btn.setStyle(hover));
+        btn.setOnMouseExited(e  -> btn.setStyle(base));
+        btn.setOnMousePressed(e -> btn.setStyle(press));
+        btn.setOnMouseReleased(e -> btn.setStyle(hover));
+        btn.setOnAction(e -> dismiss());
+        return btn;
+    }
+
 
 }
