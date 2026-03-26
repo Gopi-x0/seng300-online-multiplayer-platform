@@ -54,5 +54,21 @@ public class AuthenticationScreen extends StackPane {
         return logo;
     }
 
+    // Card Row (Register + Login side by side)
+
+    private HBox buildCardRow() {
+        VBox registerCard = buildRegisterCard();
+        VBox loginCard = buildLoginCard();
+
+        // Both cards grow equally
+        HBox.setHgrow(registerCard, Priority.ALWAYS);
+        HBox.setHgrow(loginCard, Priority.ALWAYS);
+
+        HBox row = new HBox(24, registerCard, loginCard);
+        row.setAlignment(Pos.CENTER);
+        row.setMaxWidth(860);
+        return row;
+    }
+
 
 }
