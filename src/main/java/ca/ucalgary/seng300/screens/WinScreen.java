@@ -62,5 +62,31 @@ public class WinScreen extends StackPane {
         fadeIn.play();
     }
 
+    // Overlay construction - three clearly separated layers
+
+    private void initializeOverlay() {
+        setAlignment(Pos.CENTER);
+
+        // Layer 0: Blurred background preview
+        Region bgPreview = gameType == GameType.TTT
+                ? buildTTTBackground()
+                : buildC4Background();
+        bgPreview.setEffect(new GaussianBlur(12));
+        bgPreview.setMaxWidth(Double.MAX_VALUE);
+        bgPreview.setMaxHeight(Double.MAX_VALUE);
+
+        // Layer 1: Dark scrim
+        Pane scrim = new Pane();
+        scrim.setStyle("-fx-background-color: rgba(0, 0, 0, 0.58);");
+        scrim.setMaxWidth(Double.MAX_VALUE);
+        scrim.setMaxHeight(Double.MAX_VALUE);
+
+        // Layer 2: Result card - never blurred
+        VBox card = buildResultCard();
+
+        getChildren().addAll(bgPreview, scrim, card);
+        setOpacity(0);
+    }
+
 
 }
