@@ -29,8 +29,22 @@ public class GameSessionManager {
         return null;
     }
 
-    public static void switchActivePlayer(){
+    public static void switchActivePlayer() {
+        //  make sure list exists and has 2 players
+        if (players == null || players.size() < 2 || currentState == null) {
+            return;
+        }
 
+        // get the IDs of two players who are playing
+        String player1Id = players.get(0);
+        String player2Id = players.get(1);
+
+        // swap the active index in the GameState.
+        if (currentState.activePlayerIndex.equals(player1Id)) {
+            currentState.activePlayerIndex = player2Id;
+        } else {
+            currentState.activePlayerIndex = player1Id;
+        }
     }
 
 }
