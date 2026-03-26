@@ -251,5 +251,31 @@ public class WinScreen extends StackPane {
         fadeOut.play();
     }
 
+    // Helper methods
 
+    public static void showWin(StackPane parentPane, Runnable onDismiss) {
+        showWin(parentPane, onDismiss, GameType.TTT);
+    }
+
+    public static void showWin(StackPane parentPane, Runnable onDismiss, GameType gameType) {
+        WinScreen overlay = new WinScreen(true, gameType, onDismiss);
+        parentPane.getChildren().add(overlay);
+        overlay.displayWinner();
+    }
+
+    public static void showLose(StackPane parentPane, Runnable onDismiss) {
+        showLose(parentPane, onDismiss, GameType.TTT);
+    }
+
+    public static void showLose(StackPane parentPane, Runnable onDismiss, GameType gameType) {
+        WinScreen overlay = new WinScreen(false, gameType, onDismiss);
+        parentPane.getChildren().add(overlay);
+        overlay.displayWinner();
+    }
+
+    public static void show(StackPane parentPane, boolean isWin, GameType gameType) {
+        WinScreen overlay = new WinScreen(isWin, gameType, null);
+        parentPane.getChildren().add(overlay);
+        overlay.displayWinner();
+    }
 }
