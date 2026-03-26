@@ -57,21 +57,92 @@ public class TicTacToeEngine implements GameEngine {
             }
         }
 
-        return new GameState(board, playerIds.get(0), GameStatus.IN_PROGRESS, new ArrayList<>());
+        return new GameState(board, playerIds.get(0), GameStatus.IN_PROGRESS, new ArrayList<>(), playerIds);
     }
 
+    /**
+     * Validates a move against the current state.
+     * Checks (in order):
+     *   1. Game is not already over → GAME_ALREADY_OVER
+     *   2. It is the player's turn → WRONG_TURN
+     *   3. Coordinates are within bounds → OUT_OF_BOUNDS
+     *   4. Target cell is empty → CELL_OCCUPIED
+     */
     @Override
     public MoveResult validateMove(GameState state, Move move) {
-        return null;
+        // 1. Game already finished
+        if (state.getStatus() != GameStatus.IN_PROGRESS) {
+            return MoveResult.failure(
+                    ValidationCode.GAME_ALREADY_OVER,
+                    "The game has already ended with status: " + state.getStatus()
+            );
+        }
+
+        // 2. Wrong player's turn
+        if (!move.getPlayerId().equals(state.getActivePlayerId())) {
+            return MoveResult.failure(
+                    ValidationCode.WRONG_TURN,
+                    "It is not player " + move.getPlayerId() + "'s turn. "
+                            + "Active player: " + state.getActivePlayerId()
+            );
+        }
+
+        // 3. Out of bounds
+        int row = move.getRow();
+        int col = move.getCol();
+        if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE) {
+            return MoveResult.failure(
+                    ValidationCode.OUT_OF_BOUNDS,
+                    String.format("Cell (%d, %d) is out of bounds for a %dx%d board.",
+                            row, col, BOARD_SIZE, BOARD_SIZE)
+            );
+        }
+        return MoveResult.success();
     }
 
+    /**
+     *Applies move to a cloned board. Apply move process:
+     * Clone Board
+     * Place symbol(row,col)
+     * Toggle a new activePlayerID
+     * Run evaluateEnd and update gamestatus
+     */
     @Override
     public GameState applyMove(GameState state, Move move) {
-        return null;
+        //Clone the current board
+        Symbol[][] newBoard = state.getBoard();
+
+        //apply the new move by calling upon the Move class
+        newBoard[move.getRow()][move.getCol()]= move.getSymbol();
+
+        //add move to the newHistory
+        List<Move> newHistory = new ArrayList<>(state.getMoveHistory());
+        newHistory.add(move);
+
+
+        //toggle the activePlayer and name the next playerID
+        //Game session manager will pass the correct playerIDs
+        List<String> playerIds = state.getPlayerIds();
+        String nextPlayerId;
+        if (playerIds.get(0).equals(move.getPlayerId())) {
+            // the player at index 0 just moved, so next is index 1
+            nextPlayerId = playerIds.get(1);
+        } else {
+            // the player at index 1 just moved, so next is index 0
+            nextPlayerId = playerIds.get(0);
+        }
+
+        //Build a current gameState and pass it to evaluateEnd
+        GameState intermediateState = new GameState(newBoard, nextPlayerId, GameStatus.IN_PROGRESS, newHistory, playerIds);
+
+
+
+        return evaluateEnd(intermediateState);
     }
 
     @Override
     public GameState evaluateEnd(GameState state) {
         return null;
     }
+
 }

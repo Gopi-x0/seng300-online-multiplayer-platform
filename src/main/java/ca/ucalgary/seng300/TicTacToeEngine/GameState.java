@@ -16,12 +16,13 @@ public class GameState {
     private final String activePlayerId;
     private final GameStatus status;
     private final List<Move> moveHistory;
+    private final List<String> playerIds;
 
     /**
      * Creates a new GameState.
      * The board is defensively copied to preserve immutability.
      */
-    public GameState(Symbol[][] board, String activePlayerId, GameStatus status, List<Move> moveHistory) {
+    public GameState(Symbol[][] board, String activePlayerId, GameStatus status, List<Move> moveHistory, List<String>playerIds) {
         // Defensive copy of the 2D board array
         this.board = new Symbol[board.length][];
         for (int i = 0; i < board.length; i++) {
@@ -30,6 +31,7 @@ public class GameState {
         this.activePlayerId = activePlayerId;
         this.status = status;
         this.moveHistory = new ArrayList<>(moveHistory);
+        this.playerIds=new ArrayList<>(playerIds);
     }
 
     /**
@@ -51,6 +53,9 @@ public class GameState {
         return copy;
     }
 
+
+
+
     public String getActivePlayerId() {
         return activePlayerId;
     }
@@ -64,6 +69,10 @@ public class GameState {
      */
     public List<Move> getMoveHistory() {
         return List.copyOf(moveHistory);
+    }
+
+    public List<String> getPlayerIds(){
+        return List.copyOf(getPlayerIds());
     }
 
     @Override
