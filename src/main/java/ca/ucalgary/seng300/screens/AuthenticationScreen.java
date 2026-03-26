@@ -40,6 +40,19 @@ public class AuthenticationScreen extends StackPane {
         getChildren().add(root);
     }
 
+    // Logo
+
+    private ImageView buildLogoBlock() {
+        // Load the shared SGP logo from resources
+        Image image = new Image(
+                getClass().getResourceAsStream("/ca/ucalgary/seng300/images/sgp-logo.png")
+        );
+        ImageView logo = new ImageView(image);
+        logo.setPreserveRatio(true);
+        logo.setFitWidth(280);
+        logo.setSmooth(true);
+        return logo;
+    }
 
 
 }
