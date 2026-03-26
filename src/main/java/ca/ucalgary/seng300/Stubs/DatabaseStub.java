@@ -39,8 +39,8 @@ public class DatabaseStub {
 
         // Example for the UI team to create visually
         List<PlayerProfile> fakeLeaderboard = new ArrayList<>();
-        fakeLeaderboard.add(new PlayerProfile("113131", "Player1"));
-        fakeLeaderboard.add(new PlayerProfile("123131", "Player2"));
+        fakeLeaderboard.add(new PlayerProfile("113131", "Player1", false));
+        fakeLeaderboard.add(new PlayerProfile("123131", "Player2", true));
 
         return fakeLeaderboard;
 

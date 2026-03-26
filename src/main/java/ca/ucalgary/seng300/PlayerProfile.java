@@ -23,34 +23,24 @@ public class PlayerProfile {
     private String password;
     // a string that only the user associated with a given player should know, used to verify their identity
 
-    private Rank ranking;
-    // a player's rank based on their performance in the available games
-
-
-    public void login() {
-
-    }
-
-    public void logout() {
-
-    }
-
     public generalStats getStats(String gameType) {
         generalStats stats = new generalStats(playerId, gameType);
         return stats;
         // retrieves the stats for the player
     }
 
-    public void updateUsername(String newName) {
+    public void setUsername(String newName) {
         this.username = newName;
         // updates a user's username (should require a password)
     }
 
-    public void updateEmail(String username, String email) {
+    public void setEmail(String newEmail) {
         // updates a user's email address
+        this.email = newEmail;
     }
 
-    public void updatePassword(String username, String password) {
+    public void setPassword(String newPassword) {
         // updates a user's password
+        this.password = newPassword;
     }
 }
