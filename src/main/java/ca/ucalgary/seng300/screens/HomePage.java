@@ -273,4 +273,49 @@ public class HomePage extends BorderPane {
         return board;
     }
 
+    // Record Buttons - View Self / View Player Records
+
+    private HBox buildRecordButtons() {
+        Button selfBtn = outlineButton("View Self Records");
+        selfBtn.setOnAction(e -> viewYourOwnRecords());
+
+        Button playerBtn = outlineButton("View Player Records  ▾");
+        playerBtn.setOnAction(e -> viewOtherPlayerRecords());
+
+        HBox.setHgrow(selfBtn, Priority.ALWAYS);
+        HBox.setHgrow(playerBtn, Priority.ALWAYS);
+
+        HBox row = new HBox(14, selfBtn, playerBtn);
+        row.setFillHeight(true);
+        return row;
+    }
+
+    private Button outlineButton(String text) {
+        Button btn = new Button(text);
+        btn.setMaxWidth(Double.MAX_VALUE);
+        btn.setPrefHeight(38);
+        String base =
+                "-fx-background-color: transparent;" +
+                        "-fx-text-fill: #00c8ff;" +
+                        "-fx-font-size: 13px;" +
+                        "-fx-border-color: #0096b8;" +
+                        "-fx-border-width: 1.2;" +
+                        "-fx-border-radius: 6;" +
+                        "-fx-background-radius: 6;" +
+                        "-fx-cursor: hand;";
+        String hover =
+                "-fx-background-color: rgba(0,200,255,0.08);" +
+                        "-fx-text-fill: #33e0ff;" +
+                        "-fx-font-size: 13px;" +
+                        "-fx-border-color: #00c8ff;" +
+                        "-fx-border-width: 1.2;" +
+                        "-fx-border-radius: 6;" +
+                        "-fx-background-radius: 6;" +
+                        "-fx-cursor: hand;";
+        btn.setStyle(base);
+        btn.setOnMouseEntered(e -> btn.setStyle(hover));
+        btn.setOnMouseExited(e -> btn.setStyle(base));
+        return btn;
+    }
+
 }
