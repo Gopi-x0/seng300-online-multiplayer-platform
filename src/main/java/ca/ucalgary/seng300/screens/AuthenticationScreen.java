@@ -129,5 +129,63 @@ public class AuthenticationScreen extends StackPane {
         return content;
     }
 
+    // UML Method: displayLoginScreen()
+    // Builds the Login card
+
+    /**
+     * Displays the login panel.
+     *
+     * @author Muhammad Ahmad
+     * @email muham.ahmad@ucalgary.ca
+     */
+    public void displayLoginScreen() {
+        // Stub TODO: login display logic will connect to backend in future iteration
+        System.out.println("AuthenticationScreen: displayLoginScreen() called");
+    }
+
+    private VBox buildLoginCard() {
+        Label title = cardTitle("Login");
+
+        // Email field
+        Label emailLabel = fieldLabel("Email");
+        TextField emailField = styledTextField("balamia@gmail.com");
+
+        // Password field with show/hide toggle
+        Label passLabel = fieldLabel("Create Password");
+        Label forgotLabel = forgotLabel();
+        HBox passHeader = new HBox(passLabel, spacer(), forgotLabel);
+        passHeader.setAlignment(Pos.CENTER_LEFT);
+
+        PasswordField passField = styledPasswordField("Enter your password");
+        TextField passVisible = styledTextField("Enter your password");
+        passVisible.setManaged(false);
+        passVisible.setVisible(false);
+        Button eyeBtn = eyeToggleButton(passField, passVisible);
+
+        StackPane passStack = new StackPane(passField, passVisible);
+        HBox passRow = new HBox(6, passStack, eyeBtn);
+        passRow.setAlignment(Pos.CENTER_LEFT);
+        HBox.setHgrow(passStack, Priority.ALWAYS);
+
+        // Submit button - calls submitLogin()
+        Button submitBtn = primaryButton("Submit Login");
+        submitBtn.setOnAction(e -> {
+            submitLogin();
+            System.out.println("Login attempt — email: " + emailField.getText());
+        });
+
+        VBox content = new VBox(10,
+                title,
+                emailLabel, emailField,
+                passHeader, passRow,
+                submitBtn
+        );
+        content.setPadding(new Insets(30));
+        content.setSpacing(10);
+        content.setMaxWidth(Double.MAX_VALUE);
+        styleCard(content);
+        return content;
+    }
+
 
 }
