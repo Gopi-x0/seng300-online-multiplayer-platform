@@ -18,6 +18,7 @@ public class GameboardTTT extends Application {
     private int ROWS = 3;
     private int COLS = 3;
     private int CELLS = ROWS * COLS;
+    private StackPane[][] board = new StackPane[ROWS][COLS];
 
     @Override
     public void start(Stage primaryStage){
@@ -38,8 +39,13 @@ public class GameboardTTT extends Application {
         GridPane grid = createGrid();
 
         //Root
-        StackPane root = new StackPane(titleBox, grid);
-        root.setAlignment(Pos.CENTER);
+        BorderPane root = new BorderPane();
+        root.setStyle("-fx-background-color: linear-gradient(to bottom, #1a1a2e, #16213e);");
+        root.setTop(titleBox);
+        root.setCenter(grid);
+        BorderPane.setMargin(titleBox, new Insets(30, 40, 40, 40));
+
+        //Scene
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Tic-Tac-Toe");
@@ -55,10 +61,23 @@ public class GameboardTTT extends Application {
     private GridPane createGrid(){
         GridPane gameBoard = new GridPane();
         gameBoard.setAlignment(Pos.CENTER);
-
+        gameBoard.setMaxSize(600, 600);
+        gameBoard.setPadding(new Insets(20));
         gameBoard.setStyle("-fx-background-color: black; -fx-padding: 2;");
         gameBoard.setHgap(10);
         gameBoard.setVgap(10);
+        gameBoard.setStyle("-fx-background-color: transparent;");
+
+        for(int i = 0; i < ROWS; i++){
+            //resizes dynamically the grid with the page.
+            ColumnConstraints column = new ColumnConstraints();
+            column.setPercentWidth(33.33);
+            gameBoard.getColumnConstraints().add(column);
+
+            RowConstraints row = new RowConstraints();
+            row.setPercentHeight(33.33);
+            gameBoard.getRowConstraints().add(row);
+        }
 
         for(int i = 0; i < ROWS; i++){
             for(int j = 0; j < COLS; j++){
@@ -66,7 +85,9 @@ public class GameboardTTT extends Application {
                 cell.setPrefSize(150, 150);
                 cell.setStyle("-fx-background-color: white; -fx-padding: 2;");
                 gameBoard.add(cell, i, j);
+                board[i][j] = cell;
             }
+
         }
         return gameBoard;
     }
