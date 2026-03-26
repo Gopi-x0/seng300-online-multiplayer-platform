@@ -234,5 +234,22 @@ public class WinScreen extends StackPane {
         return btn;
     }
 
+    // Dismiss
+
+    private void dismiss() {
+        FadeTransition fadeOut = new FadeTransition(Duration.millis(220), this);
+        fadeOut.setFromValue(1);
+        fadeOut.setToValue(0);
+        fadeOut.setOnFinished(e -> {
+            if (getParent() instanceof Pane parent) {
+                parent.getChildren().remove(this);
+            }
+            if (onDismiss != null) {
+                onDismiss.run();
+            }
+        });
+        fadeOut.play();
+    }
+
 
 }
