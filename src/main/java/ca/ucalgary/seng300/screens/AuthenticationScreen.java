@@ -187,5 +187,20 @@ public class AuthenticationScreen extends StackPane {
         return content;
     }
 
+    // UML Method: submitLogin()
+
+    /**
+     * Handles login form submission.
+     * Will call PlatformCore authentication stub in a future iteration.
+     *
+     * @author Muhammad Ahmad
+     * @email muham.ahmad@ucalgary.ca
+     */
+    public void submitLogin() {
+        // Stub TODO: backend login call will replace this in iteration 3
+        System.out.println("AuthenticationScreen: submitLogin() called — navigating to HomePage");
+        // TODO: validate credentials via PlatformCore, then navigate to HomePage
+    }
+
 
 }
