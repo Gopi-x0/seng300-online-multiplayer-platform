@@ -2,6 +2,7 @@ package ca.ucalgary.seng300.TicTacToeEngine;
 
 import ca.ucalgary.seng300.GameEngine;
 
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -32,16 +33,31 @@ public class TicTacToeEngine implements GameEngine {
         {0, 0, 1, 1, 2, 2},
         {0, 2, 1, 1, 2, 0}
 
-
     };
 
 
 
-
+    //OVERRIDEN GAMEENGINE INTERFACE METHODS
     //-------------------------------------------------------------------------------//
+    /**
+     * Initialises a fresh 3x3 board. All cells are EMPTY.
+     * The first player in the playerIds list goes first and is assigned Symbol.X.
+     */
     @Override
     public GameState createInitialState(List<String> playerIds) {
-        return null;
+
+        if (playerIds == null || playerIds.size() < 2) {
+            throw new IllegalArgumentException("TicTacToe requires exactly 2 player IDs.");
+        }
+
+        Symbol[][] board = new Symbol[BOARD_SIZE][BOARD_SIZE];
+        for (int r = 0; r < BOARD_SIZE; r++) {
+            for (int c = 0; c < BOARD_SIZE; c++) {
+                board[r][c] = Symbol.EMPTY;
+            }
+        }
+
+        return new GameState(board, playerIds.get(0), GameStatus.IN_PROGRESS, new ArrayList<>());
     }
 
     @Override
