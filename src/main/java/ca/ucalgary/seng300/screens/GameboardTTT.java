@@ -4,7 +4,6 @@ import javafx.application.Application;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Scene;
-import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
@@ -49,7 +48,7 @@ public class GameboardTTT extends Application {
 
         //Main Layout
         BorderPane mainLayout = new BorderPane();
-        mainLayout.setStyle("-fx-background-color: linear-gradient(to bottom, #1a1a2e, #16213e);");
+        mainLayout.setStyle("-fx-background-color: linear-gradient(#00d3f3, #0088a3);");
         BorderPane.setMargin(titleBox, new Insets(30, 40, 40, 40));
 
         //Top
@@ -131,16 +130,15 @@ public class GameboardTTT extends Application {
         streak.setSpacing(space);
 
         for(int j = 0; j < tiles; j++){
-            StackPane X = createX(80);
+            StackPane X = createX();
             streak.getChildren().add(X);
         }
         return streak;
     }
 
-    private StackPane createX(double size){
-        double half = size / 2;
+    private StackPane createX(){
+        double half = (double) 80 / 2;
 
-        // Draw lines centered at (0,0) — StackPane will center them
         Line l1 = new Line(-half, -half, half, half);
         l1.setStroke(Color.GREY);
         l1.setStrokeWidth(4);
@@ -150,7 +148,7 @@ public class GameboardTTT extends Application {
         l2.setStrokeWidth(4);
 
         StackPane pane = new StackPane(l1, l2);
-        pane.setPrefSize(size, size);
+        pane.setPrefSize(80, 80);
         return pane;
     }
 
