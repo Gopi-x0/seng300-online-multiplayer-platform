@@ -87,4 +87,111 @@ public class TicTacToeStateTest {
         assertEquals(PLAYER_X, result.getCurrentPlayerId(),
                 "Turn should not switch after an invalid move");
     }
+    public class TicTacToeValidationTest {
+
+        private TicTacToeEngine engine;
+        private GameState initialState;
+
+        private static final String PLAYER_X = "player_x";
+        private static final String PLAYER_O = "player_o";
+
+        @BeforeEach
+        void setUp() {
+            engine = new TicTacToeEngine();
+            initialState = engine.createInitialState(List.of(PLAYER_X, PLAYER_O));
+        }
+
+        @Test
+        void validMoveReturnsSuccess() {
+            Move move = new Move(0, 0, PLAYER_X, Symbol.X);
+            MoveResult result = engine.validateMove(initialState, move);
+
+            assertTrue(result.isValid(), "Move to empty cell should be valid");
+            assertEquals(ValidationCode.SUCCESS, result.getErrorCode());
+        }
+
+        @Test
+        void negativeRowIsOutOfBounds() {
+            Move move = new Move(-1, 0, PLAYER_X, Symbol.X);
+            MoveResult result = engine.validateMove(initialState, move);
+
+            assertFalse(result.isValid(), "Out-of-bounds move should be invalid");
+            assertEquals(ValidationCode.OUT_OF_BOUNDS, result.getErrorCode());
+        }
+
+        @Test
+        void colTooLargeIsOutOfBounds() {
+            Move move = new Move(0, 3, PLAYER_X, Symbol.X);
+            MoveResult result = engine.validateMove(initialState, move);
+
+            assertFalse(result.isValid(), "Move with col=3 should be OUT_OF_BOUNDS");
+            assertEquals(ValidationCode.OUT_OF_BOUNDS, result.getErrorCode());
+        }
+
+        @Test
+        void wrongTurnIsRejected() {
+            Move move = new Move(0, 0, PLAYER_O, Symbol.O);
+            MoveResult result = engine.validateMove(initialState, move);
+
+            assertFalse(result.isValid(), "Player O should not be allowed to go first");
+            assertEquals(ValidationCode.WRONG_TURN, result.getErrorCode());
+        }
+
+        @Test
+        void occupiedCellIsRejected() {
+            Move firstMove = new Move(0, 0, PLAYER_X, Symbol.X);
+            GameState afterFirst = engine.applyMove(initialState, firstMove);
+
+            Move secondMove = new Move(0, 0, PLAYER_O, Symbol.O);
+            MoveResult result = engine.validateMove(afterFirst, secondMove);
+
+            assertFalse(result.isValid(), "Move on occupied cell should be invalid");
+            assertEquals(ValidationCode.CELL_OCCUPIED, result.getErrorCode());
+        }
+
+        @Test
+        void noMovesAfterGameOver() {
+            GameState state = initialState;
+            state = engine.applyMove(state, new Move(0, 0, PLAYER_X, Symbol.X));
+            state = engine.applyMove(state, new Move(1, 0, PLAYER_O, Symbol.O));
+            state = engine.applyMove(state, new Move(0, 1, PLAYER_X, Symbol.X));
+            state = engine.applyMove(state, new Move(2, 0, PLAYER_O, Symbol.O));
+            state = engine.applyMove(state, new Move(0, 2, PLAYER_X, Symbol.X));
+            state = engine.evaluateEnd(state);
+
+            Move extraMove = new Move(1, 1, PLAYER_O, Symbol.O);
+            MoveResult result = engine.validateMove(state, extraMove);
+
+            assertFalse(result.isValid(), "No moves allowed after game over");
+            assertEquals(ValidationCode.GAME_ALREADY_OVER, result.getErrorCode());
+        }
+
+        @Test
+        void nullMoveIsHandledGracefully() {
+            MoveResult result = engine.validateMove(initialState, null);
+
+            assertNotNull(result, "Engine should return a MoveResult even for a null move");
+            assertFalse(result.isValid(), "Null move should not be valid");
+        }
+
+        @Test
+        void nullStateIsHandledGracefully() {
+            Move move = new Move(0, 0, PLAYER_X, Symbol.X);
+            MoveResult result = engine.validateMove(null, move);
+
+            assertNotNull(result, "Engine should return a MoveResult even for a null state");
+            assertFalse(result.isValid(), "Move on null state should not be valid");
+        }
+
+        @Test
+        void failureMoveResultIsCorrect() {
+            MoveResult result = MoveResult.failure(ValidationCode.CELL_OCCUPIED, "Cell is taken");
+
+            assertFalse(result.isValid(), "Failure result should not be valid");
+            assertEquals(ValidationCode.CELL_OCCUPIED, result.getErrorCode());
+            assertEquals("Cell is taken", result.getMessage());
+        }
+    }
+
+
 }
