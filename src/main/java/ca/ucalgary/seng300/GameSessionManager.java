@@ -5,20 +5,27 @@ import ca.ucalgary.seng300.interfaces.GameEngine;
 import java.util.List;
 
 public class GameSessionManager {
-    static GameEngine engine; //String is placeholder for GameEngine class
+    static GameEngine engine;
 
     static GameState currentState;
 
     static List<String> players; //String is placeholder for PlayerProfiles class
 
+    /**
+     *
+     * @param gameType Connect-4 OR Tic-tac-toe
+     * @param p1 Player 1
+     * @param p2 Player 2
+     * @return created game state
+     */
     public static <Player> GameState startGame(String gameType, Player p1, Player p2){
         GameStatus status = GameStatus.SETUP;
-        String player1Index = null; //p1.playerId; (get from p1)
+        String player1Id = null; //p1.playerId; (get from p1)
 
         GameState gameState = new GameState();
         gameState.gameType = gameType;
         gameState.status = status;
-        gameState.activePlayerIndex = player1Index;
+        gameState.activePlayerIndex = player1Id;
         gameState.boardPayload = null; //placeholder
 
 
