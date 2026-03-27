@@ -1,6 +1,6 @@
 package ca.ucalgary.seng300;
 public class MoveResult {
-
+    
     public final boolean success;
     public final String reason;
     public final GameState updatedState;
