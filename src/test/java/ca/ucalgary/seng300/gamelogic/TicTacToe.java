@@ -311,12 +311,115 @@ public class TicTacToeStateTest {
                 "Game with one move should still be IN_PROGRESS");
     }
 
+    @Test
+    void xWinsInMinimumMoves() {
+        GameState state = initialState;
 
+        state = engine.applyMove(state, new Move(0, 0, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(1, 0, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(0, 1, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(1, 1, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(0, 2, PLAYER_X, Symbol.X));
+        state = engine.evaluateEnd(state);
 
+        assertEquals(GameStatus.X_WINS, state.getStatus());
+    }
 
+    @Test
+    void oWinsFullGame() {
+        GameState state = initialState;
 
+        state = engine.applyMove(state, new Move(0, 0, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(1, 0, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(0, 1, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(1, 1, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(2, 2, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(1, 2, PLAYER_O, Symbol.O));
+        state = engine.evaluateEnd(state);
 
+        assertEquals(GameStatus.O_WINS, state.getStatus());
+    }
 
+    @Test
+    void fullDrawGame() {
+        GameState state = initialState;
 
+        state = engine.applyMove(state, new Move(0, 0, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(0, 1, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(0, 2, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(1, 2, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(1, 0, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(2, 0, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(1, 1, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(2, 2, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(2, 1, PLAYER_X, Symbol.X));
+        state = engine.evaluateEnd(state);
 
+        assertEquals(GameStatus.DRAW, state.getStatus());
+    }
+
+    @Test
+    void turnAlternatesEveryMoveForFullGame() {
+        String[] expectedOrder = {
+                PLAYER_X, PLAYER_O, PLAYER_X, PLAYER_O, PLAYER_X,
+                PLAYER_O, PLAYER_X, PLAYER_O, PLAYER_X
+        };
+
+        int[][] moves = {
+                {0,0}, {0,1}, {0,2}, {1,2}, {1,0}, {2,0}, {1,1}, {2,2}, {2,1}
+        };
+
+        GameState state = initialState;
+        for (int i = 0; i < moves.length; i++) {
+            assertEquals(expectedOrder[i], state.getCurrentPlayerId(),
+                    "Turn " + (i + 1) + " should belong to " + expectedOrder[i]);
+
+            Symbol sym = (i % 2 == 0) ? Symbol.X : Symbol.O;
+            String player = (i % 2 == 0) ? PLAYER_X : PLAYER_O;
+            state = engine.applyMove(state, new Move(moves[i][0], moves[i][1], player, sym));
+        }
+    }
+
+    @Test
+    void noMovesAcceptedAfterXWins() {
+        GameState state = initialState;
+
+        state = engine.applyMove(state, new Move(0, 0, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(1, 0, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(0, 1, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(1, 1, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(0, 2, PLAYER_X, Symbol.X));
+        state = engine.evaluateEnd(state);
+
+        for (int r = 0; r < 3; r++) {
+            for (int c = 0; c < 3; c++) {
+                MoveResult result = engine.validateMove(state,
+                        new Move(r, c, PLAYER_O, Symbol.O));
+                assertFalse(result.isValid(),
+                        "Move at [" + r + "][" + c + "] should be rejected after game over");
+            }
+        }
+    }
+
+    @Test
+    void noMovesAcceptedAfterDraw() {
+        GameState state = initialState;
+
+        state = engine.applyMove(state, new Move(0, 0, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(0, 1, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(0, 2, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(1, 2, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(1, 0, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(2, 0, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(1, 1, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(2, 2, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(2, 1, PLAYER_X, Symbol.X));
+        state = engine.evaluateEnd(state);
+
+        MoveResult result = engine.validateMove(state,
+                new Move(0, 0, PLAYER_X, Symbol.X));
+        assertFalse(result.isValid(),
+                "No moves should be accepted after a draw");
+        assertEquals(ValidationCode.GAME_ALREADY_OVER, result.getErrorCode());
+    }
 }
