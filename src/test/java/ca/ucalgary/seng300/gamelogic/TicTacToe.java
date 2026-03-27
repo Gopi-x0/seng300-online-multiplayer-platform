@@ -178,6 +178,142 @@ public class TicTacToeStateTest {
         assertEquals("Cell is taken", result.getMessage());
     }
 
+    @Test
+    void xWinsTopRow() {
+        GameState state = initialState;
+        state = engine.applyMove(state, new Move(0, 0, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(1, 0, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(0, 1, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(2, 0, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(0, 2, PLAYER_X, Symbol.X));
+        state = engine.evaluateEnd(state);
+
+        assertEquals(GameStatus.X_WINS, state.getStatus(), "X should win with top row");
+    }
+
+    @Test
+    void xWinsMiddleRow() {
+        GameState state = initialState;
+        state = engine.applyMove(state, new Move(1, 0, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(0, 0, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(1, 1, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(0, 1, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(1, 2, PLAYER_X, Symbol.X));
+        state = engine.evaluateEnd(state);
+
+        assertEquals(GameStatus.X_WINS, state.getStatus(), "X should win with middle row");
+    }
+
+    @Test
+    void xWinsBottomRow() {
+        GameState state = initialState;
+        state = engine.applyMove(state, new Move(2, 0, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(0, 0, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(2, 1, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(0, 1, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(2, 2, PLAYER_X, Symbol.X));
+        state = engine.evaluateEnd(state);
+
+        assertEquals(GameStatus.X_WINS, state.getStatus(), "X should win with bottom row");
+    }
+
+    @Test
+    void xWinsLeftColumn() {
+        GameState state = initialState;
+        state = engine.applyMove(state, new Move(0, 0, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(0, 1, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(1, 0, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(1, 1, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(2, 0, PLAYER_X, Symbol.X));
+        state = engine.evaluateEnd(state);
+
+        assertEquals(GameStatus.X_WINS, state.getStatus(), "X should win with left column");
+    }
+
+    @Test
+    void xWinsOppositeDiagonal() {
+        GameState state = initialState;
+        state = engine.applyMove(state, new Move(0, 2, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(0, 0, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(1, 1, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(0, 1, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(2, 0, PLAYER_X, Symbol.X));
+        state = engine.evaluateEnd(state);
+
+        assertEquals(GameStatus.X_WINS, state.getStatus(), "X should win with OppositeDiagonal");
+    }
+
+    @Test
+    void oWinsDiagonal() {
+        GameState state = initialState;
+        state = engine.applyMove(state, new Move(0, 1, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(0, 0, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(0, 2, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(1, 1, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(1, 0, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(2, 2, PLAYER_O, Symbol.O));
+        state = engine.evaluateEnd(state);
+
+        assertEquals(GameStatus.O_WINS, state.getStatus(), "O should win with main diagonal");
+    }
+
+    @Test
+    void oWinsTopRow() {
+        GameState state = initialState;
+        state = engine.applyMove(state, new Move(1, 0, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(0, 0, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(2, 0, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(0, 1, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(1, 1, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(0, 2, PLAYER_O, Symbol.O));
+        state = engine.evaluateEnd(state);
+
+        assertEquals(GameStatus.O_WINS, state.getStatus(), "O should win with top row");
+    }
+
+    @Test
+    void oWinsRightColumn() {
+        GameState state = initialState;
+        state = engine.applyMove(state, new Move(0, 0, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(0, 2, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(1, 0, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(1, 2, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(2, 1, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(2, 2, PLAYER_O, Symbol.O));
+        state = engine.evaluateEnd(state);
+
+        assertEquals(GameStatus.O_WINS, state.getStatus(), "O should win with right column");
+    }
+
+    @Test
+    void fullBoardNoWinnerIsDraw() {
+        GameState state = initialState;
+        state = engine.applyMove(state, new Move(0, 0, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(0, 1, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(0, 2, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(1, 2, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(1, 0, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(2, 0, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(1, 1, PLAYER_X, Symbol.X));
+        state = engine.applyMove(state, new Move(2, 2, PLAYER_O, Symbol.O));
+        state = engine.applyMove(state, new Move(2, 1, PLAYER_X, Symbol.X));
+        state = engine.evaluateEnd(state);
+
+        assertEquals(GameStatus.DRAW, state.getStatus(), "Full board with no winner should be DRAW");
+    }
+
+    @Test
+    void gameStillInProgress() {
+        GameState state = engine.applyMove(initialState, new Move(0, 0, PLAYER_X, Symbol.X));
+        state = engine.evaluateEnd(state);
+
+        assertEquals(GameStatus.IN_PROGRESS, state.getStatus(),
+                "Game with one move should still be IN_PROGRESS");
+    }
+
+
+
+
 
 
 
