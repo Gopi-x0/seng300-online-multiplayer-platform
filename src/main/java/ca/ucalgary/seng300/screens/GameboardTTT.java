@@ -9,6 +9,7 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.*;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
+import javafx.scene.shape.Line;
 import javafx.stage.Stage;
 
 public class GameboardTTT extends Application {
@@ -18,6 +19,7 @@ public class GameboardTTT extends Application {
     private int ROWS = 3;
     private int COLS = 3;
     private int CELLS = ROWS * COLS;
+    private int CIRCLERADIUS = 60;
     private StackPane[][] board = new StackPane[ROWS][COLS];
 
     @Override
@@ -38,14 +40,30 @@ public class GameboardTTT extends Application {
         //Grid VBox
         GridPane grid = createGrid();
 
-        //Root
-        BorderPane root = new BorderPane();
-        root.setStyle("-fx-background-color: linear-gradient(to bottom, #1a1a2e, #16213e);");
-        root.setTop(titleBox);
-        root.setCenter(grid);
+        //User Streaks - X and O
+        VBox streakX = createPlayerCurrentStreakX(ROWS);
+        streakX.setAlignment(Pos.BOTTOM_LEFT);
+
+        VBox streakO = createPlayerCurrentStreakO(ROWS, CIRCLERADIUS);
+        streakO.setAlignment(Pos.BOTTOM_RIGHT);
+
+        //Main Layout
+        BorderPane mainLayout = new BorderPane();
+        mainLayout.setStyle("-fx-background-color: linear-gradient(to bottom, #1a1a2e, #16213e);");
         BorderPane.setMargin(titleBox, new Insets(30, 40, 40, 40));
 
-        //Scene
+        //Top
+        mainLayout.setTop(titleBox);
+
+        //Center
+        mainLayout.setCenter(grid);
+
+        //Left & Right --> User Streaks
+        mainLayout.setLeft(streakX);
+        mainLayout.setRight(streakO);
+
+        //Root & Scene
+        StackPane root = new  StackPane(mainLayout);
         Scene scene = new Scene(root);
         primaryStage.setScene(scene);
         primaryStage.setTitle("Tic-Tac-Toe");
@@ -90,6 +108,50 @@ public class GameboardTTT extends Application {
 
         }
         return gameBoard;
+    }
+
+    private VBox createPlayerCurrentStreakO(int tiles, int radius){
+        VBox streak = new VBox();
+        float space = 9.50f;
+        streak.setSpacing(space);
+
+        for(int j = 0; j < tiles; j++){
+            Circle circle = new Circle(radius);
+            circle.setFill(Color.GREY);
+            StackPane cell = new StackPane(circle);
+            cell.setPrefSize(space, space );
+            streak.getChildren().add(cell);
+        }
+        return streak;
+    }
+
+    private VBox createPlayerCurrentStreakX(int tiles){
+        VBox streak = new VBox();
+        float space = 9.50f;
+        streak.setSpacing(space);
+
+        for(int j = 0; j < tiles; j++){
+            StackPane X = createX(80);
+            streak.getChildren().add(X);
+        }
+        return streak;
+    }
+
+    private StackPane createX(double size){
+        double half = size / 2;
+
+        // Draw lines centered at (0,0) — StackPane will center them
+        Line l1 = new Line(-half, -half, half, half);
+        l1.setStroke(Color.GREY);
+        l1.setStrokeWidth(4);
+
+        Line l2 = new Line(half, -half, -half, half);
+        l2.setStroke(Color.GREY);
+        l2.setStrokeWidth(4);
+
+        StackPane pane = new StackPane(l1, l2);
+        pane.setPrefSize(size, size);
+        return pane;
     }
 
 }
