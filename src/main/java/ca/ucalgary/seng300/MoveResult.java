@@ -11,4 +11,12 @@ public class MoveResult {
         this.updatedState = updatedState;
     }
 
+    public static MoveResult ok(GameState updatedState) {
+        return new MoveResult(true, "OK", updatedState);
+    }
+
+    public static MoveResult fail(String reason, GameState currentState) {
+        return new MoveResult(false, reason, currentState);
+    }
+
 }
