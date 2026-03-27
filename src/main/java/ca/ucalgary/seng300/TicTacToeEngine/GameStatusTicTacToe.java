@@ -4,7 +4,7 @@ package ca.ucalgary.seng300.TicTacToeEngine;
  * Tracks the game status for a concurrent match
  */
 
-public enum GameStatus {
+public enum GameStatusTicTacToe {
     IN_PROGRESS,
     X_WINS,
     O_WINS,
