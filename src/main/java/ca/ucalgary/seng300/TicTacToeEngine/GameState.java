@@ -1,5 +1,7 @@
 package ca.ucalgary.seng300.TicTacToeEngine;
 
+import ca.ucalgary.seng300.interfaces.Move;
+
 import java.util.ArrayList;
 import java.util.List;
 

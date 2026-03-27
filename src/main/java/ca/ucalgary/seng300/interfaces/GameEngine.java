@@ -1,9 +1,5 @@
 package ca.ucalgary.seng300.interfaces;
 
-import ca.ucalgary.seng300.TicTacToeEngine.GameState;
-import ca.ucalgary.seng300.TicTacToeEngine.Move;
-import ca.ucalgary.seng300.TicTacToeEngine.MoveResult;
-
 import java.util.List;
 
 /**
@@ -17,7 +13,7 @@ import java.util.List;
  *
  */
 
-public interface GameEngine {
+public interface GameEngine<S> {
 
     /**
      * Builds and returns a fresh initial GameState for a new game.
@@ -25,7 +21,7 @@ public interface GameEngine {
      * @param playerIds ordered list of player IDs; index 0 goes first
      * @return a brand-new GameState with an empty board
      */
-    GameState createInitialState(List<String> playerIds);
+    S createInitialState(List<String> playerIds);
     /**
      * Validates a player's Move against the current GameState.
      * Does NOT modify state — purely a read operation.
@@ -34,7 +30,7 @@ public interface GameEngine {
      * @param move  the move the player wants to make
      * @return a MoveResult containing isValid and a ValidationCode
      */
-    MoveResult validateMove(GameState state, Move move);
+    MoveResult validateMove(S state, Move move);
     /**
      * Applies a validated Move to the current GameState and returns the new state.
      * Callers should always call validateMove() first.
@@ -49,7 +45,7 @@ public interface GameEngine {
      * @param move  a move that has already been validated
      * @return a new GameState reflecting the applied move
      */
-    GameState applyMove(GameState state, Move move);
+    S applyMove(S state, Move move);
     /**
      * Evaluates whether the game has reached a terminal state.
      * Updates GameStatus to X_WINS, O_WINS, DRAW, or leaves it IN_PROGRESS.
@@ -57,7 +53,7 @@ public interface GameEngine {
      * @param state the state after a move has been applied
      * @return a new GameState with an updated GameStatus
      */
-    GameState evaluateEnd(GameState state);
+    S evaluateEnd(S state);
 
 
 

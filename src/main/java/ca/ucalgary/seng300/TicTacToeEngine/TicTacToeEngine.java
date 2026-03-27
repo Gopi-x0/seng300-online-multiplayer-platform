@@ -1,6 +1,9 @@
 package ca.ucalgary.seng300.TicTacToeEngine;
 
 import ca.ucalgary.seng300.interfaces.GameEngine;
+import ca.ucalgary.seng300.interfaces.Move;
+import ca.ucalgary.seng300.interfaces.MoveResult;
+import ca.ucalgary.seng300.interfaces.ValidationCode;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -13,7 +16,7 @@ import java.util.List;
  * isBoardFull(): scans board to detect when there are no EMPTY cells remaining and if a DRAW has taken place
  */
 
-public class TicTacToeEngine implements GameEngine {
+public class TicTacToeEngine implements GameEngine<GameState> {
     private static final int BOARD_SIZE = 3;
 
     /**
@@ -114,7 +117,7 @@ public class TicTacToeEngine implements GameEngine {
         Symbol[][] newBoard = state.getBoard();
 
         //apply the new move by calling upon the Move class
-        newBoard[move.getRow()][move.getCol()]= move.getSymbol();
+        newBoard[move.getRow()][move.getCol()]= Symbol.valueOf(move.getSymbol());
 
         //add move to the newHistory
         List<Move> newHistory = new ArrayList<>(state.getMoveHistory());
@@ -140,6 +143,7 @@ public class TicTacToeEngine implements GameEngine {
 
         return evaluateEnd(intermediateState);
     }
+
 
     @Override
     public GameState evaluateEnd(GameState state) {
