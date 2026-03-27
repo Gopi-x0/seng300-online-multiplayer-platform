@@ -23,6 +23,7 @@ public class Move {
 
     //Make getters for Move:
     public int getRow(){
+
         return row;
     }
 
@@ -32,10 +33,12 @@ public class Move {
 
     //TODO: Create method for playerID
     public String getPlayerId(){
+
         return playerId;
     }
 
     public Symbol getSymbol(){
+
         return symbol;
     }
 
