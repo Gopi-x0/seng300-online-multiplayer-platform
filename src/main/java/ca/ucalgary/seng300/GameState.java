@@ -1,5 +1,7 @@
 package ca.ucalgary.seng300;
 
+
+
 public class GameState {
     private String gameType;
     private GameStatus gameStatus;
@@ -12,6 +14,7 @@ public class GameState {
         this.activePlayerIndex = activePlayerIndex;
         this.boardPayLoad = boardPayLoad;
     }
+
 
     public String getGameType() {
         return gameType;
@@ -27,5 +30,17 @@ public class GameState {
 
     public Object getBoardPayLoad() {
         return boardPayLoad;
+    }
+
+    public void setBoardPayLoad(Object boardPayLoad) {
+        this.boardPayLoad = boardPayLoad;
+    }
+
+    public void setGameStatus(GameStatus gameStatus) {
+        this.gameStatus = gameStatus;
+    }
+
+    public void setActivePlayerIndex(int activePlayerIndex) {
+        this.activePlayerIndex = activePlayerIndex;
     }
 }
