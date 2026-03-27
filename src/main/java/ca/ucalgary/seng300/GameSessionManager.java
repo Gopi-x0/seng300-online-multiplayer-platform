@@ -1,9 +1,6 @@
 package ca.ucalgary.seng300;
 
-import ca.ucalgary.seng300.Connect4GameEngine.Move;
 import ca.ucalgary.seng300.interfaces.GameEngine;
-import ca.ucalgary.seng300.GameState;
-import ca.ucalgary.seng300.Connect4GameEngine.Player;
 
 import java.util.List;
 
@@ -35,32 +32,28 @@ public class GameSessionManager {
         return gameState;
     }
 
-    public static Object submitMove(String playerID, Object movePayload) {
-        // check if player is valid
-        if (currentState == null || !playerID.equals(currentState.activePlayerIndex)) {
-            System.out.println("Wait your turn!");
-            return null;
+    /**
+     * Run to end game and return final results
+     * @param gameState gameState
+     */
+    public static void endGame(GameState gameState){
+        if (gameState.status == GameStatus.IN_PROGRESS){
+            return; //should not occur
         }
 
-        // create the Move
-        ca.ucalgary.seng300.Connect4GameEngine.Move move;
-        if (movePayload instanceof Integer) {
-            move = new ca.ucalgary.seng300.Connect4GameEngine.Move((Integer) movePayload);
-        } else {
-            move = (ca.ucalgary.seng300.Connect4GameEngine.Move) movePayload;
+        if (gameState.status == GameStatus.P1_WINS){
+            return;
+        } else if (gameState.status == GameStatus.P2_WINS){
+            return;
+        } else if (gameState.status == GameStatus.DRAW){
+            return;
         }
 
-
-        ca.ucalgary.seng300.GameState nextState = (GameState) ((ca.ucalgary.seng300.Connect4GameEngine.Connect4Game) engine).applyMove(currentState, move);
-
-        // update and return
-        if (nextState != null) {
-            currentState = nextState;
-        }
-
-        return currentState;
     }
 
+    public static MoveResult submitMove(String playerID, Object movePayload){
+        return null;
+    }
 
     public static void switchActivePlayer() {
         //  make sure list exists and has 2 players
