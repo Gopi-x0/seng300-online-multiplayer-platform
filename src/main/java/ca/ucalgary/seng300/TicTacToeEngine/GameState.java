@@ -14,7 +14,7 @@ import java.util.List;
 public class GameState {
     private final Symbol[][] board;
     private final String activePlayerId;
-    private final GameStatusTicTacToe status;
+    private final GameStatusTicTacToeEngine status;
     private final List<Move> moveHistory;
     private final List<String> playerIds;
 
@@ -22,7 +22,7 @@ public class GameState {
      * Creates a new GameState.
      * The board is defensively copied to preserve immutability.
      */
-    public GameState(Symbol[][] board, String activePlayerId, GameStatusTicTacToe status, List<Move> moveHistory, List<String>playerIds) {
+    public GameState(Symbol[][] board, String activePlayerId, GameStatusTicTacToeEngine status, List<Move> moveHistory, List<String>playerIds) {
         // Defensive copy of the 2D board array
         this.board = new Symbol[board.length][];
         for (int i = 0; i < board.length; i++) {
@@ -60,7 +60,7 @@ public class GameState {
         return activePlayerId;
     }
 
-    public GameStatusTicTacToe getStatus() {
+    public GameStatusTicTacToeEngine getStatus() {
         return status;
     }
 

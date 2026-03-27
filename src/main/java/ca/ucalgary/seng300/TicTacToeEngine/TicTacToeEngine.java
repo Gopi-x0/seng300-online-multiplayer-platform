@@ -57,7 +57,7 @@ public class TicTacToeEngine implements GameEngine {
             }
         }
 
-        return new GameState(board, playerIds.get(0), GameStatusTicTacToe.IN_PROGRESS, new ArrayList<>(), playerIds);
+        return new GameState(board, playerIds.get(0), GameStatusTicTacToeEngine.IN_PROGRESS, new ArrayList<>(), playerIds);
     }
 
     /**
@@ -71,7 +71,7 @@ public class TicTacToeEngine implements GameEngine {
     @Override
     public MoveResult validateMove(GameState state, Move move) {
         // 1. Game already finished
-        if (state.getStatus() != GameStatusTicTacToe.IN_PROGRESS) {
+        if (state.getStatus() != GameStatusTicTacToeEngine.IN_PROGRESS) {
             return MoveResult.failure(
                     ValidationCode.GAME_ALREADY_OVER, "The game has already ended with status: " + state.getStatus()
             );
@@ -134,7 +134,7 @@ public class TicTacToeEngine implements GameEngine {
         }
 
         //Build a current gameState and pass it to evaluateEnd
-        GameState intermediateState = new GameState(newBoard, nextPlayerId, GameStatusTicTacToe.IN_PROGRESS, newHistory, playerIds);
+        GameState intermediateState = new GameState(newBoard, nextPlayerId, GameStatusTicTacToeEngine.IN_PROGRESS, newHistory, playerIds);
 
 
 
@@ -147,15 +147,15 @@ public class TicTacToeEngine implements GameEngine {
 
         //Check if X has won
         if (checkWin(board, Symbol.X)){
-            return new GameState(board, state.getActivePlayerId(), GameStatusTicTacToe.X_WINS, state.getMoveHistory(), state.getPlayerIds());
+            return new GameState(board, state.getActivePlayerId(), GameStatusTicTacToeEngine.X_WINS, state.getMoveHistory(), state.getPlayerIds());
         }
         //Check if O has won
         if (checkWin(board, Symbol.O)){
-            return new GameState(board, state.getActivePlayerId(), GameStatusTicTacToe.O_WINS, state.getMoveHistory(), state.getPlayerIds());
+            return new GameState(board, state.getActivePlayerId(), GameStatusTicTacToeEngine.O_WINS, state.getMoveHistory(), state.getPlayerIds());
         }
         //Check for draw
         if (isBoardFull(board)){
-            return new GameState(board, state.getActivePlayerId(), GameStatusTicTacToe.DRAW, state.getMoveHistory(), state.getPlayerIds());
+            return new GameState(board, state.getActivePlayerId(), GameStatusTicTacToeEngine.DRAW, state.getMoveHistory(), state.getPlayerIds());
         }
         //Game still in progress - return original state without changes
         return state;
