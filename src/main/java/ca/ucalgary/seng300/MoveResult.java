@@ -19,4 +19,16 @@ public class MoveResult {
         return new MoveResult(false, reason, currentState);
     }
 
+    public boolean isSuccess() {
+        return success;
+    }
+
+    public String getReason() {
+        return reason;
+    }
+
+    public GameState getUpdatedState() {
+        return updatedState;
+    }
+
 }
