@@ -8,7 +8,7 @@ import java.util.List;
 
 /**
  * Game engine interface that defines the move sequence for any two player game on this platform
- * Communication between GameSessionManageer and GUI will happen through this interface.
+ * Communication between GameSessionManager and GUI will happen through this interface.
  * Communication lifecycle will be same across all gameengines that implement this interface
  * Lifecycle of a single turn:
  * validateMove()-check if a move is legal
