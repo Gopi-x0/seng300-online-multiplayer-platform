@@ -32,7 +32,26 @@ public class GameSessionManager {
         return gameState;
     }
 
-    public static <MoveResult> MoveResult submitMove(String playerID, Object movePayload){
+    /**
+     * Run to end game and return final results
+     * @param gameState gameState
+     */
+    public static void endGame(GameState gameState){
+        if (gameState.status == GameStatus.IN_PROGRESS){
+            return; //should not occur
+        }
+
+        if (gameState.status == GameStatus.P1_WINS){
+            return;
+        } else if (gameState.status == GameStatus.P2_WINS){
+            return;
+        } else if (gameState.status == GameStatus.DRAW){
+            return;
+        }
+
+    }
+
+    public static MoveResult submitMove(String playerID, Object movePayload){
         return null;
     }
 
