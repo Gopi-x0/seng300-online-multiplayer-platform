@@ -1,5 +1,8 @@
 package ca.ucalgary.seng300.Connect4GameEngine;
 
+import ca.ucalgary.seng300.GameStatus;
+import ca.ucalgary.seng300.interfaces.GameEngine;
+
 import java.util.List;
 
 /**

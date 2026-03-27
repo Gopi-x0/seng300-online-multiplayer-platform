@@ -1,5 +1,7 @@
 package ca.ucalgary.seng300.Connect4GameEngine;
 
+import ca.ucalgary.seng300.GameStatus;
+
 /**
  * Connect4State Class
  *

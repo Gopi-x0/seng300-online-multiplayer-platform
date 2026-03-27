@@ -1,16 +1,27 @@
 package ca.ucalgary.seng300;
 
 /**
- * Enumeration of different Game Status
- * @author: Mohammed Syed - Platform Core
- * @date: 16/3/2026
- * @version: 1.0
+ * GameStatus Enum
+ *
+ * Represents the possible outcomes/states of a Connect 4 game.
+ * An enum is perfect here because the status can only ever be
+ * one of these four fixed values — nothing else makes sense.
+ *
+ * This gets stored inside Connect4State so the GameSessionManager
+ * always knows whether the game is still going or who won.
  */
 public enum GameStatus {
-    SETUP,     // Game created but not started yet
-    ONGOING,   // Players are taking turns
-    WIN,       // A player has won - evaluateEnd() detects a winner
-    DRAW       // No moves left and no winner - When board is full
+    SETUP,
+
+    /** Game is ongoing — no winner yet, board isn't full */
+    IN_PROGRESS,
+
+    /** Player 1 has connected four in a row */
+    P1_WINS,
+
+    /** Player 2 has connected four in a row */
+    P2_WINS,
+
+    /** Board is completely full with no winner */
+    DRAW
 }
-
-
