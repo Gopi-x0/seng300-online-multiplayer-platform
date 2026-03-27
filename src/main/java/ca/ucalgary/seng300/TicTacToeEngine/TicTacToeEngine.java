@@ -142,7 +142,22 @@ public class TicTacToeEngine implements GameEngine {
 
     @Override
     public GameState evaluateEnd(GameState state) {
-        return null;
+        Symbol[][] board = state.getBoard();
+
+        //Check if X has won
+        if (checkWin(board, Symbol.X)){
+            return new GameState(board, state.getActivePlayerId(), GameStatus.X_WINS, state.getMoveHistory(), state.getPlayerIds());
+        }
+        //Check if O has won
+        if (checkWin(board, Symbol.O)){
+            return new GameState(board, state.getActivePlayerId(), GameStatus.O_WINS, state.getMoveHistory(), state.getPlayerIds());
+        }
+        //Check for draw
+        if (isBoardFull(board)){
+            return new GameState(board, state.getActivePlayerId(), GameStatus.DRAW, state.getMoveHistory(), state.getPlayerIds());
+        }
+        //Game still in progress - return original state without changes
+        return state;
     }
 
     //HELPER METHODS
@@ -169,7 +184,7 @@ public class TicTacToeEngine implements GameEngine {
     /**
      * Returns if every cell on the board is occupied
      * Used to detect a draw in match progress
-     * @param board
+     * @param board the current board
      * @return true if the baord is full, and the for loop doesnt find an empty symbol
      */
     private boolean isBoardFull(Symbol[][] board){
