@@ -1,4 +1,6 @@
-package ca.ucalgary.seng300.TicTacToeEngine;
+package ca.ucalgary.seng300.interfaces;
+
+
 /**
  * Value Object
  * Tracks the move attempt that was made by a player
@@ -11,10 +13,10 @@ public class Move {
     private final int row;
     private final int col;
     private final String playerId;
-    private final Symbol symbol;
+    private final String symbol;
 
 
-    public Move(int row, int col, String playerID, Symbol symbol){
+    public Move(int row, int col, String playerID, String symbol){
         this.row = row;
         this.col = col;
         this.playerId = playerID;
@@ -23,6 +25,7 @@ public class Move {
 
     //Make getters for Move:
     public int getRow(){
+
         return row;
     }
 
@@ -32,10 +35,12 @@ public class Move {
 
     //TODO: Create method for playerID
     public String getPlayerId(){
+
         return playerId;
     }
 
-    public Symbol getSymbol(){
+    public String getSymbol(){
+
         return symbol;
     }
 
