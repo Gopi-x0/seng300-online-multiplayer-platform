@@ -1,4 +1,6 @@
-package ca.ucalgary.seng300;
+package ca.ucalgary.seng300.Stubs;
+import ca.ucalgary.seng300.PlayerProfile;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -39,8 +41,8 @@ public class DatabaseStub {
 
         // Example for the UI team to create visually
         List<PlayerProfile> fakeLeaderboard = new ArrayList<>();
-        fakeLeaderboard.add(new PlayerProfile("113131", "Player1", false));
-        fakeLeaderboard.add(new PlayerProfile("123131", "Player2", true));
+        fakeLeaderboard.add(new PlayerProfile("113131", "Player1"));
+        fakeLeaderboard.add(new PlayerProfile("123131", "Player2"));
 
         return fakeLeaderboard;
 

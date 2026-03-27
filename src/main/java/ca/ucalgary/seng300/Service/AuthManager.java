@@ -1,4 +1,6 @@
-package ca.ucalgary.seng300;
+package ca.ucalgary.seng300.Service;
+
+import ca.ucalgary.seng300.PlayerProfile;
 
 import java.util.ArrayList;
 import java.util.List;

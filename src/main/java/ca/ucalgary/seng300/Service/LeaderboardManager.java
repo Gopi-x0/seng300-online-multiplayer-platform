@@ -1,4 +1,7 @@
-package ca.ucalgary.seng300;
+package ca.ucalgary.seng300.Service;
+
+import ca.ucalgary.seng300.PlayerProfile;
+import ca.ucalgary.seng300.Stubs.DatabaseStub;
 
 import java.util.List;
 

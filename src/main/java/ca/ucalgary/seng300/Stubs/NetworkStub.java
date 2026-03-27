@@ -1,4 +1,6 @@
-package ca.ucalgary.seng300;
+package ca.ucalgary.seng300.Stubs;
+
+import ca.ucalgary.seng300.GameState;
 
 /**
  * Simulates connecting to a matchmaking server or cloud host
