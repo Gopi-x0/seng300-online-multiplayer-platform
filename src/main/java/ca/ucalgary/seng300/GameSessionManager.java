@@ -1,15 +1,18 @@
 package ca.ucalgary.seng300;
 
+import ca.ucalgary.seng300.Connect4GameEngine.Connect4Game;
+import ca.ucalgary.seng300.TicTacToeEngine.TicTacToeEngine;
 import ca.ucalgary.seng300.interfaces.GameEngine;
 
 import java.util.List;
+import java.util.Objects;
 
 public class GameSessionManager {
     static GameEngine engine;
 
     static GameState currentState;
 
-    static List<String> players; //String is placeholder for PlayerProfiles class
+    static List<PlayerProfile> players; //String is placeholder for PlayerProfiles class
 
     /**
      *
@@ -18,18 +21,20 @@ public class GameSessionManager {
      * @param p2 Player 2
      * @return created game state
      */
-    public static <Player> GameState startGame(String gameType, Player p1, Player p2){
+    public static GameState startGame(String gameType, PlayerProfile p1, PlayerProfile p2){
         GameStatus status = GameStatus.SETUP;
-        String player1Id = null; //p1.playerId; (get from p1)
 
-        GameState gameState = new GameState();
-        gameState.gameType = gameType;
-        gameState.status = status;
-        gameState.activePlayerIndex = player1Id;
-        gameState.boardPayload = null; //placeholder
+        int player1Id = Integer.parseInt(p1.playerId);
+        players.add(p1);
+        players.add(p2);
+        currentState = new GameState(gameType, status, player1Id, null);
+        if (Objects.equals(gameType, "connect4")){
+            engine = new Connect4Game();
+        } else if (Objects.equals(gameType,"tictactoe")) {
+            engine = new TicTacToeEngine();
+        }
 
-
-        return gameState;
+        return currentState;
     }
 
     /**
@@ -84,14 +89,14 @@ public class GameSessionManager {
         }
 
         // get the IDs of two players who are playing
-        String player1Id = players.get(0);
-        String player2Id = players.get(1);
+        int player1Id = Integer.parseInt(players.get(0).playerId);
+        int player2Id = Integer.parseInt(players.get(1).playerId);
 
         // swap the active index in the GameState.
-        if (currentState.activePlayerIndex.equals(player1Id)) {
-            currentState.activePlayerIndex = player2Id;
+        if (currentState.getActivePlayerIndex() == player1Id) {
+            currentState.setActivePlayerIndex(player2Id);
         } else {
-            currentState.activePlayerIndex = player1Id;
+            currentState.setActivePlayerIndex(player1Id);
         }
     }
 

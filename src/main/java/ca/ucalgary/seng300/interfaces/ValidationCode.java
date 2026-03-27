@@ -1,4 +1,4 @@
-package ca.ucalgary.seng300.TicTacToeEngine;
+package ca.ucalgary.seng300.interfaces;
 
 /**
  * List of error types when an invalid move is made
