@@ -51,8 +51,30 @@ public class GameSessionManager {
 
     }
 
-    public static MoveResult submitMove(String playerID, Object movePayload){
-        return null;
+    public static Object submitMove(String playerID, Object movePayload) {
+        // validating player
+        if (currentState == null || !playerID.equals(currentState.activePlayerIndex)) {
+            System.out.println("Wait your turn!");
+            return null;
+        }
+
+        // create the Move
+        ca.ucalgary.seng300.Connect4GameEngine.Move move;
+        if (movePayload instanceof Integer) {
+            move = new ca.ucalgary.seng300.Connect4GameEngine.Move((Integer) movePayload);
+        } else {
+            move = (ca.ucalgary.seng300.Connect4GameEngine.Move) movePayload;
+        }
+
+
+        ca.ucalgary.seng300.GameState nextState = (GameState) ((ca.ucalgary.seng300.Connect4GameEngine.Connect4Game) engine).applyMove(currentState, move);
+
+        // 4. Update and Return
+        if (nextState != null) {
+            currentState = nextState;
+        }
+
+        return currentState;
     }
 
     public static void switchActivePlayer() {
