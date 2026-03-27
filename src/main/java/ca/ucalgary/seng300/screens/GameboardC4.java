@@ -33,6 +33,10 @@ public class GameboardC4 extends Application{
 
     @Override
     public void start(Stage primaryStage){
+        //Setting window size
+        primaryStage.setWidth(1400);
+        primaryStage.setHeight(1100);
+
         //Title Label
         Label title = new Label("Connect 4");
         title.setStyle("-fx-text-fill : black; -fx-font-size: 48px; -fx-font-weight: bold;");

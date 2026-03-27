@@ -262,7 +262,7 @@ public class MainGameDashboard extends BorderPane {
         table.setItems(FXCollections.observableArrayList(
                 new LeaderboardRow(1, "Bilal Ahmed", 2780, 47, "Tic Tac Toe"),
                 new LeaderboardRow(2, "Shayan Sheikh", 2680, 42, "Connect 4"),
-                new LeaderboardRow(3, "Muhammad Abad", 2510, 39, "Tic Tac Toe"),
+                new LeaderboardRow(3, "Muhammad Ahmad", 2510, 39, "Tic Tac Toe"),
                 new LeaderboardRow(4, "npc", 2340, 35, "Connect 4"),
                 new LeaderboardRow(5, "npc", 2190, 31, "Tic Tac Toe"),
                 new LeaderboardRow(6, "npc", 2050, 28, "Connect 4"),
