@@ -73,17 +73,14 @@ public class TicTacToeEngine implements GameEngine {
         // 1. Game already finished
         if (state.getStatus() != GameStatus.IN_PROGRESS) {
             return MoveResult.failure(
-                    ValidationCode.GAME_ALREADY_OVER,
-                    "The game has already ended with status: " + state.getStatus()
+                    ValidationCode.GAME_ALREADY_OVER, "The game has already ended with status: " + state.getStatus()
             );
         }
 
         // 2. Wrong player's turn
         if (!move.getPlayerId().equals(state.getActivePlayerId())) {
             return MoveResult.failure(
-                    ValidationCode.WRONG_TURN,
-                    "It is not player " + move.getPlayerId() + "'s turn. "
-                            + "Active player: " + state.getActivePlayerId()
+                    ValidationCode.WRONG_TURN, "It is not player " + move.getPlayerId() + "'s turn. " + "Active player: " + state.getActivePlayerId()
             );
         }
 
@@ -92,10 +89,14 @@ public class TicTacToeEngine implements GameEngine {
         int col = move.getCol();
         if (row < 0 || row >= BOARD_SIZE || col < 0 || col >= BOARD_SIZE) {
             return MoveResult.failure(
-                    ValidationCode.OUT_OF_BOUNDS,
-                    String.format("Cell (%d, %d) is out of bounds for a %dx%d board.",
+                    ValidationCode.OUT_OF_BOUNDS, String.format("Cell (%d, %d) is out of bounds for a %dx%d board.",
                             row, col, BOARD_SIZE, BOARD_SIZE)
             );
+        }
+
+        //4. If cell is already occupied
+        if (state.getCell(row, col)!= Symbol.EMPTY){
+            return MoveResult.failure(ValidationCode.CELL_OCCUPIED, String.format("Cell (%d, %d) is already occupied by %s", row, col, state.getCell(row,col)));
         }
         return MoveResult.success();
     }
