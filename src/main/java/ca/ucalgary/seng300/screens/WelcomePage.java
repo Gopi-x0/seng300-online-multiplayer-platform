@@ -52,10 +52,14 @@ public class WelcomePage extends StackPane {
         VBox.setVgrow(spacerTop, Priority.ALWAYS);
         VBox.setVgrow(spacerBottom, Priority.ALWAYS);
 
-        VBox headerGroup = new VBox(-34, logo, title);
+        VBox textGroup = new VBox(4, title, subtitle);
+        textGroup.setAlignment(Pos.CENTER);
+        textGroup.setTranslateY(-12);
+
+        VBox headerGroup = new VBox(-28, logo, textGroup);
         headerGroup.setAlignment(Pos.CENTER);
 
-        VBox content = new VBox(6, spacerTop, headerGroup, subtitle, buttonRow, spacerBottom);
+        VBox content = new VBox(18, spacerTop, headerGroup, buttonRow, spacerBottom);
         content.setAlignment(Pos.CENTER);
         styleMainContent(content);
 
@@ -64,19 +68,19 @@ public class WelcomePage extends StackPane {
 
     private Label buildTitle() {
         // keeping the heading seperate so its easier to tweak later
-        Label title = new Label("Welcome to");
-        title.setTextFill(Color.web("#5f87b7"));
-        title.setFont(resolveHeadingFont(FontWeight.BOLD, 34));
-        title.setTranslateY(-10);
+        Label title = new Label("WELCOME TO");
+        title.setTextFill(Color.web("#86b9ff"));
+        title.setFont(resolveHeadingFont(FontWeight.BOLD, 30));
+        title.setTranslateY(-4);
         return title;
     }
 
     private Label buildSubtitle() {
         // smaller text under the welcome heading
         Label subtitle = new Label("Student Gaming Platform");
-        subtitle.setTextFill(Color.web("#6f86a7"));
-        subtitle.setFont(resolveBodyFont(FontWeight.MEDIUM, 12));
-        subtitle.setTranslateY(-8);
+        subtitle.setTextFill(Color.web("#d8e7ff"));
+        subtitle.setFont(resolveBodyFont(FontWeight.MEDIUM, 14));
+        subtitle.setTranslateY(-2);
         return subtitle;
     }
 
@@ -105,7 +109,7 @@ public class WelcomePage extends StackPane {
         Image image = new Image(getClass().getResourceAsStream("/ca/ucalgary/seng300/images/sgp-logo.png"));
         ImageView logo = new ImageView(image);
         logo.setPreserveRatio(true);
-        logo.setFitWidth(395);
+        logo.setFitWidth(500);
         logo.setSmooth(true);
         return logo;
     }
