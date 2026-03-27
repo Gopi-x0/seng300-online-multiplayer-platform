@@ -37,15 +37,15 @@ public class GameSessionManager {
      * @param gameState gameState
      */
     public static void endGame(GameState gameState){
-        if (gameState.status == GameStatus.IN_PROGRESS){
+        if (gameState.getGameStatus() == GameStatus.IN_PROGRESS){
             return; //should not occur
         }
 
-        if (gameState.status == GameStatus.P1_WINS){
+        if (gameState.getGameStatus() == GameStatus.P1_WINS){
             return;
-        } else if (gameState.status == GameStatus.P2_WINS){
+        } else if (gameState.getGameStatus() == GameStatus.P2_WINS){
             return;
-        } else if (gameState.status == GameStatus.DRAW){
+        } else if (gameState.getGameStatus() == GameStatus.DRAW){
             return;
         }
 
@@ -53,7 +53,7 @@ public class GameSessionManager {
 
     public static Object submitMove(String playerID, Object movePayload) {
         // validating player
-        if (currentState == null || !playerID.equals(currentState.activePlayerIndex)) {
+        if (currentState == null || !playerID.equals(currentState.getActivePlayerIndex())) {
             System.out.println("Wait your turn!");
             return null;
         }
