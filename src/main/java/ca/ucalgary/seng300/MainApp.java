@@ -15,7 +15,7 @@ public class MainApp extends Application {
         Scene scene = new Scene(new MainGameDashboard(), 1386, 781);
         stage.setScene(scene);
         // matching the title to the screen we are previewing
-        stage.setTitle("Welcome Page - Haris");
+        stage.setTitle("Main Game Dashboard - Haris");
         stage.show();
     }
 

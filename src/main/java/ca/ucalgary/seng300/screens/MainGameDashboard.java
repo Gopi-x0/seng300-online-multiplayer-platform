@@ -51,6 +51,7 @@ public class MainGameDashboard extends BorderPane {
         content.setPadding(new Insets(14, 22, 18, 22));
         content.setFillWidth(true);
         content.setMaxWidth(1120);
+        content.setAlignment(Pos.TOP_CENTER);
         content.setStyle(
                 "-fx-background-color: linear-gradient(to bottom, rgba(7, 18, 34, 0.97), rgba(4, 12, 23, 0.98));" +
                 "-fx-background-radius: 6;"
@@ -113,6 +114,7 @@ public class MainGameDashboard extends BorderPane {
         HBox.setHgrow(ticTacToeCard, Priority.ALWAYS);
         HBox.setHgrow(connectFourCard, Priority.ALWAYS);
         row.setMaxWidth(740);
+        row.setAlignment(Pos.CENTER);
         return row;
     }
 
@@ -221,6 +223,7 @@ public class MainGameDashboard extends BorderPane {
         VBox section = new VBox(14, buildLeaderboardHeading(), table);
         section.setPadding(new Insets(10, 0, 0, 0));
         section.setMaxWidth(980);
+        section.setAlignment(Pos.CENTER_LEFT);
         section.setStyle(
                 "-fx-background-color: linear-gradient(to bottom, rgba(9, 19, 36, 0.88), rgba(7, 15, 28, 0.96));" +
                 "-fx-background-radius: 12;" +
