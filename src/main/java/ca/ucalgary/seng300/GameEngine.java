@@ -2,7 +2,7 @@ package ca.ucalgary.seng300;
 
 /**
  * This interface defines the core contract for the two games running on the platform
- * This is for the R&V team to write the classes and implement it
+ * This is for the R&V team to write the classes and implement 
  */
 
 public interface GameEngine {
