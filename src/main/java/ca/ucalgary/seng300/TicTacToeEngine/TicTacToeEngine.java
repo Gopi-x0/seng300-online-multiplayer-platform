@@ -145,4 +145,44 @@ public class TicTacToeEngine implements GameEngine {
         return null;
     }
 
+    //HELPER METHODS
+
+
+    /**
+     * Scans all Win_lines to determine if a given symbol occupies a full win line
+     * @param board the current board
+     * @param symbol the symbol we want to check
+     * @return true if the symbol meets win line condition
+     */
+    private boolean checkWin(Symbol[][] board, Symbol symbol){
+        for (int[] line : WIN_LINES) {
+            if (board[line[0]][line[1]] == symbol
+                    && board[line[2]][line[3]] == symbol
+                    && board[line[4]][line[5]] == symbol) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+
+    /**
+     * Returns if every cell on the board is occupied
+     * Used to detect a draw in match progress
+     * @param board
+     * @return true if the baord is full, and the for loop doesnt find an empty symbol
+     */
+    private boolean isBoardFull(Symbol[][] board){
+        for (int r= 0; r<BOARD_SIZE; r++){
+            for (int c=0; c<BOARD_SIZE; c++){
+                if(board[r][c] == Symbol.EMPTY){
+                    return false;
+                }
+            }
+        }
+        return true;
+    }
+
+
+
 }
