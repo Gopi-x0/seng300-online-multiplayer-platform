@@ -100,4 +100,8 @@ public class GameSessionManager {
         }
     }
 
+    public static GameState getCurrentState() {
+        return currentState;
+    }
+
 }
