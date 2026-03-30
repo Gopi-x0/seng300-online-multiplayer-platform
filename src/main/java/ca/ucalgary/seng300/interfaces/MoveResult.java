@@ -1,4 +1,4 @@
-package ca.ucalgary.seng300.TicTacToeEngine;
+package ca.ucalgary.seng300.interfaces;
 
 
 /**
@@ -27,6 +27,7 @@ public class MoveResult {
      *Factory method to create an instance of the 'success' move result
      */
     public static MoveResult success(){
+
         return new MoveResult(true, "Move is valid", ValidationCode.SUCCESS);
     }
 
