@@ -4,6 +4,7 @@ import ca.ucalgary.seng300.Connect4GameEngine.Connect4Game;
 import ca.ucalgary.seng300.TicTacToeEngine.TicTacToeEngine;
 import ca.ucalgary.seng300.interfaces.GameEngine;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,8 +13,7 @@ public class GameSessionManager {
 
     static GameState currentState;
 
-    static List<PlayerProfile> players; //String is placeholder for PlayerProfiles class
-
+    static List<PlayerProfile> players = new ArrayList<>();
     /**
      *
      * @param gameType Connect-4 OR Tic-tac-toe
