@@ -1,7 +1,6 @@
 package ca.ucalgary.seng300;
 
 
-
 public class GameState {
     private String gameType;
     private GameStatus gameStatus;
