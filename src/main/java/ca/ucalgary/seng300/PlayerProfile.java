@@ -11,10 +11,10 @@ public class PlayerProfile {
         this.username = username;
     }
 
-    public String playerId;
+    private String playerId;
     // used to refer to a player in the database
 
-    public String username;
+    private String username;
     // display name for the player and their opponents to see
 
     private String email;

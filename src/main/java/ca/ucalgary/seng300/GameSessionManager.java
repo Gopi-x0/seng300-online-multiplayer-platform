@@ -24,7 +24,7 @@ public class GameSessionManager {
     public static GameState startGame(String gameType, PlayerProfile p1, PlayerProfile p2){
         GameStatus status = GameStatus.SETUP;
 
-        int player1Id = Integer.parseInt(p1.playerId);
+        int player1Id = Integer.parseInt(p1.getPlayerId());
         players.add(p1);
         players.add(p2);
         currentState = new GameState(gameType, status, player1Id, null);
@@ -89,8 +89,8 @@ public class GameSessionManager {
         }
 
         // get the IDs of two players who are playing
-        int player1Id = Integer.parseInt(players.get(0).playerId);
-        int player2Id = Integer.parseInt(players.get(1).playerId);
+        int player1Id = Integer.parseInt(players.get(0).getPlayerId());
+        int player2Id = Integer.parseInt(players.get(1).getPlayerId());
 
         // swap the active index in the GameState.
         if (currentState.getActivePlayerIndex() == player1Id) {
