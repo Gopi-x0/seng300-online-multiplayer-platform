@@ -33,7 +33,9 @@ public class PlayerProfile {
         return playerId;
     }
 
-
+    public String getUsername() {
+        return username;
+    }
 
 
     public void setUsername(String newName) {
