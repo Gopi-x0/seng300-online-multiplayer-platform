@@ -1,5 +1,5 @@
 package ca.ucalgary.seng300.screens;
-
+import ca.ucalgary.seng300.GameType;
 import javafx.animation.FadeTransition;
 import javafx.animation.ScaleTransition;
 import javafx.geometry.Insets;
@@ -7,7 +7,10 @@ import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
 import javafx.scene.effect.GaussianBlur;
-import javafx.scene.layout.*;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Region;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.text.Font;
@@ -33,7 +36,6 @@ import javafx.util.Duration;
  */
 public class WinScreen extends StackPane {
 
-    public enum GameType {TTT, C4}
 
     private final boolean isWin;
     private final GameType gameType;
