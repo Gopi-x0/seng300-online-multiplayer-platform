@@ -2,7 +2,10 @@ package ca.ucalgary.seng300;
 
 import ca.ucalgary.seng300.Stubs.DatabaseStub;
 
-
+/**
+ * This class coordinates validation and updates the underlying persistence
+ * stub when a user changes their credentials.
+ */
 public class Settings {
     private final Player player;
     private final DatabaseStub database;
