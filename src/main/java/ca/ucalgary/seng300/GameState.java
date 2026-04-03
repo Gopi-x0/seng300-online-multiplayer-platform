@@ -1,7 +1,6 @@
 package ca.ucalgary.seng300;
 
 
-// Represents the current state of the game
 public class GameState {
 
     // Variables for the type of game, the status of it, the current player, and the board state

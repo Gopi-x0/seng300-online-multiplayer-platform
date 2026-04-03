@@ -4,6 +4,7 @@ import ca.ucalgary.seng300.Connect4GameEngine.Connect4Game;
 import ca.ucalgary.seng300.TicTacToeEngine.TicTacToeEngine;
 import ca.ucalgary.seng300.interfaces.GameEngine;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
@@ -12,8 +13,7 @@ public class GameSessionManager {
 
     static GameState currentState;
 
-    static List<PlayerProfile> players; //String is placeholder for PlayerProfiles class
-
+    static List<PlayerProfile> players = new ArrayList<>();
     /**
      *
      * @param gameType Connect-4 OR Tic-tac-toe
@@ -24,7 +24,7 @@ public class GameSessionManager {
     public static GameState startGame(String gameType, PlayerProfile p1, PlayerProfile p2){
         GameStatus status = GameStatus.SETUP;
 
-        int player1Id = Integer.parseInt(p1.playerId);
+        int player1Id = Integer.parseInt(p1.getPlayerId());
         players.add(p1);
         players.add(p2);
         currentState = new GameState(gameType, status, player1Id, null);
@@ -89,8 +89,8 @@ public class GameSessionManager {
         }
 
         // get the IDs of two players who are playing
-        int player1Id = Integer.parseInt(players.get(0).playerId);
-        int player2Id = Integer.parseInt(players.get(1).playerId);
+        int player1Id = Integer.parseInt(players.get(0).getPlayerId());
+        int player2Id = Integer.parseInt(players.get(1).getPlayerId());
 
         // swap the active index in the GameState.
         if (currentState.getActivePlayerIndex() == player1Id) {
