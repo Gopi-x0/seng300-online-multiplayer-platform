@@ -2,6 +2,9 @@ package ca.ucalgary.seng300.Connect4GameEngine;
 
 import ca.ucalgary.seng300.GameStatus;
 import ca.ucalgary.seng300.interfaces.GameEngine;
+import ca.ucalgary.seng300.interfaces.MoveResult;
+import ca.ucalgary.seng300.interfaces.Move;
+import ca.ucalgary.seng300.interfaces.ValidationCode;
 
 import java.util.List;
 
@@ -18,35 +21,7 @@ import java.util.List;
  *   This class returns state ONLY. It does NOT call UI, send notifications,
  *   write to databases, or know anything about sessions or lobbies.
  */
-public class Connect4Game implements GameEngine {
-
-    // =========================================================================
-    // GameEngine interface — thin wrappers only, logic is in private methods
-    // =========================================================================
-
-    @Override
-    public Object createInitialState(List<String> players) {
-        return buildInitialState(players);
-    }
-
-    @Override
-    public boolean validateMove(Object state, Object move) {
-        return isMoveValid((Connect4State) state, (Move) move);
-    }
-
-    @Override
-    public Object applyMove(Object state, Object move) {
-        return processMove((Connect4State) state, (Move) move);
-    }
-
-    @Override
-    public boolean evaluateEnd(Object state) {
-        return isGameOver((Connect4State) state);
-    }
-
-    // =========================================================================
-    // Private game logic — self-contained, no dependency on GameEngine shape
-    // =========================================================================
+public class Connect4Game implements GameEngine<Connect4State> {
 
     /**
      * Builds the starting state for a new Connect 4 game.
@@ -56,7 +31,8 @@ public class Connect4Game implements GameEngine {
      * Player 2 gets 'Y' (Yellow).
      * Returns a fresh Connect4State with an empty 6x7 board.
      */
-    private Connect4State buildInitialState(List<String> players) {
+    @Override
+    public Connect4State createInitialState(List<String> players) {
         if (players == null || players.size() < 2) {
             throw new IllegalArgumentException("Connect 4 requires exactly 2 players.");
         }
@@ -85,23 +61,49 @@ public class Connect4Game implements GameEngine {
      * Turn order (is it actually this player's turn?) is enforced by the
      * GameSessionManager, not here. This engine trusts the platform on that.
      */
-    private boolean isMoveValid(Connect4State state, Move move) {
+    //TODO: ERROR was being caused due to your function returning boolean instead of MoveResult
+    //TODO: Refer to TicTacToeEngine and MoveResult file to properly implement logic for this
+    @Override
+    public MoveResult validateMove(Connect4State state, ca.ucalgary.seng300.interfaces.Move move) {
         if (state.getStatus() != GameStatus.IN_PROGRESS) {
-            return false;
+            return MoveResult.failure(
+                    ValidationCode.GAME_ALREADY_OVER, "The game has already ended with status: " + state.getStatus()
+            );
         }
 
-        int col = move.getColumn();
+        int col = move.getCol();
 
+        //TODO: This return method is just an example, need to implement actual logic that returns if a move is out of bounds
         if (col < 0 || col >= Board.COLS) {
-            return false;
+            //Example return value : NOT FINAL
+            return MoveResult.failure(
+                    ValidationCode.GAME_ALREADY_OVER, "The game has already ended with status: " + state.getStatus()
+            );
         }
 
+        //TODO: This return method is just an example, need to implement actual logic that returns if a column is full
         if (state.getBoard().isColumnFull(col)) {
-            return false;
+            //Example return value : NOT FINAL
+            return MoveResult.failure(
+                    ValidationCode.GAME_ALREADY_OVER, "The game has already ended with status: " + state.getStatus()
+            );
         }
 
-        return true;
+        return MoveResult.success();
     }
+
+    @Override
+    public Connect4State applyMove(Connect4State state, ca.ucalgary.seng300.interfaces.Move move) {
+        return processMove((Connect4State) state, (Move) move);
+    }
+
+    @Override
+    public Connect4State evaluateEnd(Connect4State state) {
+        return state;
+    }
+
+
+
 
     /**
      * Applies a validated move and returns a brand-new Connect4State.
@@ -118,13 +120,13 @@ public class Connect4Game implements GameEngine {
         Board newBoard = new Board(state.getBoard()); // deep copy
         Player currentPlayer = state.getCurrentPlayer();
 
-        int landedRow = newBoard.dropPiece(move.getColumn(), currentPlayer);
+        int landedRow = newBoard.dropPiece(move.getCol(), currentPlayer);
 
         // Determine outcome after the piece lands
         GameStatus newStatus;
         Player winner = null;
 
-        if (newBoard.checkWin(landedRow, move.getColumn())) {
+        if (newBoard.checkWin(landedRow, move.getCol())) {
             newStatus = (currentPlayer.getSymbol() == 'R') ? GameStatus.P1_WINS : GameStatus.P2_WINS;
             winner = currentPlayer;
         } else if (newBoard.isFull()) {
