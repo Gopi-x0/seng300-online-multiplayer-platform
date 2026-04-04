@@ -92,19 +92,6 @@ public class Connect4Game implements GameEngine<Connect4State> {
         return MoveResult.success();
     }
 
-    @Override
-    public Connect4State applyMove(Connect4State state, ca.ucalgary.seng300.interfaces.Move move) {
-        return processMove((Connect4State) state, (Move) move);
-    }
-
-    @Override
-    public Connect4State evaluateEnd(Connect4State state) {
-        return state;
-    }
-
-
-
-
     /**
      * Applies a validated move and returns a brand-new Connect4State.
      *
@@ -116,7 +103,8 @@ public class Connect4Game implements GameEngine<Connect4State> {
      *   5. Swap the active player
      *   6. Return a new immutable Connect4State
      */
-    private Connect4State processMove(Connect4State state, Move move) {
+    @Override
+    public Connect4State applyMove(Connect4State state, ca.ucalgary.seng300.interfaces.Move move) {
         Board newBoard = new Board(state.getBoard()); // deep copy
         Player currentPlayer = state.getCurrentPlayer();
 
@@ -150,7 +138,9 @@ public class Connect4Game implements GameEngine<Connect4State> {
     /**
      * Returns true if the game is over (win or draw), false if still in progress.
      */
-    private boolean isGameOver(Connect4State state) {
-        return state.getStatus() != GameStatus.IN_PROGRESS;
+    @Override
+    public Connect4State evaluateEnd(Connect4State state) {
+        //TODO: Refer to TicTacToeEngine.java evaluateEnd method; method should return state in form of Connect4State - Not Boolean
+        return state;
     }
 }
