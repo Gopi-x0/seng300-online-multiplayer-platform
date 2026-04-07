@@ -33,7 +33,6 @@ public class Move {
         return col;
     }
 
-    //TODO: Create method for playerID
     public String getPlayerId(){
 
         return playerId;
