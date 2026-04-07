@@ -26,7 +26,7 @@ public class DatabaseStub {
             System.out.println("Result: " + gameType + " match ended in a draw!");
 
         } else  {
-            System.out.println("Result: " + winner.username + " defeated " + loser.username + "!");
+            System.out.println("Result: " + winner.getUsername() + " defeated " + loser.getUsername() + "!");
         }
 
     }

@@ -22,7 +22,7 @@ public class LeaderboardManager {
         if (isDraw) {
             System.out.println(gameType + " match ended in a DRAW.");
         } else {
-            System.out.println(winner.username + " defeated " + loser.username + " in " + gameType + "!");
+            System.out.println(winner.getUsername() + " defeated " + loser.getUsername() + " in " + gameType + "!");
         }
 
         database.saveMatchRecord(gameType, winner, loser, isDraw);

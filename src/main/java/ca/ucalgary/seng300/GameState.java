@@ -1,13 +1,15 @@
 package ca.ucalgary.seng300;
 
 
-
 public class GameState {
+
+    // Variables for the type of game, the status of it, the current player, and the board state
     private String gameType;
     private GameStatus gameStatus;
     private int activePlayerIndex;
     private Object boardPayLoad;
 
+    // GameState object
     public GameState(String gameType, GameStatus gameStatus, int activePlayerIndex, Object boardPayLoad) {
         this.gameType = gameType;
         this.gameStatus = gameStatus;
@@ -16,6 +18,7 @@ public class GameState {
     }
 
 
+    // Getters and setters
     public String getGameType() {
         return gameType;
     }
