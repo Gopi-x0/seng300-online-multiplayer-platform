@@ -1,4 +1,4 @@
-package ca.ucalgary.seng300.TicTacToeEngine;
+package ca.ucalgary.seng300.tictactoeengine;
 
 import ca.ucalgary.seng300.interfaces.GameEngine;
 import ca.ucalgary.seng300.interfaces.Move;
@@ -40,8 +40,7 @@ public class TicTacToeEngine implements GameEngine<GameState> {
 
 
 
-    //OVERRIDEN GAMEENGINE INTERFACE METHODS
-    //-------------------------------------------------------------------------------//
+    // Overridden GameEngine interface methods
     /**
      * Initialises a fresh 3x3 board. All cells are EMPTY.
      * The first player in the playerIds list goes first and is assigned Symbol.X.
@@ -145,6 +144,7 @@ public class TicTacToeEngine implements GameEngine<GameState> {
     }
 
 
+    // Checks if the game has ended (win or draw) and returns updated state
     @Override
     public GameState evaluateEnd(GameState state) {
         Symbol[][] board = state.getBoard();
@@ -165,8 +165,7 @@ public class TicTacToeEngine implements GameEngine<GameState> {
         return state;
     }
 
-    //HELPER METHODS
-
+    // Helper methods
 
     /**
      * Scans all Win_lines to determine if a given symbol occupies a full win line
@@ -202,7 +201,4 @@ public class TicTacToeEngine implements GameEngine<GameState> {
         }
         return true;
     }
-
-
-
 }

@@ -1,4 +1,4 @@
-package ca.ucalgary.seng300.TicTacToeEngine;
+package ca.ucalgary.seng300.tictactoeengine;
 
 /**
  * Tracks the game status for a concurrent match
