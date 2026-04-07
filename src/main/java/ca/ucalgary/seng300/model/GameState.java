@@ -1,6 +1,6 @@
-package ca.ucalgary.seng300;
+package ca.ucalgary.seng300.model;
 
-
+// Represents the current state of a game including type, status, active player, and board
 public class GameState {
 
     // Variables for the type of game, the status of it, the current player, and the board state
@@ -9,7 +9,7 @@ public class GameState {
     private int activePlayerIndex;
     private Object boardPayLoad;
 
-    // GameState object
+    // Constructor to set up the game state with given values
     public GameState(String gameType, GameStatus gameStatus, int activePlayerIndex, Object boardPayLoad) {
         this.gameType = gameType;
         this.gameStatus = gameStatus;
@@ -33,17 +33,5 @@ public class GameState {
 
     public Object getBoardPayLoad() {
         return boardPayLoad;
-    }
-
-    public void setBoardPayLoad(Object boardPayLoad) {
-        this.boardPayLoad = boardPayLoad;
-    }
-
-    public void setGameStatus(GameStatus gameStatus) {
-        this.gameStatus = gameStatus;
-    }
-
-    public void setActivePlayerIndex(int activePlayerIndex) {
-        this.activePlayerIndex = activePlayerIndex;
     }
 }
