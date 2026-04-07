@@ -1,6 +1,6 @@
-package ca.ucalgary.seng300.Connect4GameEngine;
+package ca.ucalgary.seng300.connect4engine;
 
-import ca.ucalgary.seng300.GameStatus;
+import ca.ucalgary.seng300.model.GameStatus;
 import ca.ucalgary.seng300.interfaces.GameEngine;
 import ca.ucalgary.seng300.interfaces.MoveResult;
 import ca.ucalgary.seng300.interfaces.Move;
@@ -9,10 +9,10 @@ import ca.ucalgary.seng300.interfaces.ValidationCode;
 import java.util.List;
 
 /**
- * Connect4Game — the Connect 4 game engine.
+ * Connect4Game - the Connect 4 game engine.
  *
- * Implements the GameEngine interface (Platform Core's stub).
- * The @Override methods are intentionally thin wrappers — all real logic
+ * Implements the GameEngine interface.
+ * The @Override methods are intentionally thin wrappers - all real logic
  * lives in private methods below. This means if Platform Core changes the
  * GameEngine interface signature, only the @Override declarations need
  * updating, not the actual game logic.
@@ -51,7 +51,7 @@ public class Connect4Game implements GameEngine<Connect4State> {
     }
 
     /**
-     * Checks whether a move is legal — WITHOUT changing anything.
+     * Checks whether a move is legal - WITHOUT changing anything.
      *
      * Connect 4 move rules:
      *   1. The game must still be IN_PROGRESS (no moves after game ends)
@@ -61,8 +61,6 @@ public class Connect4Game implements GameEngine<Connect4State> {
      * Turn order (is it actually this player's turn?) is enforced by the
      * GameSessionManager, not here. This engine trusts the platform on that.
      */
-    //TODO: ERROR was being caused due to your function returning boolean instead of MoveResult
-    //TODO: Refer to TicTacToeEngine and MoveResult file to properly implement logic for this
     @Override
     public MoveResult validateMove(Connect4State state, ca.ucalgary.seng300.interfaces.Move move) {
         if (state.getStatus() != GameStatus.IN_PROGRESS) {
@@ -73,19 +71,15 @@ public class Connect4Game implements GameEngine<Connect4State> {
 
         int col = move.getCol();
 
-        //TODO: This return method is just an example, need to implement actual logic that returns if a move is out of bounds
         if (col < 0 || col >= Board.COLS) {
-            //Example return value : NOT FINAL
             return MoveResult.failure(
-                    ValidationCode.GAME_ALREADY_OVER, "The game has already ended with status: " + state.getStatus()
+                    ValidationCode.OUT_OF_BOUNDS, "Column " + col + " is out of bounds (valid: 0-" + (Board.COLS - 1) + ")"
             );
         }
 
-        //TODO: This return method is just an example, need to implement actual logic that returns if a column is full
         if (state.getBoard().isColumnFull(col)) {
-            //Example return value : NOT FINAL
             return MoveResult.failure(
-                    ValidationCode.GAME_ALREADY_OVER, "The game has already ended with status: " + state.getStatus()
+                    ValidationCode.CELL_OCCUPIED, "Column " + col + " is full"
             );
         }
 
@@ -97,7 +91,7 @@ public class Connect4Game implements GameEngine<Connect4State> {
      *
      * Steps:
      *   1. Deep-copy the current board (never mutate the old state)
-     *   2. Drop the current player's piece — gravity finds the landing row
+     *   2. Drop the current player's piece - gravity finds the landing row
      *   3. Check if that landing created a win (4-in-a-row)
      *   4. If no win, check if the board is now full (draw)
      *   5. Swap the active player
@@ -136,11 +130,11 @@ public class Connect4Game implements GameEngine<Connect4State> {
     }
 
     /**
-     * Returns true if the game is over (win or draw), false if still in progress.
+     * Returns the state unchanged. End-state evaluation (win/draw detection)
+     * is performed inside {@link #applyMove} immediately after each piece lands.
      */
     @Override
     public Connect4State evaluateEnd(Connect4State state) {
-        //TODO: Refer to TicTacToeEngine.java evaluateEnd method; method should return state in form of Connect4State - Not Boolean
         return state;
     }
 }

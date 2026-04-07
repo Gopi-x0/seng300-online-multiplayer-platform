@@ -1,4 +1,4 @@
-package ca.ucalgary.seng300.Connect4GameEngine;
+package ca.ucalgary.seng300.connect4engine;
 
 /**
  * Player Class
