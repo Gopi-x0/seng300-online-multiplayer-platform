@@ -1,321 +1,563 @@
 package ca.ucalgary.seng300.screens;
 
+import ca.ucalgary.seng300.service.UserManager;
+import ca.ucalgary.seng300.model.UserData;
+import javafx.animation.FadeTransition;
+import javafx.animation.ScaleTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.*;
+import javafx.scene.paint.Color;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.util.Duration;
 
 /**
- * SettingsScreen represents the user settings page.
+ * SettingsScreen allows the user to change username, email, password, and logout.
+ * All changes are persisted via UserManager.
  */
-public class SettingsScreen extends ScrollPane {
+public class SettingsScreen extends StackPane {
 
-    public SettingsScreen() {
+    private final Runnable onBackToHome;
+    private final Runnable onLogout;
 
-        // Main container that holds everything vertically
+    // Sets up the scrollable settings page with all setting cards
+    public SettingsScreen(Runnable onBackToHome, Runnable onLogout) {
+        this.onBackToHome = onBackToHome;
+        this.onLogout = onLogout;
+
         VBox content = new VBox();
-        content.setSpacing(28); //spacing between sections
-        content.setPadding(new Insets(40)); // padding around edges
-        content.setStyle("-fx-background-color: #020b1c;"); // dark background
-        content.setFillWidth(true); // stretch children to full width
+        content.setSpacing(28);
+        content.setPadding(new Insets(40));
+        content.setStyle("-fx-background-color: #020b1c;");
+        content.setFillWidth(true);
 
-        //Add top bar and title first
         content.getChildren().add(createTopBar());
         content.getChildren().add(createTitle());
-
-        //add username and email and password Card
         content.getChildren().add(createUsernameCard());
         content.getChildren().add(createEmailCard());
         content.getChildren().add(createPasswordCard());
-        //logout card
         content.getChildren().add(createLogoutCard());
 
-        // Put VBox inside scrollpane so we can scroll
-        setContent(content);
-
-        // makes content stretch horizontally
-        setFitToWidth(true);
-
-        // removes ugly white background from scrollpane
-        setStyle(
+        ScrollPane scrollPane = new ScrollPane(content);
+        scrollPane.setFitToWidth(true);
+        scrollPane.setStyle(
                 "-fx-background: #020b1c;" +
-                        "-fx-background-color: #020b1c;"
+                "-fx-background-color: #020b1c;"
         );
+
+        getChildren().add(scrollPane);
     }
 
-    /**
-     * Creates the top navigation bar
-     */
+    // Creates the top bar with back and credits buttons
     private HBox createTopBar() {
-        // basic styling for button
-        String style =
-                "-fx-background-color: transparent;" +
-                        "-fx-text-fill: #00c8ff;" +
-                        "-fx-font-size: 15px;" +
-                        "-fx-cursor: hand;";
-        Button back = new Button("← Back to Home");
-        back.setStyle(style);
-        // hover effect
-        back.setOnMouseEntered(e ->
-                back.setStyle(style + "-fx-background-color: rgba(0,200,255,0.1);")
-        );
-        // remove hover
-        back.setOnMouseExited(e ->
-                back.setStyle(style)
-        );
-        // click effect
-        back.setOnMousePressed(e ->
-                back.setStyle(style + "-fx-background-color: rgba(0,200,255,0.2);")
-        );
-        // release
-        back.setOnMouseReleased(e ->
-                back.setStyle(style + "-fx-background-color: rgba(0,200,255,0.1);")
-        );
-        // placeholder functionality
-        back.setOnAction(e -> System.out.println("Go to Home"));
-        HBox bar = new HBox(back);
+        // Button style variants for normal, hover, and pressed states
+        String baseStyle =
+                "-fx-text-fill: #00c8ff;" +
+                "-fx-font-size: 14px;" +
+                "-fx-cursor: hand;" +
+                "-fx-background-color: rgba(0,200,255,0.07);" +
+                "-fx-background-radius: 10;" +
+                "-fx-padding: 4 14 4 14;";
+
+        String hoverStyle =
+                "-fx-text-fill: #33d6ff;" +
+                "-fx-font-size: 14px;" +
+                "-fx-cursor: hand;" +
+                "-fx-background-color: rgba(0,200,255,0.15);" +
+                "-fx-background-radius: 10;" +
+                "-fx-padding: 4 14 4 14;";
+
+        String pressedStyle =
+                "-fx-text-fill: #66e0ff;" +
+                "-fx-font-size: 14px;" +
+                "-fx-cursor: hand;" +
+                "-fx-background-color: rgba(0,200,255,0.2);" +
+                "-fx-background-radius: 10;" +
+                "-fx-padding: 4 14 4 14;";
+
+        Button back = new Button("\u2190 Back to Home");
+        back.setStyle(baseStyle);
+        back.setOnMouseEntered(e -> {
+            back.setStyle(hoverStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), back);
+            st.setToX(1.05); st.setToY(1.05); st.play();
+        });
+        back.setOnMouseExited(e -> {
+            back.setStyle(baseStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), back);
+            st.setToX(1.0); st.setToY(1.0); st.play();
+        });
+        back.setOnMousePressed(e -> {
+            back.setStyle(pressedStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(80), back);
+            st.setToX(0.96); st.setToY(0.96); st.play();
+        });
+        back.setOnMouseReleased(e -> {
+            back.setStyle(hoverStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(80), back);
+            st.setToX(1.05); st.setToY(1.05); st.play();
+        });
+        back.setOnAction(e -> {
+            System.out.println("SettingsScreen: navigating to Home");
+            if (onBackToHome != null) onBackToHome.run();
+        });
+
+        Button credits = new Button("Credits");
+        credits.setStyle(baseStyle);
+        credits.setOnMouseEntered(e -> {
+            credits.setStyle(hoverStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), credits);
+            st.setToX(1.05); st.setToY(1.05); st.play();
+        });
+        credits.setOnMouseExited(e -> {
+            credits.setStyle(baseStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), credits);
+            st.setToX(1.0); st.setToY(1.0); st.play();
+        });
+        credits.setOnMousePressed(e -> {
+            credits.setStyle(pressedStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(80), credits);
+            st.setToX(0.96); st.setToY(0.96); st.play();
+        });
+        credits.setOnMouseReleased(e -> {
+            credits.setStyle(hoverStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(80), credits);
+            st.setToX(1.05); st.setToY(1.05); st.play();
+        });
+        credits.setOnAction(e -> showCreditsPopup());
+
+        Region spacer = new Region();
+        HBox.setHgrow(spacer, Priority.ALWAYS);
+
+        HBox bar = new HBox(back, spacer, credits);
         bar.setAlignment(Pos.CENTER_LEFT);
         return bar;
     }
 
-    /**
-     * Creates page title
-     */
+    // Shows a modal popup listing all student contributors
+    private void showCreditsPopup() {
+        Pane scrim = new Pane();
+        scrim.setStyle("-fx-background-color: rgba(0, 0, 0, 0.58);");
+        scrim.setMaxWidth(Double.MAX_VALUE);
+        scrim.setMaxHeight(Double.MAX_VALUE);
+
+        Label icon = new Label("\uD83D\uDC65");
+        icon.setFont(Font.font("Arial", FontWeight.BOLD, 40));
+        icon.setAlignment(Pos.CENTER);
+
+        Label heading = new Label("Student Contributors");
+        heading.setTextFill(Color.WHITE);
+        heading.setFont(Font.font("Arial", FontWeight.BOLD, 22));
+        heading.setAlignment(Pos.CENTER);
+        heading.setStyle("-fx-text-alignment: center;");
+
+        String[] names = {
+                "Muhammad Ahmad", "Bilal Ahmed", "Muhammad Waqar", "Logan Fedoroshyn",
+                "Jack", "Esha Esha", "Dima",
+                "Olivia Park", "Shayan Shaikh", "Haris Naveed",
+                "Mohammed Syed", "Prantap Sharma", "Landon Liknes",
+                "Gurparvesh Golan", "Rishav Gautam", "Jimmy La", "Zonaira Omar"
+        };
+
+        VBox namesList = new VBox(5);
+        namesList.setAlignment(Pos.CENTER_LEFT);
+        namesList.setPadding(new Insets(8, 20, 8, 20));
+        for (String name : names) {
+            Label nameLabel = new Label(name);
+            nameLabel.setTextFill(Color.web("#cad5e2"));
+            nameLabel.setFont(Font.font("Arial", 14));
+            namesList.getChildren().add(nameLabel);
+        }
+
+        // Dismiss button styling
+        String dismissBase =
+                "-fx-background-color: linear-gradient(to right, #1d4ed8, #2563eb);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-background-radius: 8;" +
+                "-fx-cursor: hand;";
+        String dismissHover =
+                "-fx-background-color: linear-gradient(to right, #2563eb, #3b82f6);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-background-radius: 8;" +
+                "-fx-cursor: hand;";
+        String dismissPress =
+                "-fx-background-color: #1e40af;" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 14px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-background-radius: 8;" +
+                "-fx-cursor: hand;";
+
+        Button dismissBtn = new Button("Dismiss");
+        dismissBtn.setPrefWidth(160);
+        dismissBtn.setPrefHeight(40);
+        dismissBtn.setStyle(dismissBase);
+        dismissBtn.setOnMouseEntered(e -> {
+            dismissBtn.setStyle(dismissHover);
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), dismissBtn);
+            st.setToX(1.05); st.setToY(1.05); st.play();
+        });
+        dismissBtn.setOnMouseExited(e -> {
+            dismissBtn.setStyle(dismissBase);
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), dismissBtn);
+            st.setToX(1.0); st.setToY(1.0); st.play();
+        });
+        dismissBtn.setOnMousePressed(e -> {
+            dismissBtn.setStyle(dismissPress);
+            ScaleTransition st = new ScaleTransition(Duration.millis(80), dismissBtn);
+            st.setToX(0.96); st.setToY(0.96); st.play();
+        });
+        dismissBtn.setOnMouseReleased(e -> {
+            dismissBtn.setStyle(dismissHover);
+            ScaleTransition st = new ScaleTransition(Duration.millis(80), dismissBtn);
+            st.setToX(1.05); st.setToY(1.05); st.play();
+        });
+
+        // Popup card styling
+        VBox card = new VBox(18, icon, heading, namesList, dismissBtn);
+        card.setAlignment(Pos.CENTER);
+        card.setPadding(new Insets(30, 40, 30, 40));
+        card.setPrefWidth(420);
+        card.setMinWidth(420);
+        card.setMaxWidth(420);
+        card.setMaxHeight(Region.USE_PREF_SIZE);
+        card.setStyle(
+                "-fx-background-color: linear-gradient(to bottom, #0d1f40, #162d55);" +
+                "-fx-background-radius: 18;" +
+                "-fx-border-color: rgba(80, 140, 220, 0.55);" +
+                "-fx-border-radius: 18;" +
+                "-fx-border-width: 1.5;"
+        );
+
+        StackPane overlay = new StackPane(scrim, card);
+        overlay.setAlignment(Pos.CENTER);
+        overlay.setOpacity(0);
+
+        dismissBtn.setOnAction(e -> {
+            FadeTransition fadeOut = new FadeTransition(Duration.millis(200), overlay);
+            fadeOut.setFromValue(1);
+            fadeOut.setToValue(0);
+            fadeOut.setOnFinished(ev -> getChildren().remove(overlay));
+            fadeOut.play();
+        });
+
+        getChildren().add(overlay);
+        FadeTransition fadeIn = new FadeTransition(Duration.millis(250), overlay);
+        fadeIn.setFromValue(0);
+        fadeIn.setToValue(1);
+        fadeIn.play();
+    }
+
+    // Creates the "Settings" title label
     private Label createTitle() {
         Label title = new Label("Settings");
-        // big bold title
         title.setStyle("-fx-text-fill:white; -fx-font-size:34px; -fx-font-weight:bold;");
         return title;
     }
 
-    /**
-     * Creates styled label for form fields
-     */
+    // Helper to create a styled field label
     private Label fieldLabel(String text) {
-        // label used for inputs like username, password
         Label label = new Label(text);
-        // soft gray-blue color for readability
         label.setStyle("-fx-text-fill:#cad5e2; -fx-font-size:15px;");
         return label;
     }
 
-    /**
-     * Creates styled text input field
-     */
+    // Helper to create a styled text input field
     private TextField styledTextField(String placeholder) {
         TextField field = new TextField();
         field.setPromptText(placeholder);
-        // dark themed input styling
         field.setStyle(
                 "-fx-background-color:#020618;" +
-                        "-fx-text-fill:white;" +
-                        "-fx-prompt-text-fill:#90a1b9;" +
-                        "-fx-background-radius:8;" +
-                        "-fx-border-color:#314158;" +
-                        "-fx-border-radius:8;" +
-                        "-fx-font-size:15px;"
-        );
-        field.setPrefHeight(40); // makes it easier to click
-        return field;
-    }
-
-    /**
-     * Creates styled password input field
-     */
-    private PasswordField styledPasswordField(String placeholder) {
-        PasswordField field = new PasswordField();
-        field.setPromptText(placeholder);
-        // same styling as text field for consistency
-        field.setStyle(
-                "-fx-background-color:#020618;" +
-                        "-fx-text-fill:white;" +
-                        "-fx-prompt-text-fill:#90a1b9;" +
-                        "-fx-background-radius:8;" +
-                        "-fx-border-color:#314158;" +
-                        "-fx-border-radius:8;" +
-                        "-fx-font-size:15px;"
+                "-fx-text-fill:white;" +
+                "-fx-prompt-text-fill:#90a1b9;" +
+                "-fx-background-radius:8;" +
+                "-fx-border-color:#314158;" +
+                "-fx-border-radius:8;" +
+                "-fx-font-size:15px;"
         );
         field.setPrefHeight(40);
         return field;
     }
 
-    /**
-     * Creates primary action button
-     */
+    // Helper to create a styled password input field
+    private PasswordField styledPasswordField(String placeholder) {
+        PasswordField field = new PasswordField();
+        field.setPromptText(placeholder);
+        field.setStyle(
+                "-fx-background-color:#020618;" +
+                "-fx-text-fill:white;" +
+                "-fx-prompt-text-fill:#90a1b9;" +
+                "-fx-background-radius:8;" +
+                "-fx-border-color:#314158;" +
+                "-fx-border-radius:8;" +
+                "-fx-font-size:15px;"
+        );
+        field.setPrefHeight(40);
+        return field;
+    }
+
+    // Helper to create a styled blue primary button with hover effects
     private Button styledPrimaryButton(String text) {
         Button btn = new Button(text);
-        // blue themed button for primary actions
-        // base style
         String baseStyle =
-                "-fx-background-color:#0092b8;" +
-                        "-fx-text-fill:white;" +
-                        "-fx-background-radius:6;" +
-                        "-fx-cursor: hand;" +
-                        "-fx-font-size:15px;" +
-                        "-fx-font-weight:bold;";
+                "-fx-background-color: linear-gradient(to right, #1d4ed8, #2563eb);" +
+                "-fx-text-fill: white;" +
+                "-fx-background-radius: 10;" +
+                "-fx-cursor: hand;" +
+                "-fx-font-size: 15px;" +
+                "-fx-font-weight: bold;";
+        String hoverStyle =
+                "-fx-background-color: linear-gradient(to right, #2563eb, #3b82f6);" +
+                "-fx-text-fill: white;" +
+                "-fx-background-radius: 10;" +
+                "-fx-cursor: hand;" +
+                "-fx-font-size: 15px;" +
+                "-fx-font-weight: bold;";
+        String pressStyle =
+                "-fx-background-color: #1e40af;" +
+                "-fx-text-fill: white;" +
+                "-fx-background-radius: 10;" +
+                "-fx-cursor: hand;" +
+                "-fx-font-size: 15px;" +
+                "-fx-font-weight: bold;";
 
         btn.setStyle(baseStyle);
         btn.setPrefHeight(40);
-        //  hover effect (lighter blue)
-        btn.setOnMouseEntered(e ->
-                btn.setStyle(baseStyle + "-fx-background-color:#00a6cc;")
-        );
-        //  remove hover
-        btn.setOnMouseExited(e ->
-                btn.setStyle(baseStyle)
-        );
-        //  click effect (darker press)
-        btn.setOnMousePressed(e ->
-                btn.setStyle(baseStyle + "-fx-background-color:#007a99;")
-        );
-        //  release back to hover
-        btn.setOnMouseReleased(e ->
-                btn.setStyle(baseStyle + "-fx-background-color:#00a6cc;")
-        );
-        btn.setPrefHeight(40);
+        btn.setOnMouseEntered(e -> {
+            btn.setStyle(hoverStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), btn);
+            st.setToX(1.03); st.setToY(1.03); st.play();
+        });
+        btn.setOnMouseExited(e -> {
+            btn.setStyle(baseStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), btn);
+            st.setToX(1.0); st.setToY(1.0); st.play();
+        });
+        btn.setOnMousePressed(e -> {
+            btn.setStyle(pressStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(80), btn);
+            st.setToX(0.97); st.setToY(0.97); st.play();
+        });
+        btn.setOnMouseReleased(e -> {
+            btn.setStyle(hoverStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(80), btn);
+            st.setToX(1.03); st.setToY(1.03); st.play();
+        });
         return btn;
     }
 
-    /**
-     * Creates reusable card container
-     */
+    // Creates a hidden label used to show success or error messages
+    private Label feedbackLabel() {
+        Label label = new Label();
+        label.setStyle("-fx-font-size: 13px;");
+        label.setWrapText(true);
+        label.setManaged(false);
+        label.setVisible(false);
+        return label;
+    }
+
+    // Makes a feedback label visible with the given message and color
+    private void showFeedback(Label label, String message, boolean success) {
+        label.setText(message);
+        label.setStyle("-fx-font-size: 13px; -fx-text-fill: " + (success ? "#00e676;" : "#ff5555;"));
+        label.setManaged(true);
+        label.setVisible(true);
+    }
+
+    // Wraps content inside a styled card with a title
     private VBox createCard(String titleText, VBox content) {
-        // title at top of card
         Label title = new Label(titleText);
         title.setStyle("-fx-text-fill:white; -fx-font-size:18px; -fx-font-weight:bold;");
         VBox card = new VBox(title, content);
-        // spacing inside card
         card.setSpacing(16);
         card.setPadding(new Insets(24));
-        //gradient background to match dashboard
         card.setStyle(
-                "-fx-background-color: linear-gradient(#0f172b,#1d293d);" +
-                        "-fx-background-radius:10;"
+                "-fx-background-color: linear-gradient(to bottom, rgba(34,54,107,0.92), rgba(10,20,40,0.96));" +
+                "-fx-background-radius:10;"
         );
         card.setMaxWidth(Double.MAX_VALUE);
+        card.setOnMouseEntered(e -> card.setEffect(new DropShadow(20, Color.web("#00c8ff", 0.5))));
+        card.setOnMouseExited(e -> card.setEffect(null));
         return card;
     }
 
-    /**
-     * Creates username update section
-     */
+    // Creates the card for changing the username
     private VBox createUsernameCard() {
-        // input field for username
+        UserData user = UserManager.getCurrentUser();
         TextField usernameField = styledTextField("Username");
-        // button to save username
+        if (user != null) usernameField.setText(user.getUsername());
+
+        Label feedback = feedbackLabel();
         Button saveBtn = styledPrimaryButton("Save Username");
-        //  prints updated username when clicked
-        saveBtn.setOnAction(e ->
-                System.out.println("Username updated: " + usernameField.getText())
-        );
-        // layout for this section
-        VBox content = new VBox(
-                fieldLabel("Username"),
-                usernameField,
-                saveBtn
-        );
-        content.setSpacing(10); // spacing between elements
+        saveBtn.setOnAction(e -> {
+            String newName = usernameField.getText().trim();
+            if (newName.isEmpty()) {
+                showFeedback(feedback, "Username cannot be empty.", false);
+                return;
+            }
+            if (newName.contains("|")) {
+                showFeedback(feedback, "Username cannot contain the '|' character.", false);
+                return;
+            }
+            boolean success = UserManager.changeUsername(newName);
+            if (success) {
+                showFeedback(feedback, "Username updated to: " + newName, true);
+            } else {
+                showFeedback(feedback, "Username already taken or invalid.", false);
+            }
+        });
+
+        VBox content = new VBox(fieldLabel("Username"), usernameField, saveBtn, feedback);
+        content.setSpacing(10);
         return createCard("Change Username", content);
     }
 
-    /**
-     * Creates email update section
-     */
+    // Creates the card for changing the email
     private VBox createEmailCard() {
-        // input field for email
+        UserData user = UserManager.getCurrentUser();
         TextField emailField = styledTextField("Email Address");
-        // button to save email
+        if (user != null) emailField.setText(user.getEmail());
+
+        Label feedback = feedbackLabel();
         Button saveBtn = styledPrimaryButton("Save Email");
-        // prints updated email when clicked
-        saveBtn.setOnAction(e ->
-                System.out.println("Email updated: " + emailField.getText())
-        );
-        // layout for email section
-        VBox content = new VBox(
-                fieldLabel("Email Address"),
-                emailField,
-                saveBtn
-        );
+        saveBtn.setOnAction(e -> {
+            String newEmail = emailField.getText().trim();
+            if (newEmail.isEmpty() || !newEmail.contains("@")) {
+                showFeedback(feedback, "Please enter a valid email address.", false);
+                return;
+            }
+            if (newEmail.contains("|")) {
+                showFeedback(feedback, "Email cannot contain the '|' character.", false);
+                return;
+            }
+            boolean success = UserManager.changeEmail(newEmail);
+            if (success) {
+                showFeedback(feedback, "Email updated to: " + newEmail, true);
+            } else {
+                showFeedback(feedback, "Email already in use by another account.", false);
+            }
+        });
+
+        VBox content = new VBox(fieldLabel("Email Address"), emailField, saveBtn, feedback);
         content.setSpacing(10);
         return createCard("Change Email", content);
     }
 
-    /**
-     * Creates password update section
-     */
+    // Creates the card for changing the password
     private VBox createPasswordCard() {
-        // password fields
         PasswordField current = styledPasswordField("Current Password");
         PasswordField newPass = styledPasswordField("New Password");
         PasswordField confirm = styledPasswordField("Confirm New Password");
-        // button to trigger password change
+
+        Label feedback = feedbackLabel();
         Button changeBtn = styledPrimaryButton("Change Password");
-        //basic validation for matching passwords
         changeBtn.setOnAction(e -> {
+            if (newPass.getText().isEmpty()) {
+                showFeedback(feedback, "New password cannot be empty.", false);
+                return;
+            }
+            if (newPass.getText().length() < 3) {
+                showFeedback(feedback, "Password must be at least 3 characters.", false);
+                return;
+            }
+            if (newPass.getText().contains("|")) {
+                showFeedback(feedback, "Password cannot contain the '|' character.", false);
+                return;
+            }
             if (!newPass.getText().equals(confirm.getText())) {
-                System.out.println("Passwords do not match");
+                showFeedback(feedback, "Passwords do not match.", false);
+                return;
+            }
+            boolean success = UserManager.changePassword(current.getText(), newPass.getText());
+            if (success) {
+                showFeedback(feedback, "Password changed successfully.", true);
+                current.clear();
+                newPass.clear();
+                confirm.clear();
             } else {
-                System.out.println("Password changed successfully");
+                showFeedback(feedback, "Current password is incorrect.", false);
             }
         });
-        // layout for password section
+
         VBox content = new VBox(
-                fieldLabel("Current Password"),
-                current,
-                fieldLabel("New Password"),
-                newPass,
-                fieldLabel("Confirm New Password"),
-                confirm,
-                changeBtn
+                fieldLabel("Current Password"), current,
+                fieldLabel("New Password"), newPass,
+                fieldLabel("Confirm New Password"), confirm,
+                changeBtn, feedback
         );
-        content.setSpacing(10); //spacing between inputs
+        content.setSpacing(10);
         return createCard("Change Password", content);
     }
 
-    /**
-     * Creates logout section
-     */
+    // Creates the card with the logout button
     private VBox createLogoutCard() {
-        // description text
-        Label desc = new Label("End your current session and return to the login screen.");
+        Label desc = new Label("End your current session and return to the welcome screen.");
         desc.setStyle("-fx-text-fill:#90a1b9; -fx-font-size:14px;");
-        // logout button
+
         Button logoutBtn = new Button("Logout");
-        // prints logout action
         logoutBtn.setOnAction(e -> {
-            System.out.println("Logout");
+            System.out.println("SettingsScreen: logging out");
+            UserManager.logout();
+            if (onLogout != null) onLogout.run();
         });
-        // base red style
+
+        // Red logout button styling
         String baseStyle =
                 "-fx-background-color:#e7000b;" +
-                        "-fx-text-fill:white;" +
-                        "-fx-background-radius:6;" +
-                        "-fx-cursor: hand;" +
-                        "-fx-font-size:15px;" +
-                        "-fx-font-weight:bold;";
+                "-fx-text-fill:white;" +
+                "-fx-background-radius:6;" +
+                "-fx-cursor: hand;" +
+                "-fx-font-size:15px;" +
+                "-fx-font-weight:bold;";
+
+        String hoverStyle =
+                "-fx-background-color:#ff1a1a;" +
+                "-fx-text-fill:white;" +
+                "-fx-background-radius:6;" +
+                "-fx-cursor: hand;" +
+                "-fx-font-size:15px;" +
+                "-fx-font-weight:bold;";
+
+        String pressedStyle =
+                "-fx-background-color:#b80000;" +
+                "-fx-text-fill:white;" +
+                "-fx-background-radius:6;" +
+                "-fx-cursor: hand;" +
+                "-fx-font-size:15px;" +
+                "-fx-font-weight:bold;";
 
         logoutBtn.setStyle(baseStyle);
         logoutBtn.setPrefHeight(40);
-        // hover
-        logoutBtn.setOnMouseEntered(e ->
-                logoutBtn.setStyle(baseStyle + "-fx-background-color:#ff1a1a;")
-        );
-        // exit
-        logoutBtn.setOnMouseExited(e ->
-                logoutBtn.setStyle(baseStyle)
-        );
-        // press
-        logoutBtn.setOnMousePressed(e ->
-                logoutBtn.setStyle(baseStyle + "-fx-background-color:#b80000;")
-        );
-        // release
-        logoutBtn.setOnMouseReleased(e ->
-                logoutBtn.setStyle(baseStyle + "-fx-background-color:#ff1a1a;")
-        );
+        logoutBtn.setOnMouseEntered(e -> {
+                logoutBtn.setStyle(hoverStyle);
+                ScaleTransition st = new ScaleTransition(Duration.millis(150), logoutBtn);
+                st.setToX(1.03); st.setToY(1.03); st.play();
+        });
+        logoutBtn.setOnMouseExited(e -> {
+                logoutBtn.setStyle(baseStyle);
+                ScaleTransition st = new ScaleTransition(Duration.millis(150), logoutBtn);
+                st.setToX(1.0); st.setToY(1.0); st.play();
+        });
+        logoutBtn.setOnMousePressed(e -> {
+                logoutBtn.setStyle(pressedStyle);
+                ScaleTransition st = new ScaleTransition(Duration.millis(80), logoutBtn);
+                st.setToX(0.97); st.setToY(0.97); st.play();
+        });
+        logoutBtn.setOnMouseReleased(e -> {
+                logoutBtn.setStyle(hoverStyle);
+                ScaleTransition st = new ScaleTransition(Duration.millis(80), logoutBtn);
+                st.setToX(1.03); st.setToY(1.03); st.play();
+        });
+
         VBox content = new VBox(desc, logoutBtn);
         content.setSpacing(12);
         return createCard("Logout", content);
     }
-
 }
-//Final
