@@ -79,4 +79,126 @@ public class UserManagerTest {
         UserData user = UserManager.register("pipepw@test.com", "pass|word");
         assertNull(user, "Password containing '|' should be rejected");
     }
+
+    // login() Tests
+
+    @Test
+    void testLoginCorrect_ValidEmailAndPassword() {
+        // admin account exists with password "admin"
+        UserData user = UserManager.login("admin@sgp.com", "admin");
+        assertNotNull(user, "Logging in with correct email and password should succeed");
+        assertEquals("admin@sgp.com", user.getEmail());
+    }
+
+    @Test
+    void testLoginIncorrect_WrongPassword() {
+        UserData user = UserManager.login("admin@sgp.com", "wrongpassword");
+        assertNull(user, "Logging in with an incorrect password should return null");
+    }
+
+    @Test
+    void testLoginEdge_LoginByUsername() {
+        // Dummy user "MuhammadA" with password "123"
+        UserData user = UserManager.login("MuhammadA", "123");
+        assertNotNull(user, "Logging in with a valid username (instead of email) should succeed");
+        assertEquals("muhammad.ahmad@sgp.com", user.getEmail());
+    }
+
+    @Test
+    void testLoginEdge_CaseInsensitiveEmail() {
+        UserData user = UserManager.login("ADMIN@SGP.COM", "admin");
+        assertNotNull(user, "Email matching should be case-insensitive");
+    }
+
+    @Test
+    void testLoginEdge_NonexistentUser() {
+        UserData user = UserManager.login("nobody@nowhere.com", "anything");
+        assertNull(user, "Login with a non-existent email should return null");
+    }
+
+
+    // getCurrentUser() Tests
+
+
+    @Test
+    void testGetCurrentUserCorrect_AfterLogin() {
+        UserManager.login("admin@sgp.com", "admin");
+        UserData current = UserManager.getCurrentUser();
+        assertNotNull(current, "getCurrentUser should return the logged-in user");
+        assertEquals("admin@sgp.com", current.getEmail());
+    }
+
+    @Test
+    void testGetCurrentUserIncorrect_BeforeLogin() {
+        UserData current = UserManager.getCurrentUser();
+        assertNull(current);
+    }
+
+
+    // getAllUsers() Tests
+
+
+    @Test
+    void testGetAllUsersCorrect_ReturnsNonEmptyList() {
+        List<UserData> allUsers = UserManager.getAllUsers();
+        assertNotNull(allUsers, "getAllUsers shouldnt return null");
+        assertFalse(allUsers.isEmpty(), "getAllUsers should contain at least the admin and dummy user");
+    }
+
+    @Test
+    void testGetAllUsersEdge_ListIsUnmodifiable() {
+        List<UserData> allUsers = UserManager.getAllUsers();
+        assertThrows(UnsupportedOperationException.class, () -> {
+            allUsers.add(new UserData("edit@test.com", "hacker", "12345"));
+        }, "getAllUsers should return an unmodifiable list");
+    }
+
+
+    // changeUsername() Tests
+
+
+    @Test
+    void testChangeUsernameCorrect_ValidNewUsername() {
+        UserManager.register("newuser@test.com", "password123");
+        boolean result = UserManager.changeUsername("UniqueNewName");
+        assertTrue(result);
+        assertEquals("UniqueNewName", UserManager.getCurrentUser().getUsername());
+    }
+
+    @Test
+    void testChangeUsernameIncorrect_NoUserLoggedIn() {
+        // setup already calls logout
+        boolean result = UserManager.changeUsername("AnyName");
+        assertFalse(result, "changeUsername should return false, no user is logged in");
+    }
+
+    @Test
+    void testChangeUsernameEdge_NullUsername() {
+        UserManager.login("admin@sgp.com", "admin");
+        boolean result = UserManager.changeUsername(null);
+        assertFalse(result, "changeUsername should return false for a null username");
+    }
+
+    @Test
+    void testChangeUsernameEdge_EmptyUsername() {
+        UserManager.login("admin@sgp.com", "admin");
+        boolean result = UserManager.changeUsername("   ");
+        assertFalse(result, "changeUsername should return false for a blank/whitespace-only username");
+    }
+
+    @Test
+    void testChangeUsernameEdge_UsernameWithPipe() {
+        UserManager.register("pipeusr@test.com", "password123");
+        boolean result = UserManager.changeUsername("name|pipe");
+        assertFalse(result, "changeUsername should reject usernames containing '|'");
+    }
+
+    @Test
+    void testChangeUsernameEdge_UsernameTakenByAnother() {
+        UserManager.register("takenuser@test.com", "password123");
+        // "admin" username is taken by the admin account
+        boolean result = UserManager.changeUsername("admin");
+        assertFalse(result, "changeUsername should fail when the name is already taken by another user");
+    }
+
 }
