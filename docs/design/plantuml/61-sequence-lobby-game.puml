@@ -1,0 +1,108 @@
+@startuml SGP-Sequence-Lobby-Game
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam shadowing false
+skinparam defaultFontSize 11
+skinparam sequenceMessageAlign center
+
+title Sequence: Lobby → Host/Join → Game Play → Win
+footer Iteration 3 · SENG 300
+
+actor "Host Player" as HostUser
+actor "Guest Player" as GuestUser
+participant "MainApp\n(Host)" as HostApp
+participant "MainApp\n(Guest)" as GuestApp
+participant "HostLobby" as HL
+participant "JoinLobby" as JL
+participant "LobbyManager" as LM
+participant "GameServer" as GS
+participant "GameClient" as GC
+participant "GameboardTTT /\nGameboardC4" as Board
+participant "GameSessionManager" as GSM
+participant "Engine\n(TTT / C4)" as Eng
+participant "WinScreen" as WS
+participant "UserManager" as UM
+
+== Host Creates Lobby ==
+
+HostUser -> HostApp : selects game → PLAY → Host
+HostApp -> HL : new HostLobby(gameName, gameType, onBack, onStartGame)
+activate HL
+HL -> LM : createLobby(gameType, gameName, hostUsername)
+LM --> HL : LobbySession (code = "A1B2C3D4")
+HL -> GS : GameServer.createWithPortScan()
+GS --> HL : server (port e.g. 5300)
+HL -> GS : setMessageHandler(); waitForClient()
+HL -> HL : display lobby code + log
+
+== Guest Joins Lobby ==
+
+GuestUser -> GuestApp : selects game → PLAY → Join
+GuestApp -> JL : new JoinLobby(...)
+activate JL
+GuestUser -> JL : enters code "A1B2C3D4", clicks Join
+JL -> GC : new GameClient()\nconnect("localhost", port)
+GC --> GS : TCP handshake
+JL -> GC : send("JOIN:A1B2C3D4:GuestName")
+GC -> GS : "JOIN:A1B2C3D4:GuestName"
+GS -> HL : handleMessage("JOIN:A1B2C3D4:GuestName")
+HL -> HL : session.addPlayer("GuestName")
+HL -> GS : send("JOINED:HostName")
+GS -> GC : "JOINED:HostName"
+GC -> JL : handleServerMessage("JOINED:HostName")
+JL -> JL : showWaitingState()
+
+== Host Starts Game ==
+
+HostUser -> HL : clicks "Start Game"
+HL -> HL : session.startGame()
+HL -> GS : send("START")
+GS -> GC : "START"
+GC -> JL : handleServerMessage("START")
+JL -> GuestApp : onJoinSuccess.accept(hostName, joinerName)
+deactivate JL
+
+HL -> HostApp : onStartGame.accept(p1, p2)
+deactivate HL
+
+HostApp -> Board : new Gameboard(onNavigateHome, p1, p2, isHost=true)
+activate Board
+Board -> GSM : startGame("tictactoe"/"connect4", p1, p2)
+GSM -> Eng : createInitialState(playerIds)
+Eng --> GSM : initial state
+
+GuestApp -> Board : new Gameboard(onNavigateHome, p1, p2, isHost=false)
+
+== Game Play (Networked) ==
+
+HostUser -> Board : clicks cell/column
+Board -> GSM : submitMove(col) / submitMoveTTT(row, col)
+GSM -> Eng : validateMove() + applyMove()
+Eng --> GSM : new state
+Board -> Board : updateBoard() + animateSymbol()
+Board -> GS : send("STATE_TTT:...") / send("STATE_C4:...")
+GS -> GC : state payload
+GC -> Board : parseAndRenderState()
+
+GuestUser -> Board : clicks cell/column
+Board -> GC : send("MOVE_TTT:r:c") / send("MOVE_C4:col")
+GC -> GS : move message
+GS -> Board : handleNetworkMessage("MOVE_TTT:...")
+Board -> GSM : submitMoveTTT / submitMove (on host)
+Board -> GS : send(STATE)
+
+== Game End ==
+
+Board -> Board : detect status != IN_PROGRESS
+Board -> UM : recordGameResult(gameType, isWin, isDraw)
+Board -> WS : WinScreen.showWin / showLose / showDraw
+activate WS
+HostUser -> WS : clicks RETURN
+WS -> Board : onDismiss → wrappedNavigateHome()
+deactivate WS
+Board -> GS : send("PLAYER_LEFT")
+Board -> GSM : endGame(currentState)
+Board -> HostApp : onNavigateHome.run()
+deactivate Board
+
+@enduml

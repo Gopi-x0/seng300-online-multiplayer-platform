@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * Game engine interface that defines the move sequence for any two player game on this platform
  * Communication between GameSessionManager and GUI will happen through this interface.
- * Communication lifecycle will be same across all gameengines that implement this interface
+ * Communication lifecycle will be same across all game engines that implement this interface
  * Lifecycle of a single turn:
  * validateMove()-check if a move is legal
  * applyMove()-apply move and return a new game state
@@ -24,7 +24,7 @@ public interface GameEngine<S> {
     S createInitialState(List<String> playerIds);
     /**
      * Validates a player's Move against the current GameState.
-     * Does NOT modify state — purely a read operation.
+     * Does NOT modify state - purely a read operation.
      *
      * @param state the current game state
      * @param move  the move the player wants to make

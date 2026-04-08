@@ -1,0 +1,109 @@
+@startuml SGP-Service-Stubs
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontSize 11
+
+title Student Gaming Platform — Service & Stubs Class Diagram
+footer ca.ucalgary.seng300.service + ca.ucalgary.seng300.stubs
+
+package "service" #FFF3E0 {
+
+    class UserManager {
+        - {static} DATA_FILE : String = "sgp_users.dat"
+        - {static} users : List<UserData>
+        - {static} currentUser : UserData
+        __
+        + {static} loadUsers() : void
+        + {static} saveUsers() : void
+        - {static} mergeSaveCurrentUser() : void
+        - {static} ensureAdminExists() : void
+        - {static} ensureDummyUsersExist() : void
+        - {static} addDummyUser(...) : boolean
+        + {static} register(email : String, password : String) : UserData
+        - {static} isUsernameTaken(username : String) : boolean
+        + {static} login(emailOrUsername : String, password : String) : UserData
+        + {static} getCurrentUser() : UserData
+        + {static} getAllUsers() : List<UserData>
+        + {static} changeUsername(newUsername : String) : boolean
+        + {static} changeEmail(newEmail : String) : boolean
+        + {static} changePassword(oldPassword : String, newPassword : String) : boolean
+        + {static} recordGameResult(gameType : String, isWin : boolean, isDraw : boolean) : void
+        + {static} logout() : void
+        + {static} getUserRank(user : UserData) : int
+    }
+
+    class GameSessionManager {
+        ~ {static} engine : GameEngine<?>
+        ~ {static} engineState : Object
+        ~ {static} currentState : GameState
+        ~ {static} players : List<PlayerProfile>
+        __
+        + {static} startGame(gameType : String, p1 : PlayerProfile, p2 : PlayerProfile) : GameState
+        + {static} submitMove(column : int) : GameState
+        + {static} submitMoveTTT(row : int, col : int) : GameState
+        + {static} endGame(gameState : GameState) : void
+        + {static} getEngineState() : Object
+        + {static} getCurrentState() : GameState
+    }
+}
+
+package "stubs" #EFEBE9 {
+
+    class DatabaseStub {
+        - userTable : List<UserData>
+        - matchHistory : List<MatchRecord>
+        __
+        + createUser(email, username, password) : UserData
+        + authenticateUser(identifier, password) : UserData
+        + findUserByEmail(email) : UserData
+        + updateUsername(email, newUsername) : boolean
+        + updateEmail(oldEmail, newEmail) : boolean
+        + updatePassword(email, oldPassword, newPassword) : boolean
+        + deleteUser(email, password) : boolean
+        + recordGameResult(email, gameType, isWin, isDraw) : void
+        + getGlobalLeaderboard() : List<UserData>
+        + getTttLeaderboard() : List<UserData>
+        + getC4Leaderboard() : List<UserData>
+        + getUserRank(email) : int
+        + saveMatchRecord(gameType, player1Email, player2Email, result) : void
+        + getMatchHistory(email, limit) : List<MatchRecord>
+        + getUserCount() : int
+    }
+
+    class "DatabaseStub.MatchRecord" as MatchRecord {
+        + {final} gameType : String
+        + {final} player1Email : String
+        + {final} player2Email : String
+        + {final} result : String
+        + {final} timestampMillis : long
+        __
+        + MatchRecord(gameType, player1Email, player2Email, result, timestampMillis)
+        + toString() : String
+    }
+
+    DatabaseStub --> MatchRecord : contains
+}
+
+UserManager --> UserData : manages
+GameSessionManager --> GameState : creates
+GameSessionManager --> PlayerProfile : uses
+GameSessionManager --> GameEngine : delegates to
+DatabaseStub --> UserData : stores (in-memory)
+
+note bottom of UserManager
+  Live persistence layer.
+  sgp_users.dat with FileLock.
+  Static initializer loads + seeds
+  admin and dummy users.
+end note
+
+note bottom of DatabaseStub
+  Future DB adapter stub.
+  Not wired into live code paths.
+  Demonstrates contract for
+  SQLite/Postgres migration.
+end note
+
+@enduml
