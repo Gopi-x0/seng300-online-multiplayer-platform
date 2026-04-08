@@ -134,8 +134,14 @@ public class GameboardTTT extends StackPane {
 
         boolean wasEmpty = cells[row][col].getChildren().isEmpty();
 
+        Object prevEngineState = GameSessionManager.getEngineState();
         ca.ucalgary.seng300.model.GameState state = GameSessionManager.submitMoveTTT(row, col);
         if (state == null) return;
+
+        if (GameSessionManager.getEngineState() == prevEngineState) {
+            sendStateToGuest(-1, -1);
+            return;
+        }
 
         updateBoard();
 
