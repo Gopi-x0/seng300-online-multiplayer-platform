@@ -130,8 +130,14 @@ public class GameboardC4 extends StackPane {
         if (gameOver) return;
         if (column < 0 || column >= COLS) return;
 
+        Object prevEngineState = GameSessionManager.getEngineState();
         GameState state = GameSessionManager.submitMove(column);
         if (state == null) return;
+
+        if (GameSessionManager.getEngineState() == prevEngineState) {
+            sendStateToGuest(-1);
+            return;
+        }
 
         updateBoard();
         animateNewPiece(column);
