@@ -1,0 +1,99 @@
+@startuml SGP-Model-Classes
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontSize 11
+
+title Student Gaming Platform — Model Package Class Diagram
+footer ca.ucalgary.seng300.model
+
+class UserData {
+    - email : String
+    - username : String
+    - password : String
+    - tttGamesPlayed : int
+    - tttWins : int
+    - tttLosses : int
+    - tttDraws : int
+    - tttCurrentStreak : int
+    - tttBestStreak : int
+    - tttPoints : int
+    - c4GamesPlayed : int
+    - c4Wins : int
+    - c4Losses : int
+    - c4Draws : int
+    - c4CurrentStreak : int
+    - c4BestStreak : int
+    - c4Points : int
+    __
+    + UserData(email, username, password)
+    + getTotalGames() : int
+    + getTotalWins() : int
+    + getTotalLosses() : int
+    + getTotalDraws() : int
+    + getTotalPoints() : int
+    + getOverallWinRate() : double
+    + getTttWinRate() : double
+    + getC4WinRate() : double
+    + getBestStreak() : int
+    + serialize() : String
+    + {static} deserialize(line : String) : UserData
+    + getEmail() / setEmail()
+    + getUsername() / setUsername()
+    + getPassword() / setPassword()
+    + getTttGamesPlayed() / setTttGamesPlayed()
+    + getTttWins() / setTttWins()
+    + getTttLosses() / setTttLosses()
+    + getTttDraws() / setTttDraws()
+    + getTttCurrentStreak() / setTttCurrentStreak()
+    + getTttBestStreak() / setTttBestStreak()
+    + getTttPoints() / setTttPoints()
+    + getC4GamesPlayed() / setC4GamesPlayed()
+    + getC4Wins() / setC4Wins()
+    + getC4Losses() / setC4Losses()
+    + getC4Draws() / setC4Draws()
+    + getC4CurrentStreak() / setC4CurrentStreak()
+    + getC4BestStreak() / setC4BestStreak()
+    + getC4Points() / setC4Points()
+}
+
+class GameState {
+    - gameType : String
+    - gameStatus : GameStatus
+    - activePlayerIndex : int
+    - boardPayLoad : Object
+    __
+    + GameState(gameType, gameStatus, activePlayerIndex, boardPayLoad)
+    + getGameType() : String
+    + getGameStatus() : GameStatus
+    + getActivePlayerIndex() : int
+    + getBoardPayLoad() : Object
+}
+
+enum GameStatus {
+    SETUP
+    IN_PROGRESS
+    P1_WINS
+    P2_WINS
+    DRAW
+}
+
+enum GameType {
+    TTT
+    C4
+}
+
+class PlayerProfile {
+    - {final} playerId : String
+    - {final} username : String
+    __
+    + PlayerProfile(playerId, username)
+    + getPlayerId() : String
+    + getUsername() : String
+}
+
+GameState --> GameStatus : has status
+GameState ..> GameType : gameType string maps to
+
+@enduml

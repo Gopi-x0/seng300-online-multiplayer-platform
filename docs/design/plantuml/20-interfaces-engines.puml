@@ -1,0 +1,174 @@
+@startuml SGP-Interfaces-Engines
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontSize 11
+
+title Student Gaming Platform — Interfaces & Game Engines
+footer ca.ucalgary.seng300.interfaces + connect4engine + tictactoeengine
+
+' ===== INTERFACES =====
+
+package "interfaces" #FFFDE7 {
+
+    interface "GameEngine<S>" as GameEngine {
+        + createInitialState(playerIds : List<String>) : S
+        + validateMove(state : S, move : Move) : MoveResult
+        + applyMove(state : S, move : Move) : S
+        + evaluateEnd(state : S) : S
+    }
+
+    class Move {
+        - {final} row : int
+        - {final} col : int
+        - {final} playerId : String
+        - {final} symbol : String
+        __
+        + Move(row, col, playerID, symbol)
+        + getRow() : int
+        + getCol() : int
+        + getPlayerId() : String
+        + getSymbol() : String
+        + toString() : String
+    }
+
+    class MoveResult {
+        - {final} isValid : boolean
+        - {final} message : String
+        - {final} errorCode : ValidationCode
+        __
+        - MoveResult(isValid, message, errorCode)
+        + {static} success() : MoveResult
+        + {static} failure(errorCode, message) : MoveResult
+        + isValid() : boolean
+        + getMessage() : String
+        + getErrorCode() : ValidationCode
+        + toString() : String
+    }
+
+    enum ValidationCode {
+        CELL_OCCUPIED
+        OUT_OF_BOUNDS
+        WRONG_TURN
+        GAME_ALREADY_OVER
+        SUCCESS
+    }
+
+    MoveResult --> ValidationCode
+}
+
+' ===== CONNECT 4 ENGINE =====
+
+package "connect4engine" #E0F7FA {
+
+    class Connect4Game implements GameEngine {
+        + createInitialState(players : List<String>) : Connect4State
+        + validateMove(state : Connect4State, move : Move) : MoveResult
+        + applyMove(state : Connect4State, move : Move) : Connect4State
+        + evaluateEnd(state : Connect4State) : Connect4State
+    }
+
+    class Connect4State {
+        - {final} board : Board
+        - {final} player1 : Player
+        - {final} player2 : Player
+        - {final} currentPlayer : Player
+        - {final} status : GameStatus
+        - {final} winner : Player
+        __
+        + Connect4State(board, player1, player2, currentPlayer, status, winner)
+        + getBoard() : Board
+        + getPlayer1() : Player
+        + getPlayer2() : Player
+        + getCurrentPlayer() : Player
+        + getStatus() : GameStatus
+        + getWinner() : Player
+        + getOtherPlayer(p : Player) : Player
+        + toString() : String
+    }
+
+    class Board {
+        + {static} ROWS : int = 6
+        + {static} COLS : int = 7
+        - {static} EMPTY : char = '.'
+        - {final} grid : char[][]
+        __
+        + Board()
+        + Board(other : Board)
+        + dropPiece(column : int, player : Player) : int
+        + isColumnFull(column : int) : boolean
+        + isFull() : boolean
+        + checkWin(row : int, column : int) : boolean
+        - countInDirection(row, col, symbol, rowDir, colDir) : int
+        + getGrid() : char[][]
+        + toString() : String
+    }
+
+    class Player {
+        - {final} id : String
+        - {final} symbol : char
+        __
+        + Player(id, symbol)
+        + getId() : String
+        + getSymbol() : char
+        + toString() : String
+    }
+
+    Connect4Game --> Connect4State : creates / returns
+    Connect4State --> Board : has
+    Connect4State --> Player : has player1, player2, currentPlayer, winner
+}
+
+' ===== TIC-TAC-TOE ENGINE =====
+
+package "tictactoeengine" #E0F7FA {
+
+    class TicTacToeEngine implements GameEngine {
+        - {static} BOARD_SIZE : int = 3
+        - {static} WIN_LINES : int[][]
+        __
+        + createInitialState(playerIds : List<String>) : GameStateTTT
+        + validateMove(state : GameStateTTT, move : Move) : MoveResult
+        + applyMove(state : GameStateTTT, move : Move) : GameStateTTT
+        + evaluateEnd(state : GameStateTTT) : GameStateTTT
+        - checkWin(board : Symbol[][], symbol : Symbol) : boolean
+        - isBoardFull(board : Symbol[][]) : boolean
+    }
+
+    class GameStateTTT <<tictactoeengine.GameState>> {
+        - {final} board : Symbol[][]
+        - {final} activePlayerId : String
+        - {final} status : GameStatusTicTacToeEngine
+        - {final} moveHistory : List<Move>
+        - {final} playerIds : List<String>
+        __
+        + GameStateTTT(board, activePlayerId, status, moveHistory, playerIds)
+        + getCell(r : int, c : int) : Symbol
+        + getBoard() : Symbol[][]
+        + getActivePlayerId() : String
+        + getStatus() : GameStatusTicTacToeEngine
+        + getMoveHistory() : List<Move>
+        + getPlayerIds() : List<String>
+        + toString() : String
+    }
+
+    enum Symbol {
+        X
+        O
+        EMPTY
+    }
+
+    enum GameStatusTicTacToeEngine {
+        IN_PROGRESS
+        X_WINS
+        O_WINS
+        DRAW
+    }
+
+    TicTacToeEngine --> GameStateTTT : creates / returns
+    GameStateTTT --> Symbol
+    GameStateTTT --> GameStatusTicTacToeEngine
+}
+
+@enduml

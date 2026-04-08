@@ -1,0 +1,105 @@
+@startuml SGP-Network-Classes
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontSize 11
+
+title Student Gaming Platform — Network Package Class Diagram
+footer ca.ucalgary.seng300.network
+
+class GameServer {
+    + {static} DEFAULT_PORT : int = 5300
+    + {static} MAX_PORT : int = 5325
+    - {static} activeInstance : GameServer
+    - serverSocket : ServerSocket
+    - clientSocket : Socket
+    - out : PrintWriter
+    - in : BufferedReader
+    - messageHandler : Consumer<String>
+    - running : boolean
+    __
+    + GameServer(port : int) <<throws IOException>>
+    + {static} createWithPortScan() : GameServer <<throws IOException>>
+    + {static} getActive() : GameServer
+    + {static} shutdownActive() : void
+    + waitForClient() : void
+    + send(message : String) : void
+    + setMessageHandler(handler : Consumer<String>) : void
+    + getPort() : int
+    + resetClient() : void
+    + shutdown() : void
+    - startListening() : void
+    - fireMessage(msg : String) : void
+}
+
+class GameClient {
+    - {static} activeInstance : GameClient
+    - socket : Socket
+    - out : PrintWriter
+    - in : BufferedReader
+    - messageHandler : Consumer<String>
+    - running : boolean
+    __
+    + {static} getActive() : GameClient
+    + {static} shutdownActive() : void
+    + connect(host : String, port : int) : void <<throws IOException>>
+    + send(message : String) : void
+    + setMessageHandler(handler : Consumer<String>) : void
+    + shutdown() : void
+    - startListening() : void
+}
+
+class LobbyManager {
+    - {static} activeLobbies : Map<String, LobbySession>
+    - {static} random : Random
+    - {static} CHARS : String = "0123456789ABCDEF"
+    __
+    + {static} createLobby(gameType : GameType, gameName : String, hostUsername : String) : LobbySession
+    + {static} removeLobby(code : String) : void
+    - {static} generateCode() : String
+}
+
+class LobbySession {
+    - {final} lobbyCode : String
+    - {final} gameType : GameType
+    - {final} gameName : String
+    - {final} maxPlayers : int = 2
+    - {final} players : List<String>
+    - {final} hostUsername : String
+    - gameStarted : boolean
+    __
+    + LobbySession(lobbyCode, gameType, gameName, hostUsername)
+    + getLobbyCode() : String
+    + getMaxPlayers() : int
+    + getPlayers() : List<String>
+    + getHostUsername() : String
+    + getPlayerCount() : int
+    + isFull() : boolean
+    + addPlayer(username : String) : boolean
+    + removePlayer(username : String) : boolean
+    + startGame() : void
+}
+
+GameServer ..> GameClient : communicates via TCP
+LobbyManager --> LobbySession : creates / manages
+LobbySession ..> GameType : uses
+
+note right of GameServer
+  Host side:
+  - Port scans 5300–5325
+  - Accepts one client
+  - Line-based protocol
+  - Platform.runLater for UI safety
+  - Singleton pattern (activeInstance)
+end note
+
+note right of GameClient
+  Guest side:
+  - Connects to host on localhost
+  - Daemon read thread
+  - DISCONNECTED on socket close
+  - Singleton pattern (activeInstance)
+end note
+
+@enduml

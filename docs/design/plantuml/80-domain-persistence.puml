@@ -1,0 +1,111 @@
+@startuml SGP-Domain-Persistence
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontSize 11
+
+title Student Gaming Platform — Domain / Persistence Model
+footer Iteration 3 · SENG 300
+
+entity "UserData" as UD {
+    * email : String <<PK>>
+    --
+    username : String <<unique>>
+    password : String
+    --
+    tttGamesPlayed : int
+    tttWins : int
+    tttLosses : int
+    tttDraws : int
+    tttCurrentStreak : int
+    tttBestStreak : int
+    tttPoints : int
+    --
+    c4GamesPlayed : int
+    c4Wins : int
+    c4Losses : int
+    c4Draws : int
+    c4CurrentStreak : int
+    c4BestStreak : int
+    c4Points : int
+}
+
+entity "sgp_users.dat" as file <<File>> {
+    One line per user
+    Pipe-delimited (17 fields)
+    email|username|password|tttGP|tttW|...
+}
+
+entity "MatchRecord\n(DatabaseStub only)" as MR {
+    gameType : String
+    player1Email : String
+    player2Email : String
+    result : String
+    timestampMillis : long
+}
+
+entity "LobbySession" as LS {
+    * lobbyCode : String <<PK, 8-char hex>>
+    --
+    gameType : GameType
+    gameName : String
+    hostUsername : String
+    players : List<String>
+    maxPlayers : int = 2
+    gameStarted : boolean
+}
+
+entity "PlayerProfile" as PP {
+    * playerId : String
+    --
+    username : String
+}
+
+entity "GameState\n(platform-level)" as PGS {
+    gameType : String
+    gameStatus : GameStatus
+    activePlayerIndex : int
+    boardPayLoad : Object
+}
+
+entity "Connect4State" as C4S {
+    board : Board (6×7 char[][])
+    player1 : Player ('R')
+    player2 : Player ('Y')
+    currentPlayer : Player
+    status : GameStatus
+    winner : Player
+}
+
+entity "GameState (TTT)" as TS {
+    board : Symbol[3][3]
+    activePlayerId : String
+    status : GameStatusTTT
+    moveHistory : List<Move>
+    playerIds : List<String>
+}
+
+' Relationships
+UD --> file : serialized to /\ndeserialized from
+UD "1" --> "0..*" MR : referenced by\n(stub only)
+LS --> PP : players map to
+PGS --> C4S : boardPayLoad\n(when connect4)
+PGS --> TS : boardPayLoad\n(when tictactoe)
+PP ..> UD : playerId derived\nfrom user session
+
+note right of file
+  **Persistence approach:**
+  Flat file, one user per line
+  Read with BufferedReader
+  Write with RandomAccessFile + FileLock
+  Atomic merge-save for concurrent safety
+end note
+
+note bottom of MR
+  Only exists in DatabaseStub
+  (in-memory, not persisted to disk)
+  Documents future match_history table
+end note
+
+@enduml
