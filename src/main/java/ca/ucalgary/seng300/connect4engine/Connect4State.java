@@ -1,17 +1,17 @@
-package ca.ucalgary.seng300.Connect4GameEngine;
+package ca.ucalgary.seng300.connect4engine;
 
-import ca.ucalgary.seng300.GameStatus;
+import ca.ucalgary.seng300.model.GameStatus;
 
 /**
  * Connect4State Class
  *
  * This is the SNAPSHOT of the entire game at any given moment.
- * Think of it like a save file — it captures everything needed
+ * Think of it like a save file - it captures everything needed
  * to fully describe where the game is right now:
  *
  *   - board:         the current grid (who's piece is where)
- *   - player1:       always the 'R' (Red) player — moves first
- *   - player2:       always the 'Y' (Yellow) player — moves second
+ *   - player1:       always the 'R' (Red) player - moves first
+ *   - player2:       always the 'Y' (Yellow) player - moves second
  *   - currentPlayer: whose turn it is RIGHT NOW
  *   - status:        is the game in progress, won, or drawn?
  *   - winner:        if someone won, who was it? (null if still in progress or draw)
@@ -31,8 +31,8 @@ import ca.ucalgary.seng300.GameStatus;
 public class Connect4State {
 
     private final Board board;
-    private final Player player1;        // Red ('R') — always moves first
-    private final Player player2;        // Yellow ('Y') — always moves second
+    private final Player player1;        // Red ('R') - always moves first
+    private final Player player2;        // Yellow ('Y') - always moves second
     private final Player currentPlayer;  // Who moves NEXT
     private final GameStatus status;
     private final Player winner;         // null unless status is P1_WINS or P2_WINS

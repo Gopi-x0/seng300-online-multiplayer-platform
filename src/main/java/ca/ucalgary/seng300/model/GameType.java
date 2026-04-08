@@ -1,4 +1,4 @@
-package ca.ucalgary.seng300;
+package ca.ucalgary.seng300.model;
 
 // Enum for game types
 public enum GameType {

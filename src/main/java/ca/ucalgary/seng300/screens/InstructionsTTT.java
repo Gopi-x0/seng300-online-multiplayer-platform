@@ -1,20 +1,45 @@
 package ca.ucalgary.seng300.screens;
 
-import javafx.application.Application;
+/**
+ * This is the instructions screen for Tic-Tac-Toe, this prompts/plays beforehand
+ * for users to familiarize themselves with the game.
+ *
+ * Pressing the PLAY button triggers the onPlay callback,
+ * which MainApp uses to navigate to the GameboardTTT screen.
+ */
+
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
-import javafx.scene.Scene;
+import javafx.animation.ScaleTransition;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.effect.DropShadow;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
-import javafx.stage.Stage;
+import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
-public class InstructionsTTT extends Application {
+public class InstructionsTTT extends VBox {
 
-    @Override
-    public void start(Stage stage) {
-        //Title Label
+    private final Runnable onPlay;
+    private final Runnable onBack;
+
+    // Stores callbacks and builds the instructions layout
+    public InstructionsTTT(Runnable onPlay, Runnable onBack) {
+        this.onPlay = onPlay;
+        this.onBack = onBack;
+        buildUI();
+    }
+
+    // Lays out the title, rule cards, and play button
+    private void buildUI() {
+        setSpacing(10);
+        setPadding(new Insets(40));
+        setAlignment(Pos.CENTER);
+        setStyle("-fx-background-color: #020b1c;");
+
+        HBox topBar = createTopBar();
+
         Label title = new Label("Tic-Tac-Toe");
         title.setStyle("-fx-text-fill : white; -fx-font-size: 48px; -fx-font-weight: bold;");
 
@@ -40,64 +65,123 @@ public class InstructionsTTT extends Application {
         VBox playCard = createCard("Play",
                 " 1. Click on a tile to place your symbol.",
                 " 2. Your symbol will then be placed on that spot.",
-                " 3. Alternate turns with your opponent."
+                " 3. Wait for your opponent to play their turn."
         );
 
+        // Play button styling and hover/press animations
         Button playButton = new Button("PLAY");
-        playButton.setStyle("-fx-background-color: linear-gradient(#00d3f3, #0088a3);"
-                + "-fx-text-fill: white;"
-                + "-fx-font-size: 16px;"
-                + "-fx-font-weight: bold;"
-                + "-fx-padding: 12 40;"
-                + "-fx-background-radius: 8;"
-                + "-fx-cursor: hand;"
-                + "-fx-border-width: 2;");
+        String playBase =
+                "-fx-background-color: linear-gradient(to right, #1d4ed8, #2563eb);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 16px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-padding: 12 40;" +
+                "-fx-background-radius: 10;" +
+                "-fx-cursor: hand;";
+        String playHover =
+                "-fx-background-color: linear-gradient(to right, #2563eb, #3b82f6);" +
+                "-fx-text-fill: white;" +
+                "-fx-font-size: 16px;" +
+                "-fx-font-weight: bold;" +
+                "-fx-padding: 12 40;" +
+                "-fx-background-radius: 10;" +
+                "-fx-cursor: hand;";
+        playButton.setStyle(playBase);
+        playButton.setOnMouseEntered(e -> {
+            playButton.setStyle(playHover);
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), playButton);
+            st.setToX(1.05); st.setToY(1.05); st.play();
+        });
+        playButton.setOnMouseExited(e -> {
+            playButton.setStyle(playBase);
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), playButton);
+            st.setToX(1.0); st.setToY(1.0); st.play();
+        });
+        playButton.setOnMousePressed(e -> {
+            ScaleTransition st = new ScaleTransition(Duration.millis(80), playButton);
+            st.setToX(0.96); st.setToY(0.96); st.play();
+        });
+        playButton.setOnMouseReleased(e -> {
+            ScaleTransition st = new ScaleTransition(Duration.millis(80), playButton);
+            st.setToX(1.05); st.setToY(1.05); st.play();
+        });
 
-        playButton.setOnMouseEntered(e -> playButton.setStyle(
-                "-fx-background-color: linear-gradient(#33e0f7, #00a8c9);" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-size: 16px;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-padding: 12 40;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-cursor: hand;"
-        ));
-        playButton.setOnMouseExited(e -> playButton.setStyle(
-                "-fx-background-color: linear-gradient(#00d3f3, #0088a3);" +
-                        "-fx-text-fill: white;" +
-                        "-fx-font-size: 16px;" +
-                        "-fx-font-weight: bold;" +
-                        "-fx-padding: 12 40;" +
-                        "-fx-background-radius: 8;" +
-                        "-fx-cursor: hand;"
-        ));
+        playButton.setOnAction(e -> {
+            if (onPlay != null) onPlay.run();
+        });
 
         HBox buttonBox = new HBox(playButton);
         buttonBox.setAlignment(Pos.CENTER);
         buttonBox.setPadding(new Insets(10, 0, 0, 0));
 
-        VBox root = new VBox(); //Initialize a VBox
-        root.setSpacing(10); // Set the spacing of the root
-        root.setPadding(new Insets(40));
-        root.setAlignment(Pos.CENTER);
-        root.setStyle("-fx-background-color: #020b1c;");
-        root.getChildren().addAll(titleBox, rulesCard, objectiveCard, playCard, buttonBox);
-
-        Scene ttt = new Scene(root ,1000 , 1000);
-
-        stage.setTitle("Tic-Tac-Toe : Instructions & Rules");
-        stage.setScene(ttt);
-        stage.show();
+        getChildren().addAll(topBar, titleBox, rulesCard, objectiveCard, playCard, buttonBox);
     }
 
-    private VBox createCard(String title, String... lines){
+    // Creates the back button bar at the top
+    private HBox createTopBar() {
+        // Button style variants for normal, hover, and pressed states
+        String baseStyle =
+                "-fx-text-fill: #00c8ff;" +
+                "-fx-font-size: 14px;" +
+                "-fx-cursor: hand;" +
+                "-fx-background-color: rgba(0,200,255,0.07);" +
+                "-fx-background-radius: 10;" +
+                "-fx-padding: 4 14 4 14;";
+        String hoverStyle =
+                "-fx-text-fill: #33d6ff;" +
+                "-fx-font-size: 14px;" +
+                "-fx-cursor: hand;" +
+                "-fx-background-color: rgba(0,200,255,0.15);" +
+                "-fx-background-radius: 10;" +
+                "-fx-padding: 4 14 4 14;";
+        String pressedStyle =
+                "-fx-text-fill: #66e0ff;" +
+                "-fx-font-size: 14px;" +
+                "-fx-cursor: hand;" +
+                "-fx-background-color: rgba(0,200,255,0.2);" +
+                "-fx-background-radius: 10;" +
+                "-fx-padding: 4 14 4 14;";
+
+        Button back = new Button("\u2190 Back to Home");
+        back.setStyle(baseStyle);
+        back.setOnMouseEntered(e -> {
+            back.setStyle(hoverStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), back);
+            st.setToX(1.05); st.setToY(1.05); st.play();
+        });
+        back.setOnMouseExited(e -> {
+            back.setStyle(baseStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), back);
+            st.setToX(1.0); st.setToY(1.0); st.play();
+        });
+        back.setOnMousePressed(e -> {
+            back.setStyle(pressedStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(80), back);
+            st.setToX(0.96); st.setToY(0.96); st.play();
+        });
+        back.setOnMouseReleased(e -> {
+            back.setStyle(hoverStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(80), back);
+            st.setToX(1.05); st.setToY(1.05); st.play();
+        });
+        back.setOnAction(e -> {
+            if (onBack != null) onBack.run();
+        });
+
+        HBox bar = new HBox(back);
+        bar.setAlignment(Pos.CENTER_LEFT);
+        return bar;
+    }
+
+    // Builds a styled card with a title and bullet-point lines
+    private VBox createCard(String title, String... lines) {
         Label mainTitle = new Label(title);
         mainTitle.setStyle("-fx-text-fill: #00d3f3; -fx-font-size: 18px; -fx-font-weight: bold;");
 
         VBox card = new VBox();
         card.setSpacing(8);
         card.setPadding(new Insets(20));
-        card.setStyle("-fx-background-color: linear-gradient(#0f172b, #1d293d);" + "-fx-background-radius: 10;");
+        card.setStyle("-fx-background-color: linear-gradient(to bottom, rgba(34,54,107,0.92), rgba(10,20,40,0.96));" + "-fx-background-radius: 10;");
         card.getChildren().add(mainTitle);
 
         for (String line : lines) {
@@ -107,16 +191,9 @@ public class InstructionsTTT extends Application {
             card.getChildren().add(subtext);
         }
 
+        card.setOnMouseEntered(e -> card.setEffect(new DropShadow(20, Color.web("#00c8ff", 0.5))));
+        card.setOnMouseExited(e -> card.setEffect(null));
+
         return card;
     }
 }
-
-
-
-
-
-
-
-
-
-

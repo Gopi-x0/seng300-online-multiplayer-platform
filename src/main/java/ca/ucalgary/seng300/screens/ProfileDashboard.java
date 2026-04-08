@@ -1,5 +1,8 @@
 package ca.ucalgary.seng300.screens;
 
+import ca.ucalgary.seng300.model.UserData;
+import ca.ucalgary.seng300.service.UserManager;
+import javafx.animation.ScaleTransition;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
@@ -7,112 +10,134 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.control.ProgressBar;
-import javafx.scene.layout.Region;
+import javafx.scene.layout.VBox;
+import javafx.scene.effect.DropShadow;
+import javafx.scene.paint.Color;
+import javafx.util.Duration;
 
-//
-import javafx.scene.layout.VBox;  // VBox is a vertical layout container from JavaFX
-//
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+
 /**
- * ProfileDashboard represents the profile screen where player stats are shown.
- * This class follows the UI navigation UML design.
+ * ProfileDashboard displays the current user's profile and game stats.
+ * All data is dynamically loaded from UserManager.getCurrentUser().
  */
 public class ProfileDashboard extends VBox {
 
-    public ProfileDashboard() {
-        // Basic container setup
-        // Sets vertical spacing between major UI sections
+    private final Runnable onBackToHome;
+
+    // Builds the profile page with header, stats, and per-game breakdowns
+    public ProfileDashboard(Runnable onBackToHome) {
+        this.onBackToHome = onBackToHome;
         setSpacing(24);
-        // Adds padding around the entire dashboard container
         setPadding(new Insets(40));
-        // Sets dark background color for the profile screen
         setStyle("-fx-background-color: #020b1c;");
         setFillWidth(true);
-        //adds profile and back buttons on top of the screen
+
         getChildren().add(createTopBar());
-        // Adds the profile header section to the screen
         getChildren().add(createProfileHeader());
-        // Adds the player stat cards section
         getChildren().add(createStatCards());
-        //adds game card stats sections
         getChildren().add(createGameCards());
     }
 
-    //creates buttons for back to home and profile
-    private HBox createTopBar() {
+    // Returns the current user, or a guest fallback if not logged in
+    private UserData getUser() {
+        UserData user = UserManager.getCurrentUser();
+        if (user == null) {
+            return new UserData("guest@sgp.com", "Guest", "");
+        }
+        return user;
+    }
 
-        //styles for base hover and pressed
+    // Creates the back button bar at the top of the page
+    private HBox createTopBar() {
+        // Button style variants for normal, hover, and pressed states
         String baseStyle =
-                "-fx-background-color: transparent;" +
-                        "-fx-text-fill: #00c8ff;" +
-                        "-fx-font-size: 14px;" +
-                        "-fx-cursor: hand;";
+                "-fx-text-fill: #00c8ff;" +
+                "-fx-font-size: 14px;" +
+                "-fx-cursor: hand;" +
+                "-fx-background-color: rgba(0,200,255,0.07);" +
+                "-fx-background-radius: 10;" +
+                "-fx-padding: 4 14 4 14;";
 
         String hoverStyle =
-                "-fx-background-color: rgba(0,200,255,0.1);" +
-                        "-fx-text-fill: #33d6ff;" +
-                        "-fx-font-size: 14px;" +
-                        "-fx-cursor: hand;";
+                "-fx-text-fill: #33d6ff;" +
+                "-fx-font-size: 14px;" +
+                "-fx-cursor: hand;" +
+                "-fx-background-color: rgba(0,200,255,0.15);" +
+                "-fx-background-radius: 10;" +
+                "-fx-padding: 4 14 4 14;";
 
         String pressedStyle =
+                "-fx-text-fill: #66e0ff;" +
+                "-fx-font-size: 14px;" +
+                "-fx-cursor: hand;" +
                 "-fx-background-color: rgba(0,200,255,0.2);" +
-                        "-fx-text-fill: #66e0ff;" +
-                        "-fx-font-size: 14px;" +
-                        "-fx-cursor: hand;";
+                "-fx-background-radius: 10;" +
+                "-fx-padding: 4 14 4 14;";
 
-        //makes buttons
-        Button back = new Button("← Back to Home");
-        Button profile = new Button("Profile");
-
-        //apply base style
+        Button back = new Button("\u2190 Back to Home");
         back.setStyle(baseStyle);
-        profile.setStyle(baseStyle);
 
-        //interactions for the back button
-        back.setOnMouseEntered(e -> back.setStyle(hoverStyle));
-        back.setOnMouseExited(e -> back.setStyle(baseStyle));
-        back.setOnMousePressed(e -> back.setStyle(pressedStyle));
-        back.setOnMouseReleased(e -> back.setStyle(hoverStyle));
+        back.setOnMouseEntered(e -> {
+            back.setStyle(hoverStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), back);
+            st.setToX(1.05); st.setToY(1.05); st.play();
+        });
+        back.setOnMouseExited(e -> {
+            back.setStyle(baseStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), back);
+            st.setToX(1.0); st.setToY(1.0); st.play();
+        });
+        back.setOnMousePressed(e -> {
+            back.setStyle(pressedStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(80), back);
+            st.setToX(0.96); st.setToY(0.96); st.play();
+        });
+        back.setOnMouseReleased(e -> {
+            back.setStyle(hoverStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(80), back);
+            st.setToX(1.05); st.setToY(1.05); st.play();
+        });
 
-        //interaction for profile button
-        profile.setOnMouseEntered(e -> profile.setStyle(hoverStyle));
-        profile.setOnMouseExited(e -> profile.setStyle(baseStyle));
-        profile.setOnMousePressed(e -> profile.setStyle(pressedStyle));
-        profile.setOnMouseReleased(e -> profile.setStyle(hoverStyle));
+        back.setOnAction(e -> {
+            System.out.println("ProfileDashboard: navigating to Home");
+            if (onBackToHome != null) onBackToHome.run();
+        });
 
-        //button actions, will implement real actions later
-        back.setOnAction(e -> System.out.println("Go to Home"));
-        profile.setOnAction(e -> System.out.println("Go to Profile"));
-
-        //positions back to home and profile correctly
         HBox bar = new HBox();
         bar.setAlignment(Pos.CENTER_LEFT);
-        Region spacer = new Region();
-        HBox.setHgrow(spacer, Priority.ALWAYS);
-        bar.getChildren().addAll(back, spacer, profile);
+        bar.getChildren().add(back);
 
         return bar;
     }
 
+    // Creates the profile header card showing username, rank, and points
     private HBox createProfileHeader() {
-        // Creates label displaying the player's name
-        Label name = new Label("Name Name");
-        name.setStyle("-fx-text-fill:white; -fx-font-size:32px; -fx-font-weight:bold;");// Applies styling to the name text
+        UserData user = getUser();
 
-        Label member = new Label("Member since Month Year"); // Creates label showing membership information
-        member.setStyle("-fx-text-fill:#90a1b9;");// Applies styling for secondary information text
+        Label name = new Label(user.getUsername());
+        name.setStyle("-fx-text-fill:white; -fx-font-size:32px; -fx-font-weight:bold;");
+        name.setMaxWidth(400);
+        name.setWrapText(false);
+        name.setEllipsisString("...");
+        name.setTextOverrun(javafx.scene.control.OverrunStyle.ELLIPSIS);
 
-        //creates a vertical container holding name and membership info
+        String memberDate = LocalDate.now().format(DateTimeFormatter.ofPattern("MMMM yyyy"));
+        Label member = new Label("Member since " + memberDate);
+        member.setStyle("-fx-text-fill:#90a1b9;");
+
         VBox left = new VBox(name, member);
-        left.setSpacing(5); // Sets spacing between the labels
-        Label rank = new Label("\uD83C\uDFC6 Rank #"); // Creates label for player rank
-        rank.setStyle("-fx-text-fill:#FFD700; -fx-font-size:20px;");//styles rank text
+        left.setSpacing(5);
 
-        // Creates label for total points
-        Label points = new Label("0000 Points");
-        points.setStyle("-fx-text-fill:#00d3f3;"); // Applies highlight styling to points
+        int rank = UserManager.getUserRank(user);
+        Label rankLabel = new Label("\uD83C\uDFC6 Rank #" + rank);
+        rankLabel.setStyle("-fx-text-fill:#FFD700; -fx-font-size:20px;");
 
-        // Creates vertical layout for rank and points, and deals with allignment and spacing
-        VBox right = new VBox(rank, points);
+        Label points = new Label(user.getTotalPoints() + " Points");
+        points.setStyle("-fx-text-fill:#00d3f3;");
+
+        VBox right = new VBox(rankLabel, points);
         right.setAlignment(Pos.CENTER_RIGHT);
         HBox header = new HBox(left, right);
         header.setSpacing(40);
@@ -120,96 +145,84 @@ public class ProfileDashboard extends VBox {
         HBox.setHgrow(left, Priority.ALWAYS);
         header.setPadding(new Insets(20));
         header.setStyle(
-                "-fx-background-color: linear-gradient(#0f172b,#1d293d);" +
-                        "-fx-background-radius:10;"
+                "-fx-background-color: linear-gradient(to bottom, rgba(34,54,107,0.92), rgba(10,20,40,0.96));" +
+                "-fx-background-radius:10;"
         );
+        header.setOnMouseEntered(e -> header.setEffect(new DropShadow(20, Color.web("#00c8ff", 0.5))));
+        header.setOnMouseExited(e -> header.setEffect(null));
 
-        // Returns the constructed header
         return header;
     }
-    /**
-     * Creates the statistics card section displaying player stats.
-     *
-     * @return GridPane containing stat cards
-     */
+
+    // Creates the row of overall stat cards (total games, wins, win rate, streak)
     private HBox createStatCards() {
+        UserData user = getUser();
 
-        // Creates a horizontal layout for player statistics
         HBox row = new HBox();
-
-        // Sets spacing between stat cards
         row.setSpacing(18);
 
-        // Creates the individual stat cards
-        VBox totalGamesCard = createStatCard("\uD83C\uDFAE Total Games", "#");
-        VBox totalWinsCard = createStatCard("\uD83C\uDFAF Total Wins", "#");
-        VBox winRateCard = createStatCard("\uD83E\uDD47 Win Rate", "%");
-        VBox bestStreakCard = createStatCard("\uD83D\uDD25 Best Streak", "#");
+        VBox totalGamesCard = createStatCard("\uD83C\uDFAE Total Games", String.valueOf(user.getTotalGames()), false);
+        VBox totalWinsCard = createStatCard("\uD83C\uDFAF Total Wins", String.valueOf(user.getTotalWins()), true);
+        VBox winRateCard = createStatCard("\uD83E\uDD47 Win Rate", String.format("%.1f%%", user.getOverallWinRate()), false);
+        VBox bestStreakCard = createStatCard("\uD83D\uDD25 Best Streak", String.valueOf(user.getBestStreak()), false);
 
-        // Allows each stat card to grow equally across the row
         HBox.setHgrow(totalGamesCard, Priority.ALWAYS);
         HBox.setHgrow(totalWinsCard, Priority.ALWAYS);
         HBox.setHgrow(winRateCard, Priority.ALWAYS);
         HBox.setHgrow(bestStreakCard, Priority.ALWAYS);
 
-        // Adds the cards to the row
         row.getChildren().addAll(totalGamesCard, totalWinsCard, winRateCard, bestStreakCard);
-
         return row;
     }
-    /**
-     * Creates a reusable stat card UI component.
-     *
-     * @param label the title of the stat
-     * @param value the stat value
-     * @return VBox representing the stat card
-     */
-    private VBox createStatCard(String label, String value) {
-        // Creates label for stat title and styles it
+
+    // Creates a single stat card with a label and value
+    private VBox createStatCard(String label, String value, boolean isWins) {
         Label title = new Label(label);
         title.setStyle("-fx-text-fill:#90a1b9;");
 
-        // Creates label for stat value and styles it
         Label val = new Label(value);
-        //only make win stat green and rest white
-        if(label.equals("\uD83C\uDFAF Total Wins")){
+        if (isWins) {
             val.setStyle("-fx-text-fill:#00e676; -fx-font-size:22px;");
-        }else{
+        } else {
             val.setStyle("-fx-text-fill:white; -fx-font-size:22px;");
         }
 
-        // Creates vertical layout container for the stat card
         VBox card = new VBox(title, val);
-
-        // Adds spacing and padding
         card.setSpacing(8);
         card.setPadding(new Insets(20));
         card.setMaxWidth(Double.MAX_VALUE);
         card.setPrefHeight(120);
-        // Apply background gradient and rounded corners
         card.setStyle(
-                "-fx-background-color: linear-gradient(#0f172b,#1d293d);" +
-                        "-fx-background-radius:10;"
+                "-fx-background-color: linear-gradient(to bottom, rgba(34,54,107,0.92), rgba(10,20,40,0.96));" +
+                "-fx-background-radius:10;"
         );
-
+        card.setOnMouseEntered(e -> card.setEffect(new DropShadow(20, Color.web("#00c8ff", 0.5))));
+        card.setOnMouseExited(e -> card.setEffect(null));
         return card;
     }
 
+    // Creates the per-game breakdown cards for TTT and Connect 4
     private HBox createGameCards() {
-        //game card for Tic Tac Toe
+        UserData user = getUser();
+
         VBox ticTacToe = createGameCard(
                 "Tic Tac Toe",
-                0, 0, 0, 0,
-                "0%", "0 wins", "0 wins", "0"
+                user.getTttGamesPlayed(), user.getTttWins(), user.getTttLosses(), user.getTttDraws(),
+                String.format("%.1f%%", user.getTttWinRate()),
+                user.getTttCurrentStreak() + " wins",
+                user.getTttBestStreak() + " wins",
+                String.valueOf(user.getTttPoints())
         );
 
-        //game card for Connect 4
         VBox connect4 = createGameCard(
                 "Connect 4",
-                0, 0, 0, 0,
-                "10%", "0 wins", "0 wins", "0"
+                user.getC4GamesPlayed(), user.getC4Wins(), user.getC4Losses(), user.getC4Draws(),
+                String.format("%.1f%%", user.getC4WinRate()),
+                user.getC4CurrentStreak() + " wins",
+                user.getC4BestStreak() + " wins",
+                String.valueOf(user.getC4Points())
         );
-        //container for both game cards
+
         HBox container = new HBox(24, ticTacToe, connect4);
         container.setAlignment(Pos.CENTER_LEFT);
         container.setMaxWidth(Double.MAX_VALUE);
@@ -218,28 +231,16 @@ public class ProfileDashboard extends VBox {
         return container;
     }
 
-
+    // Creates a detailed game card showing W/L/D, win rate bar, streaks, and points
     private VBox createGameCard(
             String title,
-            int games,
-            int wins,
-            int losses,
-            int draws,
-            String winRate,
-            String currentStreak,
-            String bestStreak,
-            String points
+            int games, int wins, int losses, int draws,
+            String winRate, String currentStreak, String bestStreak, String points
     ) {
-
-        // Created label displaying game title and styles it
         Label t = new Label(title);
         t.setStyle("-fx-text-fill:white; -fx-font-size:18px; -fx-font-weight:bold;");
 
-        /*
-         * LEFT COLUMN (labels)
-         * This holds the names of each stat (Games Played, Wins, etc.)
-         * Styled with muted color to match Figma hierarchy
-         */        VBox labelsLeft = new VBox(
+        VBox labelsLeft = new VBox(
                 statLabel("Games Played"),
                 statLabel("Wins"),
                 statLabel("Losses"),
@@ -247,26 +248,19 @@ public class ProfileDashboard extends VBox {
         );
         labelsLeft.setSpacing(8);
 
-        /*
-         * RIGHT COLUMN (values)
-         * This holds the actual numeric values corresponding to each stat
-         * Each stat has its own color (green = wins, red = losses, etc.)
-         */        VBox valuesRight = new VBox(
+        VBox valuesRight = new VBox(
                 statValue(String.valueOf(games), "#90a1b9"),
                 statValue(String.valueOf(wins), "#00e676"),
                 statValue(String.valueOf(losses), "#ff5252"),
                 statValue(String.valueOf(draws), "#90a1b9")
         );
         valuesRight.setSpacing(8);
-        valuesRight.setAlignment(Pos.CENTER_RIGHT); // Align values to the right edge
+        valuesRight.setAlignment(Pos.CENTER_RIGHT);
 
-        //Combines left and right columns into a single row
-        //creates the clean "label → value" layout like the Figma design
         HBox statsRow = new HBox(labelsLeft, valuesRight);
         statsRow.setSpacing(20);
-        HBox.setHgrow(labelsLeft, Priority.ALWAYS); // Push values to the far right
+        HBox.setHgrow(labelsLeft, Priority.ALWAYS);
 
-        // Check if winRate is empty and set default value
         double winRateValue = 0;
         try {
             winRateValue = Double.parseDouble(winRate.replace("%", "")) / 100.0;
@@ -274,21 +268,17 @@ public class ProfileDashboard extends VBox {
             winRateValue = 0;
         }
 
-        //win rate label
         Label wrLabel = statLabel("Win Rate");
-
-        //make a progress bar for win rate
         ProgressBar winRateProgress = new ProgressBar(winRateValue);
         winRateProgress.setPrefWidth(Double.MAX_VALUE);
         winRateProgress.setStyle(
                 "-fx-accent: #00c8ff;" +
-                        "-fx-control-inner-background: #1d293d;"
+                "-fx-control-inner-background: #1d293d;"
         );
 
         VBox winRateBox = new VBox(wrLabel, winRateProgress);
         winRateBox.setSpacing(6);
 
-        //bottom stats layout
         VBox bottomLeft = new VBox(
                 statLabel("Current Streak"),
                 statLabel("Best Streak"),
@@ -296,8 +286,6 @@ public class ProfileDashboard extends VBox {
         );
         bottomLeft.setSpacing(6);
 
-        //BOTTOM SECTION (additional stats)
-        //Same structure as above: labels on left, values on right
         VBox bottomRight = new VBox(
                 statValue(currentStreak, "#90a1b9"),
                 statValue(bestStreak, "#ffeb3b"),
@@ -306,91 +294,38 @@ public class ProfileDashboard extends VBox {
         bottomRight.setSpacing(6);
         bottomRight.setAlignment(Pos.CENTER_RIGHT);
 
-        // Combine everything into a single game card layout
         HBox bottomRow = new HBox(bottomLeft, bottomRight);
         bottomRow.setSpacing(20);
         HBox.setHgrow(bottomLeft, Priority.ALWAYS);
 
-        /*
-         * MAIN CARD LAYOUT
-         * Stacks:
-         * 1. Title
-         * 2. Stats row
-         * 3. Win rate section
-         * 4. Bottom stats
-         */
-        VBox gameCard = new VBox(
-                t,
-                statsRow,
-                winRateBox,
-                bottomRow
-        );
-
-        // Spacing between sections
+        VBox gameCard = new VBox(t, statsRow, winRateBox, bottomRow);
         gameCard.setSpacing(16);
         gameCard.setPadding(new Insets(20));
         gameCard.setPrefWidth(300);
         gameCard.setMaxWidth(Double.MAX_VALUE);
         VBox.setVgrow(gameCard, Priority.NEVER);
-        //add gradient styling
         gameCard.setStyle(
-                "-fx-background-color: linear-gradient(#0f172b,#1d293d);" +
-                        "-fx-background-radius:12;" +
-                        "-fx-border-radius:12;"
+                "-fx-background-color: linear-gradient(to bottom, rgba(34,54,107,0.92), rgba(10,20,40,0.96));" +
+                "-fx-background-radius:12;" +
+                "-fx-border-radius:12;"
         );
-
+        gameCard.setOnMouseEntered(e -> gameCard.setEffect(new DropShadow(20, Color.web("#00c8ff", 0.5))));
+        gameCard.setOnMouseExited(e -> gameCard.setEffect(null));
         return gameCard;
     }
 
-    /**
-     * Creates a styled label for stat titles (left column).
-     *
-     * @param text The label name (e.g., "Wins", "Losses")
-     * @return Styled Label for UI consistency
-     */    private Label statLabel(String text) {
+    // Helper to create a grey stat label
+    private Label statLabel(String text) {
         Label l = new Label(text);
-        // Muted gray color for hierarchy
         l.setStyle("-fx-text-fill:#90a1b9; -fx-font-size:13px;");
         return l;
     }
 
-    /**
-     * Creates a styled label for stat values (right column).
-     *
-     * @param value The numeric/stat value
-     * @param color The color used to highlight the stat
-     * @return Styled Label with emphasis
-     */
+    // Helper to create a colored stat value label
     private Label statValue(String value, String color) {
         Label l = new Label(value);
         l.setStyle("-fx-text-fill:" + color + "; -fx-font-size:14px; -fx-font-weight:bold;");
-
         return l;
     }
 
-    private Label stat(String label, String value) {
-
-        //a label combining stat title and value and applies styling to text
-        Label stat = new Label(label + ": " + value);
-        stat.setStyle("-fx-text-fill:#90a1b9;");
-        return stat;
-    }
-
-    /**
-     * Displays the profile view.
-     * This method will later render the full profile UI.
-     */
-    public void displayProfileView() {
-        // UI rendering logic will go here
-    }
-
-    /**
-     * Displays statistics for a specific game type.
-     *
-     * @param type the game type (e.g., TicTacToe, Connect4)
-     */
-    public void displayGameStats(String type) {
-        // Game-specific stats logic will go here
-    }
 }
-//

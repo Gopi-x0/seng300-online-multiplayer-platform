@@ -1,4 +1,4 @@
-package ca.ucalgary.seng300.TicTacToeEngine;
+package ca.ucalgary.seng300.tictactoeengine;
 
 import ca.ucalgary.seng300.interfaces.Move;
 
@@ -55,13 +55,12 @@ public class GameState {
         return copy;
     }
 
-
-
-
+    // Returns the ID of the player whose turn it is
     public String getActivePlayerId() {
         return activePlayerId;
     }
 
+    // Returns the current game status (in progress, win, draw)
     public GameStatusTicTacToeEngine getStatus() {
         return status;
     }
@@ -73,8 +72,9 @@ public class GameState {
         return List.copyOf(moveHistory);
     }
 
+    // Returns a copy of the player IDs list
     public List<String> getPlayerIds(){
-        return List.copyOf(getPlayerIds());
+        return List.copyOf(playerIds);
     }
 
     @Override
@@ -91,6 +91,4 @@ public class GameState {
         }
         return sb.toString();
     }
-
-
 }

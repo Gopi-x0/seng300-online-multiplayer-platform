@@ -1,12 +1,12 @@
-package ca.ucalgary.seng300.Connect4GameEngine;
+package ca.ucalgary.seng300.connect4engine;
 
 /**
  * Board Class
  *
  * This is the actual 6x7 grid that pieces get dropped into.
  * It handles two key responsibilities:
- *   1. GRAVITY — when a piece is dropped into a column, it falls to the lowest empty row
- *   2. WIN DETECTION — after each piece is placed, check if that piece created a 4-in-a-row
+ *   1. GRAVITY - when a piece is dropped into a column, it falls to the lowest empty row
+ *   2. WIN DETECTION - after each piece is placed, check if that piece created a 4-in-a-row
  *
  * The grid is stored as char[6][7]:
  *   - 6 rows (row 0 = top, row 5 = bottom)
@@ -41,7 +41,7 @@ public class Board {
     }
 
     /**
-     * Copy constructor — creates a deep copy of an existing board.
+     * Copy constructor - creates a deep copy of an existing board.
      * This is essential so applyMove can return a NEW state without
      * modifying the old one. Immutability is a key design principle here.
      */
@@ -62,7 +62,7 @@ public class Board {
      * Returns the row where the piece landed (needed for win detection).
      * Returns -1 if the column is full (shouldn't happen if validateMove was called first).
      *
-     * @param column - which column (0–6) to drop into
+     * @param column - which column (0-6) to drop into
      * @param player - the player dropping the piece
      * @return the row index where the piece landed, or -1 if column is full
      */
@@ -74,7 +74,7 @@ public class Board {
                 return row;  // Return the row where piece landed
             }
         }
-        return -1; // Column is full — shouldn't reach here if validation was done
+        return -1; // Column is full - shouldn't reach here if validation was done
     }
 
     /**
@@ -90,7 +90,7 @@ public class Board {
 
     /**
      * Checks whether the ENTIRE board is full (no empty cells anywhere).
-     * Used to detect a DRAW — if the board is full and no winner, it's a draw.
+     * Used to detect a DRAW - if the board is full and no winner, it's a draw.
      *
      * @return true if every cell is occupied
      */
@@ -108,10 +108,10 @@ public class Board {
      * Checks whether the piece at (row, col) has created a 4-in-a-row WIN.
      *
      * We check all 4 directions FROM the newly placed piece:
-     *   1. Horizontal  → (same row, varying column)
-     *   2. Vertical    ↓ (same column, varying row)
-     *   3. Diagonal    ↘ (row+, col+)
-     *   4. Diagonal    ↗ (row-, col+)
+     *   1. Horizontal (same row, varying column)
+     *   2. Vertical (same column, varying row)
+     *   3. Diagonal down-right (row+, col+)
+     *   4. Diagonal up-right (row-, col+)
      *
      * For each direction, we count how many consecutive same-symbol pieces
      * exist on BOTH SIDES of the just-placed piece. If total >= 4, it's a win.
@@ -128,9 +128,9 @@ public class Board {
         return countInDirection(row, column, symbol, 0, 1)  +  // Horizontal
                 countInDirection(row, column, symbol, 0, -1) >= 3
                 || countInDirection(row, column, symbol, 1, 0)  >= 3  // Vertical (only down needed)
-                || countInDirection(row, column, symbol, 1, 1)  +  // Diagonal ↘
+                || countInDirection(row, column, symbol, 1, 1)  +  // Diagonal down-right
                 countInDirection(row, column, symbol, -1, -1) >= 3
-                || countInDirection(row, column, symbol, 1, -1) +  // Diagonal ↗
+                || countInDirection(row, column, symbol, 1, -1) +  // Diagonal up-right
                 countInDirection(row, column, symbol, -1, 1) >= 3;
     }
 
@@ -173,7 +173,7 @@ public class Board {
     }
 
     /**
-     * Human-readable board display — useful for debugging.
+     * Human-readable board display - useful for debugging.
      * Prints the board top-to-bottom with column numbers.
      */
     @Override
