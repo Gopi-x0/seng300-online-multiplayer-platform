@@ -201,4 +201,168 @@ public class UserManagerTest {
         assertFalse(result, "changeUsername should fail when the name is already taken by another user");
     }
 
+
+    // changeEmail() Tests
+
+
+    @Test
+    void testChangeEmailCorrect_ValidNewEmail() {
+        UserManager.register("chagemail@test.com", "password123");
+        boolean result = UserManager.changeEmail("newemail@test.com");
+        assertTrue(result, "Changing to an available valid email should succeed");
+        assertEquals("newemail@test.com", UserManager.getCurrentUser().getEmail());
+    }
+
+    @Test
+    void testChangeEmailIncorrect_NoAtSymbol() {
+        UserManager.register("chagemail@test.com", "password123");
+        boolean result = UserManager.changeEmail("invalidemail.com");
+        assertFalse(result, "changeEmail should reject emails without '@'");
+    }
+
+    @Test
+    void testChangeEmailEdge_NoUserLoggedIn() {
+        boolean result = UserManager.changeEmail("new@test.com");
+        assertFalse(result, "changeEmail should return false when no user is logged in");
+    }
+
+    @Test
+    void testChangeEmailEdge_EmailWithPipe() {
+        UserManager.register("chagemail@test.com", "password123");
+        boolean result = UserManager.changeEmail("bad|pipe@test.com");
+        assertFalse(result, "changeEmail should reject emails containing '|'");
+    }
+
+    @Test
+    void testChangeEmailEdge_EmailTakenByAnother() {
+        UserManager.register("chagemail@test.com", "password123");
+        // admin@sgp.com is taken
+        boolean result = UserManager.changeEmail("admin@sgp.com");
+        assertFalse(result, "changeEmail should fail when the email is already taken by another user");
+    }
+
+
+    // changePassword() Tests
+
+
+    @Test
+    void testChangePasswordCorrect_ValidOldAndNewPassword() {
+        UserManager.register("changepw@test.com", "oldPass123");
+        boolean result = UserManager.changePassword("oldPass123", "newPass456");
+        assertTrue(result, "Changing password with correct old password and valid new password should succeed");
+    }
+
+    @Test
+    void testChangePasswordIncorrect_WrongOldPassword() {
+        UserManager.register("changepw@test.com", "correctOld");
+        boolean result = UserManager.changePassword("wrongOld", "newPass456");
+        assertFalse(result, "changePassword should fail when the old password does not match");
+    }
+
+    @Test
+    void testChangePasswordEdge_NoUserLoggedIn() {
+        boolean result = UserManager.changePassword("old", "new123");
+        assertFalse(result, "changePassword should return false when no user is logged in");
+    }
+
+    @Test
+    void testChangePasswordEdge_NewPasswordTooShort() {
+        UserManager.register("changepw@test.com", "oldPass123");
+        boolean result = UserManager.changePassword("oldPass123", "ab");
+        assertFalse(result, "changePassword should reject a new password shorter than 3 characters");
+    }
+
+    @Test
+    void testChangePasswordEdge_NewPasswordWithPipe() {
+        UserManager.register("changepw@test.com", "oldPass123");
+        boolean result = UserManager.changePassword("oldPass123", "new|pass");
+        assertFalse(result, "changePassword should reject a new password containing '|'");
+    }
+
+    @Test
+    void testChangePasswordEdge_NullNewPassword() {
+        UserManager.register("changepw@test.com", "oldPass123");
+        boolean result = UserManager.changePassword("oldPass123", null);
+        assertFalse(result, "changePassword should reject a null new password");
+    }
+
+
+    // logout() Tests
+
+
+    @Test
+    void testLogoutCorrect_ClearsCurrentUser() {
+        UserManager.login("admin@sgp.com", "admin");
+        assertNotNull(UserManager.getCurrentUser());
+
+        UserManager.logout();
+        assertNull(UserManager.getCurrentUser(), "After logout, getCurrentUser should return null");
+    }
+
+    @Test
+    void testLogoutEdge_LogoutWhenAlreadyLoggedOut() {
+        // Already logged out from setUp
+        assertDoesNotThrow(() -> {
+            UserManager.logout();
+        }, "Calling logout when already logged out should not throw an exception");
+        assertNull(UserManager.getCurrentUser());
+    }
+
+
+    // getUserRank() Tests
+
+
+    @Test
+    void testGetUserRankCorrect_ReturnsPositiveRank() {
+        UserManager.login("admin@sgp.com", "admin");
+        UserData admin = UserManager.getCurrentUser();
+        int rank = UserManager.getUserRank(admin);
+        assertTrue(rank >= 1, "User rank should be a positive integer (1-based)");
+        assertTrue(rank <= UserManager.getAllUsers().size(), "Rank should not exceed total number of users");
+    }
+
+    @Test
+    void testGetUserRankCorrect_HighestPointsIsRankOne() {
+        // MuhammadA has the most total points (1200 TTT + 500 C4 = 1700)
+        UserManager.login("MuhammadA", "123");
+        UserData topUser = UserManager.getCurrentUser();
+        int rank = UserManager.getUserRank(topUser);
+        assertEquals(1, rank, "The user with the highest total points should be ranked #1");
+    }
+
+    @Test
+    void testGetUserRankEdge_NewUserHasLowestRank() {
+        UserData newUser = UserManager.register("newranked@test.com", "password123");
+        int rank = UserManager.getUserRank(newUser);
+        // A brand new user with 0 points should be among the lowest ranks
+        assertTrue(rank > 1);
+    }
+
+
+    // loadUsers() and saveUsers() Tests
+
+
+    @Test
+    void testLoadUsersCorrect_PersistsAfterSaveAndReload() {
+        UserManager.register("persist@test.com", "password123");
+        UserManager.saveUsers();
+        UserManager.loadUsers();
+
+        // The registered user should still exist after reload
+        UserData user = UserManager.login("persist@test.com", "password123");
+        assertNotNull(user, "A registered user should persist after saveUsers + loadUsers");
+    }
+
+    @Test
+    void testLoadUsersEdge_RelinksCurrentUserAfterReload() {
+        UserManager.login("admin@sgp.com", "admin");
+        assertNotNull(UserManager.getCurrentUser());
+
+        // Reload should re-link the current user by email
+        UserManager.loadUsers();
+        UserData current = UserManager.getCurrentUser();
+        assertNotNull(current, "currentUser should be re-linked after loadUsers");
+        assertEquals("admin@sgp.com", current.getEmail());
+    }
+
 }
