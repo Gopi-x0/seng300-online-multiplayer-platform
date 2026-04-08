@@ -13,7 +13,115 @@ public class UserDataTest {
 
     UserData user = new UserData("test@email.com", "user1", "1234");
 
+
+    // Simple Setter and Getter Tests
+
+
+    @Test
+    void testSetGetEmail() {
+        user.setEmail("new@email.com");
+        assertEquals("new@email.com", user.getEmail());
+    }
+
+    @Test
+    void testSetGetUsername() {
+        user.setUsername("newUser");
+        assertEquals("newUser", user.getUsername());
+    }
+
+    @Test
+    void testSetGetPassword() {
+        user.setPassword("newPass");
+        assertEquals("newPass", user.getPassword());
+    }
+
+    @Test
+    void testSetGetTttGamesPlayed() {
+        user.setTttGamesPlayed(10);
+        assertEquals(10, user.getTttGamesPlayed());
+    }
+
+    @Test
+    void testSetGetTttWins() {
+        user.setTttWins(5);
+        assertEquals(5, user.getTttWins());
+    }
+
+    @Test
+    void testSetGetTttLosses() {
+        user.setTttLosses(3);
+        assertEquals(3, user.getTttLosses());
+    }
+
+    @Test
+    void testSetGetTttDraws() {
+        user.setTttDraws(2);
+        assertEquals(2, user.getTttDraws());
+    }
+
+    @Test
+    void testSetGetTttCurrentStreak() {
+        user.setTttCurrentStreak(4);
+        assertEquals(4, user.getTttCurrentStreak());
+    }
+
+    @Test
+    void testSetGetTttBestStreak() {
+        user.setTttBestStreak(7);
+        assertEquals(7, user.getTttBestStreak());
+    }
+
+    @Test
+    void testSetGetTttPoints() {
+        user.setTttPoints(100);
+        assertEquals(100, user.getTttPoints());
+    }
+
+    @Test
+    void testSetGetC4GamesPlayed() {
+        user.setC4GamesPlayed(8);
+        assertEquals(8, user.getC4GamesPlayed());
+    }
+
+    @Test
+    void testSetGetC4Wins() {
+        user.setC4Wins(4);
+        assertEquals(4, user.getC4Wins());
+    }
+
+    @Test
+    void testSetGetC4Losses() {
+        user.setC4Losses(2);
+        assertEquals(2, user.getC4Losses());
+    }
+
+    @Test
+    void testSetGetC4Draws() {
+        user.setC4Draws(1);
+        assertEquals(1, user.getC4Draws());
+    }
+
+    @Test
+    void testSetGetC4CurrentStreak() {
+        user.setC4CurrentStreak(3);
+        assertEquals(3, user.getC4CurrentStreak());
+    }
+
+    @Test
+    void testSetGetC4BestStreak() {
+        user.setC4BestStreak(6);
+        assertEquals(6, user.getC4BestStreak());
+    }
+
+    @Test
+    void testSetGetC4Points() {
+        user.setC4Points(200);
+        assertEquals(200, user.getC4Points());
+    }
+
+
     // Correct cases
+
 
     @Test
     void testConstructorAndGetters() {
