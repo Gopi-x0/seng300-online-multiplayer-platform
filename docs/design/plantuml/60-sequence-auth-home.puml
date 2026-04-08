@@ -1,0 +1,69 @@
+@startuml SGP-Sequence-Auth-Home
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam shadowing false
+skinparam defaultFontSize 11
+skinparam sequenceMessageAlign center
+
+title Sequence: App Launch → Authentication → Home Page
+footer Iteration 3 · SENG 300
+
+actor User
+participant "MainApp" as App
+participant "WelcomePage" as WP
+participant "AuthenticationScreen" as Auth
+participant "UserManager" as UM
+participant "HomePage" as HP
+
+== App Launch ==
+
+User -> App : launch()
+activate App
+App -> App : start(stage)\nStageStyle.UNDECORATED\nbuildCustomTitleBar()
+App -> WP : new WelcomePage(onContinue)
+activate WP
+App -> App : appShell.setCenter(WP)
+
+== Welcome → Auth ==
+
+User -> WP : clicks "Continue to Play!"
+WP -> App : onContinue.run()
+deactivate WP
+
+App -> Auth : new AuthenticationScreen(onAuthSuccess)
+activate Auth
+App -> App : appShell.setCenter(Auth)
+
+== Registration Flow ==
+
+User -> Auth : fills email + password\nclicks "Submit Registration"
+Auth -> Auth : validate inputs
+Auth -> UM : register(email, password)
+activate UM
+UM -> UM : check duplicate email
+UM -> UM : generate username from email prefix
+UM -> UM : saveUsers() [with FileLock]
+UM --> Auth : UserData (success)
+deactivate UM
+Auth -> App : onAuthSuccess.run()
+deactivate Auth
+
+== OR: Login Flow ==
+
+User -> Auth : fills email/username + password\nclicks "Submit Login"
+Auth -> UM : login(identifier, password)
+activate UM
+UM -> UM : match email or username + password
+UM --> Auth : UserData (success) / null (fail)
+deactivate UM
+Auth -> App : onAuthSuccess.run()
+
+== Home Page ==
+
+App -> HP : new HomePage(onSettings, onPlayTTT, onPlayC4, onProfile)
+activate HP
+HP -> UM : getCurrentUser()
+HP -> HP : display username, game cards, records table
+App -> App : appShell.setCenter(HP)
+
+@enduml

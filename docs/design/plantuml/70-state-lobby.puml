@@ -1,0 +1,86 @@
+@startuml SGP-State-Lobby-Game
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam shadowing false
+skinparam defaultFontSize 11
+
+title Student Gaming Platform — State Machine: Lobby & Match Lifecycle
+footer Iteration 3 · SENG 300
+
+state "Application" as app {
+
+    [*] --> Welcome
+
+    state "Welcome" as Welcome
+    state "Authentication" as Auth
+    state "Home" as Home
+    state "Instructions" as Inst
+    state "LobbySelection" as LobbySel
+    state "HostingLobby" as Hosting
+    state "JoiningLobby" as Joining
+    state "WaitingForHost" as Waiting
+    state "GameInProgress" as Playing
+    state "GameOver" as Over
+    state "Settings" as Settings
+    state "Profile" as Profile
+
+    Welcome --> Auth : Continue
+    Auth --> Home : login / register success
+
+    Home --> Inst : Play TTT / Play C4
+    Home --> Settings : Settings
+    Home --> Profile : Profile
+
+    Settings --> Home : Back
+    Settings --> Welcome : Logout
+    Profile --> Home : Back
+
+    Inst --> LobbySel : PLAY
+    Inst --> Home : Back
+
+    LobbySel --> Hosting : Host Game
+    LobbySel --> Joining : Join Game
+    LobbySel --> Home : Back
+
+    Hosting --> LobbySel : Back (shutdown server)
+
+    state Hosting {
+        [*] --> ServerStarted
+        ServerStarted : createWithPortScan()\nwaitForClient()
+        ServerStarted --> GuestJoined : JOIN message validated
+        GuestJoined --> ServerStarted : Guest disconnects\nresetClient + waitForClient
+        GuestJoined --> ReadyToStart : lobby full
+    }
+
+    Hosting --> Playing : Start Game\n(send START to guest)
+
+    state Joining {
+        [*] --> EnteringCode
+        EnteringCode --> Scanning : click Join
+        Scanning : tryNextPort() 5300..5325
+        Scanning --> CodeRejected : ERROR / invalid code
+        CodeRejected --> Scanning : try next port
+        Scanning --> ConnFailed : all ports exhausted
+        ConnFailed --> EnteringCode : show error
+        Scanning --> Waiting : JOINED received
+    }
+
+    Waiting --> Playing : START received
+    Waiting --> LobbySel : LOBBY_CLOSED / DISCONNECTED
+
+    state Playing {
+        [*] --> AwaitingTurn
+        AwaitingTurn --> MoveMade : player clicks cell/column
+        MoveMade --> ProcessingMove : validate + apply
+        ProcessingMove --> AwaitingTurn : IN_PROGRESS\nsend STATE to peer
+        ProcessingMove --> Over : P1_WINS / P2_WINS / DRAW
+        AwaitingTurn --> OpponentMoved : receive MOVE from peer
+        OpponentMoved --> ProcessingMove
+        AwaitingTurn --> Over : DISCONNECTED / PLAYER_LEFT
+    }
+
+    Over --> Home : RETURN button\n(cleanup TCP + endGame)
+
+}
+
+@enduml
