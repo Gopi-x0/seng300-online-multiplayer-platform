@@ -1,7 +1,10 @@
 package ca.ucalgary.seng300.gamelogic;
 
-import ca.ucalgary.seng300.Connect4GameEngine.*;
-import ca.ucalgary.seng300.GameStatus;
+import ca.ucalgary.seng300.connect4engine.*;
+import ca.ucalgary.seng300.model.GameStatus;
+import ca.ucalgary.seng300.interfaces.MoveResult;
+import ca.ucalgary.seng300.interfaces.Move;
+import ca.ucalgary.seng300.interfaces.ValidationCode;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
@@ -9,360 +12,348 @@ import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
-/**
- * Tests for Connect4Game engine.
- * These won't pass until the engine team finishes implementing the methods.
- * Written based on the classes and design docs we were given.
- */
 public class Connect4Test {
 
     private Connect4Game engine;
     private Connect4State initialState;
 
-    private static final String PLAYER_RED    = "player_red";    // gets 'R', goes first
-    private static final String PLAYER_YELLOW = "player_yellow"; // gets 'Y', goes second
+    private static final String PLAYER_RED    = "player_red";
+    private static final String PLAYER_YELLOW = "player_yellow";
+
+    private Move move(int col) {
+        return new Move(-1, col, PLAYER_RED, "R");
+    }
 
     @BeforeEach
     void setUp() {
         engine = new Connect4Game();
-        initialState = (Connect4State) engine.createInitialState(List.of(PLAYER_RED, PLAYER_YELLOW));
+        initialState = engine.createInitialState(List.of(PLAYER_RED, PLAYER_YELLOW));
     }
 
-    // --- createInitialState tests ---
+    // --- setup and creation ---
 
-    /**
-     * createInitialState should return something and not null
-     */
+    // fresh game: in progress, red first, correct symbols, no winner
     @Test
-    void initialStateNotNull() {
-        assertNotNull(initialState, "Initial state should not be null");
+    void newGameSetUpCorrectly() {
+        assertNotNull(initialState);
+        assertEquals(GameStatus.IN_PROGRESS, initialState.getStatus());
+        assertEquals(PLAYER_RED, initialState.getCurrentPlayer().getId());
+        assertEquals('R', initialState.getPlayer1().getSymbol());
+        assertEquals('Y', initialState.getPlayer2().getSymbol());
+        assertNull(initialState.getWinner());
     }
 
-    /**
-     * A new game should start as IN_PROGRESS
-     */
-    @Test
-    void initialStatusIsInProgress() {
-        assertEquals(GameStatus.IN_PROGRESS, initialState.getStatus(),
-                "New game status should be IN_PROGRESS");
-    }
-
-    /**
-     * Red player (first in the list) should go first
-     */
-    @Test
-    void redGoesFirst() {
-        assertEquals(PLAYER_RED, initialState.getCurrentPlayer().getId(),
-                "Red player should go first");
-    }
-
-    /**
-     * Red player should have the 'R' symbol
-     */
-    @Test
-    void redPlayerHasCorrectSymbol() {
-        assertEquals('R', initialState.getPlayer1().getSymbol(),
-                "Player 1 should have symbol R");
-    }
-
-    /**
-     * Yellow player should have the 'Y' symbol
-     */
-    @Test
-    void yellowPlayerHasCorrectSymbol() {
-        assertEquals('Y', initialState.getPlayer2().getSymbol(),
-                "Player 2 should have symbol Y");
-    }
-
-    /**
-     * Every cell on the board should be empty at the start
-     */
+    // board should be all dots at the start
     @Test
     void boardStartsEmpty() {
         char[][] grid = initialState.getBoard().getGrid();
-        for (int r = 0; r < Board.ROWS; r++) {
-            for (int c = 0; c < Board.COLS; c++) {
-                assertEquals('.', grid[r][c],
-                        "Cell [" + r + "][" + c + "] should be empty at start");
-            }
-        }
+        for (int r = 0; r < Board.ROWS; r++)
+            for (int c = 0; c < Board.COLS; c++)
+                assertEquals('.', grid[r][c]);
     }
 
-    /**
-     * No winner at the start of the game
-     */
+    // need at least 2 players
     @Test
-    void noWinnerAtStart() {
-        assertNull(initialState.getWinner(), "There should be no winner at the start");
+    void onePlayerThrows() {
+        assertThrows(IllegalArgumentException.class, () ->
+                engine.createInitialState(List.of("solo")));
     }
 
-    // --- validateMove tests ---
-
-    /**
-     * Dropping into an empty column should be valid
-     */
+    // null list should throw
     @Test
-    void validMoveReturnsTrue() {
-        Move move = new Move(0);
-        assertTrue(engine.validateMove(initialState, move),
-                "Dropping into an empty column should be valid");
+    void nullPlayersThrows() {
+        assertThrows(IllegalArgumentException.class, () ->
+                engine.createInitialState(null));
     }
 
-    /**
-     * Negative column index should be invalid
-     */
+    // --- validation ---
+
+    // normal drop in an empty column should work
     @Test
-    void negativeColumnIsInvalid() {
-        Move move = new Move(-1);
-        assertFalse(engine.validateMove(initialState, move),
-                "Negative column should be invalid");
+    void validMoveAccepted() {
+        MoveResult result = engine.validateMove(initialState, move(0));
+        assertTrue(result.isValid());
+        assertEquals(ValidationCode.SUCCESS, result.getErrorCode());
     }
 
-    /**
-     * Column index of 7 is past the board edge, should be invalid
-     */
+    // every column 0-6 should be valid on an empty board
     @Test
-    void colTooLargeIsInvalid() {
-        Move move = new Move(7);
-        assertFalse(engine.validateMove(initialState, move),
-                "Column 7 is out of bounds and should be invalid");
+    void allColumnsOpenAtStart() {
+        for (int col = 0; col < Board.COLS; col++)
+            assertTrue(engine.validateMove(initialState, move(col)).isValid());
     }
 
-    /**
-     * Dropping into a full column should be invalid
-     */
+    // columns -1 and 7 don't exist
     @Test
-    void fullColumnIsInvalid() {
-        // Fill column 0 completely (6 rows) by alternating players
+    void outOfBoundsRejected() {
+        assertFalse(engine.validateMove(initialState, move(-1)).isValid());
+        assertEquals(ValidationCode.OUT_OF_BOUNDS,
+                engine.validateMove(initialState, move(7)).getErrorCode());
+    }
+
+    // can't drop into a column that's already full (6 pieces)
+    @Test
+    void fullColumnRejected() {
         Connect4State state = initialState;
-        for (int i = 0; i < Board.ROWS; i++) {
-            state = (Connect4State) engine.applyMove(state, new Move(0));
-        }
+        for (int i = 0; i < Board.ROWS; i++)
+            state = engine.applyMove(state, move(0));
 
-        Move move = new Move(0);
-        assertFalse(engine.validateMove(state, move),
-                "Dropping into a full column should be invalid");
+        MoveResult result = engine.validateMove(state, move(0));
+        assertFalse(result.isValid());
+        assertEquals(ValidationCode.CELL_OCCUPIED, result.getErrorCode());
     }
 
-    /**
-     * No moves should be allowed once the game is already over
-     */
+    // 5 pieces in a column — still room for one more
     @Test
-    void noMovesAfterGameOver() {
-        // Red wins column 0 vertically
+    void almostFullColumnStillValid() {
         Connect4State state = initialState;
-        state = (Connect4State) engine.applyMove(state, new Move(0)); // R
-        state = (Connect4State) engine.applyMove(state, new Move(1)); // Y
-        state = (Connect4State) engine.applyMove(state, new Move(0)); // R
-        state = (Connect4State) engine.applyMove(state, new Move(1)); // Y
-        state = (Connect4State) engine.applyMove(state, new Move(0)); // R
-        state = (Connect4State) engine.applyMove(state, new Move(1)); // Y
-        state = (Connect4State) engine.applyMove(state, new Move(0)); // R wins
+        for (int i = 0; i < Board.ROWS - 1; i++)
+            state = engine.applyMove(state, move(0));
 
-        assertFalse(engine.validateMove(state, new Move(2)),
-                "No moves should be allowed after the game is over");
+        assertTrue(engine.validateMove(state, move(0)).isValid());
     }
 
-    // --- applyMove tests ---
-
-    /**
-     * After red drops in column 3, that cell should have 'R'
-     */
+    // game is over, no more moves allowed
     @Test
-    void movePlacesPieceOnBoard() {
-        Connect4State next = (Connect4State) engine.applyMove(initialState, new Move(3));
-        char[][] grid = next.getBoard().getGrid();
-
-        // Gravity means the piece lands on the bottom row (row 5)
-        assertEquals('R', grid[Board.ROWS - 1][3],
-                "Red's piece should be at the bottom of column 3");
-    }
-
-    /**
-     * After red moves it should be yellow's turn
-     */
-    @Test
-    void turnSwitchesAfterMove() {
-        Connect4State next = (Connect4State) engine.applyMove(initialState, new Move(0));
-
-        assertEquals(PLAYER_YELLOW, next.getCurrentPlayer().getId(),
-                "After red moves, it should be yellow's turn");
-    }
-
-    /**
-     * applyMove should not change the original state
-     */
-    @Test
-    void originalStateNotMutated() {
-        engine.applyMove(initialState, new Move(0));
-        char[][] grid = initialState.getBoard().getGrid();
-
-        assertEquals('.', grid[Board.ROWS - 1][0],
-                "Original state's board should not be mutated by applyMove");
-    }
-
-    /**
-     * Pieces should stack — second piece in the same column lands above the first
-     */
-    @Test
-    void piecesStackInColumn() {
+    void cantMoveAfterWin() {
         Connect4State state = initialState;
-        state = (Connect4State) engine.applyMove(state, new Move(0)); // R bottom
-        state = (Connect4State) engine.applyMove(state, new Move(0)); // Y above R
+        state = engine.applyMove(state, move(0)); // R
+        state = engine.applyMove(state, move(1)); // Y
+        state = engine.applyMove(state, move(0)); // R
+        state = engine.applyMove(state, move(1)); // Y
+        state = engine.applyMove(state, move(0)); // R
+        state = engine.applyMove(state, move(1)); // Y
+        state = engine.applyMove(state, move(0)); // R wins vertically
+
+        MoveResult result = engine.validateMove(state, move(2));
+        assertFalse(result.isValid());
+        assertEquals(ValidationCode.GAME_ALREADY_OVER, result.getErrorCode());
+    }
+
+    // --- making moves ---
+
+    // piece should fall to the bottom row
+    @Test
+    void pieceFallsToBottom() {
+        Connect4State next = engine.applyMove(initialState, move(3));
+        assertEquals('R', next.getBoard().getGrid()[Board.ROWS - 1][3]);
+    }
+
+    // second piece in the same column should land on top of the first
+    @Test
+    void piecesStack() {
+        Connect4State state = engine.applyMove(initialState, move(0));
+        state = engine.applyMove(state, move(0));
 
         char[][] grid = state.getBoard().getGrid();
-        assertEquals('R', grid[Board.ROWS - 1][0], "R should be on the bottom row");
-        assertEquals('Y', grid[Board.ROWS - 2][0], "Y should be one row above R");
+        assertEquals('R', grid[Board.ROWS - 1][0]);
+        assertEquals('Y', grid[Board.ROWS - 2][0]);
     }
 
-    // --- evaluateEnd tests ---
-
-    /**
-     * evaluateEnd should return false when the game is still going
-     */
+    // turns should go red, yellow, red, yellow...
     @Test
-    void gameNotOverAtStart() {
-        assertFalse(engine.evaluateEnd(initialState),
-                "Game should not be over at the start");
+    void turnsAlternate() {
+        Connect4State state = engine.applyMove(initialState, move(0));
+        assertEquals(PLAYER_YELLOW, state.getCurrentPlayer().getId());
+        state = engine.applyMove(state, move(1));
+        assertEquals(PLAYER_RED, state.getCurrentPlayer().getId());
     }
 
-    /**
-     * Red wins vertically in column 0 — evaluateEnd should return true
-     */
+    // applying a move shouldn't touch the old state
     @Test
-    void redWinsVertically() {
+    void oldStateUnchanged() {
+        engine.applyMove(initialState, move(0));
+        assertEquals('.', initialState.getBoard().getGrid()[Board.ROWS - 1][0]);
+    }
+
+    // getOtherPlayer should swap correctly
+    @Test
+    void otherPlayerSwaps() {
+        Player p1 = initialState.getPlayer1();
+        Player p2 = initialState.getPlayer2();
+        assertSame(p2, initialState.getOtherPlayer(p1));
+        assertSame(p1, initialState.getOtherPlayer(p2));
+    }
+
+    // getGrid should return a copy so external changes don't affect the board
+    @Test
+    void gridIsCopiedNotShared() {
+        char[][] grid1 = initialState.getBoard().getGrid();
+        char[][] grid2 = initialState.getBoard().getGrid();
+        assertNotSame(grid1, grid2);
+        grid1[0][0] = 'R';
+        assertEquals('.', initialState.getBoard().getGrid()[0][0]);
+    }
+
+    // two separate games shouldn't affect each other
+    @Test
+    void separateGamesIndependent() {
+        Connect4State game1 = engine.createInitialState(List.of("alice", "bob"));
+        Connect4State game2 = engine.createInitialState(List.of("charlie", "dave"));
+
+        game1 = engine.applyMove(game1, move(0));
+        assertEquals('.', game2.getBoard().getGrid()[Board.ROWS - 1][0]);
+    }
+
+    // --- wins ---
+
+    // 4 in a column
+    @Test
+    void redWinsVertical() {
         Connect4State state = initialState;
-        state = (Connect4State) engine.applyMove(state, new Move(0)); // R
-        state = (Connect4State) engine.applyMove(state, new Move(1)); // Y
-        state = (Connect4State) engine.applyMove(state, new Move(0)); // R
-        state = (Connect4State) engine.applyMove(state, new Move(1)); // Y
-        state = (Connect4State) engine.applyMove(state, new Move(0)); // R
-        state = (Connect4State) engine.applyMove(state, new Move(1)); // Y
-        state = (Connect4State) engine.applyMove(state, new Move(0)); // R wins
+        state = engine.applyMove(state, move(0)); // R
+        state = engine.applyMove(state, move(1)); // Y
+        state = engine.applyMove(state, move(0)); // R
+        state = engine.applyMove(state, move(1)); // Y
+        state = engine.applyMove(state, move(0)); // R
+        state = engine.applyMove(state, move(1)); // Y
+        state = engine.applyMove(state, move(0)); // R — 4 in col 0
 
-        assertTrue(engine.evaluateEnd(state), "Game should be over after red wins vertically");
-        assertEquals(GameStatus.P1_WINS, state.getStatus(), "Status should be P1_WINS");
-        assertEquals(PLAYER_RED, state.getWinner().getId(), "Red should be the winner");
+        assertEquals(GameStatus.P1_WINS, state.getStatus());
+        assertEquals(PLAYER_RED, state.getWinner().getId());
     }
 
-    /**
-     * Red wins horizontally across the bottom row
-     */
+    // 4 across the bottom row
     @Test
-    void redWinsHorizontally() {
+    void redWinsHorizontal() {
         Connect4State state = initialState;
-        state = (Connect4State) engine.applyMove(state, new Move(0)); // R
-        state = (Connect4State) engine.applyMove(state, new Move(0)); // Y
-        state = (Connect4State) engine.applyMove(state, new Move(1)); // R
-        state = (Connect4State) engine.applyMove(state, new Move(1)); // Y
-        state = (Connect4State) engine.applyMove(state, new Move(2)); // R
-        state = (Connect4State) engine.applyMove(state, new Move(2)); // Y
-        state = (Connect4State) engine.applyMove(state, new Move(3)); // R wins
+        state = engine.applyMove(state, move(0)); // R bottom
+        state = engine.applyMove(state, move(0)); // Y on top
+        state = engine.applyMove(state, move(1)); // R bottom
+        state = engine.applyMove(state, move(1)); // Y on top
+        state = engine.applyMove(state, move(2)); // R bottom
+        state = engine.applyMove(state, move(2)); // Y on top
+        state = engine.applyMove(state, move(3)); // R bottom — 4 across
 
-        assertTrue(engine.evaluateEnd(state), "Game should be over after red wins horizontally");
-        assertEquals(GameStatus.P1_WINS, state.getStatus(), "Status should be P1_WINS");
+        assertEquals(GameStatus.P1_WINS, state.getStatus());
     }
 
-    /**
-     * Yellow wins vertically in column 2
-     */
+    // 4 going bottom-left to top-right: (5,0)(4,1)(3,2)(2,3)
     @Test
-    void yellowWinsVertically() {
+    void redWinsDiagonal() {
         Connect4State state = initialState;
-        state = (Connect4State) engine.applyMove(state, new Move(0)); // R
-        state = (Connect4State) engine.applyMove(state, new Move(2)); // Y
-        state = (Connect4State) engine.applyMove(state, new Move(0)); // R
-        state = (Connect4State) engine.applyMove(state, new Move(2)); // Y
-        state = (Connect4State) engine.applyMove(state, new Move(0)); // R
-        state = (Connect4State) engine.applyMove(state, new Move(2)); // Y
-        state = (Connect4State) engine.applyMove(state, new Move(1)); // R
-        state = (Connect4State) engine.applyMove(state, new Move(2)); // Y wins
+        state = engine.applyMove(state, move(0)); // R at (5,0)
+        state = engine.applyMove(state, move(1)); // Y at (5,1)
+        state = engine.applyMove(state, move(1)); // R at (4,1)
+        state = engine.applyMove(state, move(2)); // Y at (5,2)
+        state = engine.applyMove(state, move(2)); // R at (4,2)
+        state = engine.applyMove(state, move(3)); // Y at (5,3)
+        state = engine.applyMove(state, move(2)); // R at (3,2)
+        state = engine.applyMove(state, move(3)); // Y at (4,3)
+        state = engine.applyMove(state, move(3)); // R at (3,3)
+        state = engine.applyMove(state, move(4)); // Y at (5,4)
+        state = engine.applyMove(state, move(3)); // R at (2,3)
 
-        assertTrue(engine.evaluateEnd(state), "Game should be over after yellow wins vertically");
-        assertEquals(GameStatus.P2_WINS, state.getStatus(), "Status should be P2_WINS");
-        assertEquals(PLAYER_YELLOW, state.getWinner().getId(), "Yellow should be the winner");
+        assertEquals(GameStatus.P1_WINS, state.getStatus());
     }
 
-    /**
-     * Yellow wins horizontally
-     */
+    // 4 going bottom-right to top-left: (5,6)(4,5)(3,4)(2,3)
     @Test
-    void yellowWinsHorizontally() {
+    void redWinsAntiDiagonal() {
         Connect4State state = initialState;
-        state = (Connect4State) engine.applyMove(state, new Move(0)); // R
-        state = (Connect4State) engine.applyMove(state, new Move(3)); // Y
-        state = (Connect4State) engine.applyMove(state, new Move(0)); // R
-        state = (Connect4State) engine.applyMove(state, new Move(4)); // Y
-        state = (Connect4State) engine.applyMove(state, new Move(1)); // R
-        state = (Connect4State) engine.applyMove(state, new Move(5)); // Y
-        state = (Connect4State) engine.applyMove(state, new Move(1)); // R
-        state = (Connect4State) engine.applyMove(state, new Move(6)); // Y wins
+        state = engine.applyMove(state, move(6)); // R at (5,6)
+        state = engine.applyMove(state, move(5)); // Y at (5,5)
+        state = engine.applyMove(state, move(5)); // R at (4,5)
+        state = engine.applyMove(state, move(4)); // Y at (5,4)
+        state = engine.applyMove(state, move(4)); // R at (4,4)
+        state = engine.applyMove(state, move(3)); // Y at (5,3)
+        state = engine.applyMove(state, move(4)); // R at (3,4)
+        state = engine.applyMove(state, move(3)); // Y at (4,3)
+        state = engine.applyMove(state, move(3)); // R at (3,3)
+        state = engine.applyMove(state, move(0)); // Y at (5,0)
+        state = engine.applyMove(state, move(3)); // R at (2,3)
 
-        assertTrue(engine.evaluateEnd(state), "Game should be over after yellow wins horizontally");
-        assertEquals(GameStatus.P2_WINS, state.getStatus(), "Status should be P2_WINS");
+        assertEquals(GameStatus.P1_WINS, state.getStatus());
     }
 
-    /**
-     * Red wins diagonally going bottom-left to top-right
-     */
+    // yellow should be able to win too
     @Test
-    void redWinsDiagonally() {
-        // Build a diagonal win for R at columns 0,1,2,3 going upward
+    void yellowCanWin() {
         Connect4State state = initialState;
-        state = (Connect4State) engine.applyMove(state, new Move(0)); // R row5 col0
-        state = (Connect4State) engine.applyMove(state, new Move(1)); // Y row5 col1
-        state = (Connect4State) engine.applyMove(state, new Move(1)); // R row4 col1
-        state = (Connect4State) engine.applyMove(state, new Move(2)); // Y row5 col2
-        state = (Connect4State) engine.applyMove(state, new Move(2)); // R row4 col2
-        state = (Connect4State) engine.applyMove(state, new Move(3)); // Y row5 col3
-        state = (Connect4State) engine.applyMove(state, new Move(2)); // R row3 col2
-        state = (Connect4State) engine.applyMove(state, new Move(3)); // Y row4 col3
-        state = (Connect4State) engine.applyMove(state, new Move(3)); // R row3 col3
-        state = (Connect4State) engine.applyMove(state, new Move(4)); // Y row5 col4
-        state = (Connect4State) engine.applyMove(state, new Move(3)); // R row2 col3 — diagonal win
+        state = engine.applyMove(state, move(0)); // R
+        state = engine.applyMove(state, move(2)); // Y
+        state = engine.applyMove(state, move(0)); // R
+        state = engine.applyMove(state, move(2)); // Y
+        state = engine.applyMove(state, move(0)); // R
+        state = engine.applyMove(state, move(2)); // Y
+        state = engine.applyMove(state, move(1)); // R (not col 2)
+        state = engine.applyMove(state, move(2)); // Y — 4 in col 2
 
-        assertTrue(engine.evaluateEnd(state), "Game should be over after red wins diagonally");
-        assertEquals(GameStatus.P1_WINS, state.getStatus(), "Status should be P1_WINS");
+        assertEquals(GameStatus.P2_WINS, state.getStatus());
+        assertEquals(PLAYER_YELLOW, state.getWinner().getId());
     }
 
-    /**
-     * A full board with no winner should be a DRAW
-     */
+    // filling a gap between pieces: R at cols 0,2,3, then drop R at 1 to connect all 4
     @Test
-    void fullBoardNoWinnerIsDraw() {
-        // Fill the board column by column in a pattern that avoids any 4-in-a-row
-        // This sequence is verified to produce a draw on a 6x7 board
+    void winByFillingGap() {
+        Connect4State state = initialState;
+        state = engine.applyMove(state, move(0)); // R at (5,0)
+        state = engine.applyMove(state, move(6)); // Y
+        state = engine.applyMove(state, move(2)); // R at (5,2)
+        state = engine.applyMove(state, move(6)); // Y
+        state = engine.applyMove(state, move(3)); // R at (5,3)
+        state = engine.applyMove(state, move(6)); // Y
+        state = engine.applyMove(state, move(1)); // R at (5,1) — fills the gap
+
+        assertEquals(GameStatus.P1_WINS, state.getStatus());
+    }
+
+    // vertical win using the top rows (pieces stacked high)
+    // col 0: Y Y R R R R (bottom to top) — R wins rows 3 to 0
+    @Test
+    void verticalWinNearTopOfBoard() {
+        Connect4State state = initialState;
+        state = engine.applyMove(state, move(1)); // R
+        state = engine.applyMove(state, move(0)); // Y at (5,0)
+        state = engine.applyMove(state, move(1)); // R
+        state = engine.applyMove(state, move(0)); // Y at (4,0)
+        state = engine.applyMove(state, move(0)); // R at (3,0)
+        state = engine.applyMove(state, move(1)); // Y
+        state = engine.applyMove(state, move(0)); // R at (2,0)
+        state = engine.applyMove(state, move(1)); // Y
+        state = engine.applyMove(state, move(0)); // R at (1,0)
+        state = engine.applyMove(state, move(1)); // Y
+        state = engine.applyMove(state, move(0)); // R at (0,0) — 4 R's on top
+
+        assertEquals(GameStatus.P1_WINS, state.getStatus());
+    }
+
+    // --- draw ---
+
+    // fill entire board with no 4-in-a-row
+    @Test
+    void fullBoardIsDraw() {
         Connect4State state = initialState;
         int[] moves = {
-                0,1,0,1,0,1,1,0,1,0,1,0, // cols 0 and 1 filled, alternating
-                2,3,2,3,2,3,3,2,3,2,3,2, // cols 2 and 3
-                4,5,4,5,4,5,5,4,5,4,5,4, // cols 4 and 5
-                6,6,6,6,6,6               // col 6
+                0,1,0,1,0,1,1,0,1,0,1,0,
+                2,3,2,3,2,3,3,2,3,2,3,2,
+                4,5,4,5,4,5,5,4,5,4,5,4,
+                6,6,6,6,6,6
         };
-        for (int col : moves) {
-            state = (Connect4State) engine.applyMove(state, new Move(col));
-        }
+        for (int col : moves)
+            state = engine.applyMove(state, move(col));
 
-        assertEquals(GameStatus.DRAW, state.getStatus(), "Full board with no winner should be DRAW");
+        assertEquals(GameStatus.DRAW, state.getStatus());
     }
 
-    /**
-     * createInitialState should throw if fewer than 2 players are given
-     */
+    // --- edge cases ---
+
+    // only 3 in a row shouldn't end the game
     @Test
-    void tooFewPlayersThrowsException() {
-        assertThrows(IllegalArgumentException.class, () ->
-                        engine.createInitialState(List.of("only_one_player")),
-                "Should throw if fewer than 2 player IDs are provided");
+    void threeInARowNotEnough() {
+        Connect4State state = initialState;
+        state = engine.applyMove(state, move(0)); // R
+        state = engine.applyMove(state, move(6)); // Y
+        state = engine.applyMove(state, move(1)); // R
+        state = engine.applyMove(state, move(6)); // Y
+        state = engine.applyMove(state, move(2)); // R — only 3
+
+        assertEquals(GameStatus.IN_PROGRESS, state.getStatus());
     }
 
-    /**
-     * createInitialState should throw if a null list is passed
-     */
+    // evaluateEnd on a game still going should return the same object
     @Test
-    void nullPlayerListThrowsException() {
-        assertThrows(IllegalArgumentException.class, () ->
-                        engine.createInitialState(null),
-                "Should throw if player list is null");
+    void evaluateEndDoesNothingMidGame() {
+        assertSame(initialState, engine.evaluateEnd(initialState));
     }
 }
