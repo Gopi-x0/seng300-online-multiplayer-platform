@@ -14,39 +14,43 @@ import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
+import javafx.animation.ScaleTransition;
+import javafx.util.Duration;
 
 import java.util.List;
 
+// Landing page shown when the app first opens
 public class WelcomePage extends StackPane {
 
-    public WelcomePage() {
-        // just calling the main layout stuff here so constructor stays simple
+    private final Runnable onContinue;
+
+    // Stores the continue callback and builds the welcome layout
+    public WelcomePage(Runnable onContinue) {
+        this.onContinue = onContinue;
         initializeLayout();
     }
 
+    // Sets padding, background, and adds the centered content
     private void initializeLayout() {
-        // little bit of padding so the screen doesnt feel jammed to the edges
         setPadding(new Insets(32));
         setStyle(
                 "-fx-background-color: #081221;" +
                 "-fx-background-insets: 0;"
         );
 
-        // this is the main centered box with logo text and buttons
         VBox centeredContent = buildCenteredContent();
         centeredContent.maxWidthProperty().bind(widthProperty().multiply(0.6));
 
         getChildren().setAll(centeredContent);
     }
 
+    // Assembles the logo, title, subtitle, and continue button in a vertical layout
     private VBox buildCenteredContent() {
-        // pulling each piece separate so this section stays easier to read
         ImageView logo = buildLogo();
         Label title = buildTitle();
         Label subtitle = buildSubtitle();
-        HBox buttonRow = buildButtonRow();
+        Button continueBtn = buildContinueButton();
 
-        // these spacers help keep the card feeling centered even when resized
         Region spacerTop = new Region();
         Region spacerBottom = new Region();
         VBox.setVgrow(spacerTop, Priority.ALWAYS);
@@ -59,6 +63,9 @@ public class WelcomePage extends StackPane {
         VBox headerGroup = new VBox(-28, logo, textGroup);
         headerGroup.setAlignment(Pos.CENTER);
 
+        HBox buttonRow = new HBox(continueBtn);
+        buttonRow.setAlignment(Pos.CENTER);
+
         VBox content = new VBox(18, spacerTop, headerGroup, buttonRow, spacerBottom);
         content.setAlignment(Pos.CENTER);
         styleMainContent(content);
@@ -66,8 +73,8 @@ public class WelcomePage extends StackPane {
         return content;
     }
 
+    // Creates the "WELCOME TO" heading label
     private Label buildTitle() {
-        // keeping the heading seperate so its easier to tweak later
         Label title = new Label("WELCOME TO");
         title.setTextFill(Color.web("#86b9ff"));
         title.setFont(resolveHeadingFont(FontWeight.BOLD, 30));
@@ -75,8 +82,8 @@ public class WelcomePage extends StackPane {
         return title;
     }
 
+    // Creates the "Student Gaming Platform" subtitle label
     private Label buildSubtitle() {
-        // smaller text under the welcome heading
         Label subtitle = new Label("Student Gaming Platform");
         subtitle.setTextFill(Color.web("#d8e7ff"));
         subtitle.setFont(resolveBodyFont(FontWeight.MEDIUM, 14));
@@ -84,8 +91,8 @@ public class WelcomePage extends StackPane {
         return subtitle;
     }
 
+    // Applies styling to the main content container
     private void styleMainContent(VBox content) {
-        // main card in the middle of the welcome page
         content.setMaxWidth(560);
         content.setPadding(new Insets(22, 40, 34, 40));
         content.setStyle(
@@ -94,34 +101,17 @@ public class WelcomePage extends StackPane {
         );
     }
 
-    private HBox buildButtonRow() {
-        // putting both buttons in one row so they stay centered together
-        Button loginButton = createLoginButton();
-        Button signUpButton = createSignUpButton();
-
-        HBox buttonRow = new HBox(10, loginButton, signUpButton);
-        buttonRow.setAlignment(Pos.CENTER);
-        return buttonRow;
-    }
-
-    private ImageView buildLogo() {
-        // using the real logo now and still keeping a safe fallback size
-        Image image = new Image(getClass().getResourceAsStream("/ca/ucalgary/seng300/images/sgp-logo.png"));
-        ImageView logo = new ImageView(image);
-        logo.setPreserveRatio(true);
-        logo.setFitWidth(500);
-        logo.setSmooth(true);
-        return logo;
-    }
-
-    private Button createLoginButton() {
-        // click handler stays empty rn cause no nav logic yet
-        Button loginButton = new Button("Login");
-        loginButton.setPrefWidth(140);
-        loginButton.setPrefHeight(40);
-        loginButton.setOnAction(event -> {
+    // Creates the continue button with hover and press animations
+    private Button buildContinueButton() {
+        Button btn = new Button("Continue to Play!");
+        btn.setPrefWidth(220);
+        btn.setPrefHeight(44);
+        btn.setFont(resolveBodyFont(FontWeight.SEMI_BOLD, 15));
+        btn.setOnAction(event -> {
+            if (onContinue != null) onContinue.run();
         });
-        loginButton.setFont(resolveBodyFont(FontWeight.SEMI_BOLD, 14));
+
+        // Button style variants for default and hover
         String defaultStyle =
                 "-fx-background-color: linear-gradient(to right, #1d4ed8, #2563eb);" +
                 "-fx-text-fill: white;" +
@@ -132,46 +122,42 @@ public class WelcomePage extends StackPane {
                 "-fx-text-fill: white;" +
                 "-fx-background-radius: 10;" +
                 "-fx-cursor: hand;";
-        loginButton.setStyle(defaultStyle);
-        applyHoverStyle(loginButton, defaultStyle, hoverStyle);
-        return loginButton;
-    }
-
-    private Button createSignUpButton() {
-        // same thing here just styling for now no backend stuff
-        Button signUpButton = new Button("Sign Up");
-        signUpButton.setPrefWidth(140);
-        signUpButton.setPrefHeight(40);
-        signUpButton.setOnAction(event -> {
+        btn.setStyle(defaultStyle);
+        btn.setOnMouseEntered(event -> {
+            btn.setStyle(hoverStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), btn);
+            st.setToX(1.04); st.setToY(1.04); st.play();
         });
-        signUpButton.setFont(resolveBodyFont(FontWeight.SEMI_BOLD, 14));
-        String defaultStyle =
-                "-fx-background-color: transparent;" +
-                "-fx-text-fill: #dce9ff;" +
-                "-fx-border-color: #4b6b97;" +
-                "-fx-border-width: 1.2;" +
-                "-fx-border-radius: 10;" +
-                "-fx-background-radius: 10;" +
-                "-fx-cursor: hand;";
-        String hoverStyle =
-                "-fx-background-color: rgba(32, 58, 95, 0.45);" +
-                "-fx-text-fill: white;" +
-                "-fx-border-color: #6f9ad1;" +
-                "-fx-border-width: 1.2;" +
-                "-fx-border-radius: 10;" +
-                "-fx-background-radius: 10;" +
-                "-fx-cursor: hand;";
-        signUpButton.setStyle(defaultStyle);
-        applyHoverStyle(signUpButton, defaultStyle, hoverStyle);
-        return signUpButton;
+        btn.setOnMouseExited(event -> {
+            btn.setStyle(defaultStyle);
+            ScaleTransition st = new ScaleTransition(Duration.millis(150), btn);
+            st.setToX(1.0); st.setToY(1.0); st.play();
+        });
+        btn.setOnMousePressed(event -> {
+            ScaleTransition st = new ScaleTransition(Duration.millis(80), btn);
+            st.setToX(0.96); st.setToY(0.96); st.play();
+        });
+        btn.setOnMouseReleased(event -> {
+            ScaleTransition st = new ScaleTransition(Duration.millis(80), btn);
+            st.setToX(1.04); st.setToY(1.04); st.play();
+        });
+        return btn;
     }
 
-    private void applyHoverStyle(Button button, String defaultStyle, String hoverStyle) {
-        // small hover effect so the buttons feel a bit more alive
-        button.setOnMouseEntered(event -> button.setStyle(hoverStyle));
-        button.setOnMouseExited(event -> button.setStyle(defaultStyle));
+    // Loads the SGP logo image from resources
+    private ImageView buildLogo() {
+        ImageView logo = new ImageView();
+        java.io.InputStream stream = getClass().getResourceAsStream("/ca/ucalgary/seng300/images/sgp-logo.png");
+        if (stream != null) {
+            logo.setImage(new Image(stream));
+        }
+        logo.setPreserveRatio(true);
+        logo.setFitWidth(500);
+        logo.setSmooth(true);
+        return logo;
     }
 
+    // Tries to use Rajdhani font for headings, falls back to Trebuchet MS
     private Font resolveHeadingFont(FontWeight weight, double size) {
         List<String> families = Font.getFamilies();
         if (families.contains("Rajdhani")) {
@@ -180,6 +166,7 @@ public class WelcomePage extends StackPane {
         return Font.font("Trebuchet MS", weight, size);
     }
 
+    // Tries to use Inter font for body text, falls back to Verdana
     private Font resolveBodyFont(FontWeight weight, double size) {
         List<String> families = Font.getFamilies();
         if (families.contains("Inter")) {
