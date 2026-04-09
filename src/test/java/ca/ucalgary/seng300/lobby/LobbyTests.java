@@ -133,4 +133,55 @@ public class LobbyTests {
         session.removePlayer("bob");
         assertTrue(session.addPlayer("charlie"));
     }
+    // LobbyManager Tests
+
+    @Test
+    // creating a lobby should give us a non-null session back
+    public void createLobbyReturnsSession() {
+        LobbySession s = LobbyManager.createLobby(null, "Connect 4", "alice");
+        assertNotNull(s);
+    }
+
+    @Test
+    // the generated lobby code should be 8 characters long
+    public void lobbyCodeIsEightChars() {
+        LobbySession s = LobbyManager.createLobby(null, "Connect 4", "alice");
+        assertEquals(8, s.getLobbyCode().length());
+    }
+
+    @Test
+    // lobby code should only have hex characters (0-9, A-F)
+    public void lobbyCodeIsHex() {
+        LobbySession s = LobbyManager.createLobby(null, "Connect 4", "alice");
+        assertTrue(s.getLobbyCode().matches("[0-9A-F]{8}"));
+    }
+
+    @Test
+    // two lobbies created back to back should get different codes
+    public void twoLobbiesGetDifferentCodes() {
+        LobbySession s1 = LobbyManager.createLobby(null, "Connect 4", "alice");
+        LobbySession s2 = LobbyManager.createLobby(null, "Connect 4", "bob");
+        assertNotEquals(s1.getLobbyCode(), s2.getLobbyCode());
+    }
+
+    @Test
+    // the host in the created lobby should match who we passed in
+    public void createdLobbyHasCorrectHost() {
+        LobbySession s = LobbyManager.createLobby(null, "Connect 4", "alice");
+        assertEquals("alice", s.getHostUsername());
+    }
+
+    @Test
+    // removing a lobby with null shouldn't blow up
+    public void removeNullLobbyCode() {
+        LobbyManager.removeLobby(null);
+        // no exception means we're good
+    }
+
+    @Test
+    // removing a lobby that doesn't exist should just do nothing
+    public void removeNonexistentLobby() {
+        LobbyManager.removeLobby("ZZZZZZZZ");
+        // no exception means we're good
+    }
 }
