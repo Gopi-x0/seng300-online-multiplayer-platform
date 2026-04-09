@@ -208,6 +208,7 @@ public class UserManagerTest {
     @Test
     void testChangeEmailCorrect_ValidNewEmail() {
         UserManager.register("chagemail@test.com", "password123");
+        UserManager.login("chagemail@test.com", "password123");
         boolean result = UserManager.changeEmail("newemail@test.com");
         assertTrue(result, "Changing to an available valid email should succeed");
         assertEquals("newemail@test.com", UserManager.getCurrentUser().getEmail());
