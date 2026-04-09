@@ -210,6 +210,194 @@ public class NetworkTestGameServerTest {
 
         assertFalse(messages.contains("DISCONNECTED"));
     }
+    // resetClient should kick the client but keep the server running
+    @Test
+    void resetClientKeepsServerAlive() throws Exception {
+        server.waitForClient();
+        Socket raw = new Socket("localhost", serverPort);
+        Thread.sleep(250);
+        server.resetClient();
+        assertEquals(serverPort, server.getPort());
+        raw.close();
+    }
 
+    // shutting down twice should not throw
+    @Test
+    void serverDoubleShutdownIsSafe() {
+        assertDoesNotThrow(() -> {
+            server.shutdown();
+            server.shutdown();
+        });
+    }
 
+    // port should be free after shutdown so something else can use it
+    @Test
+    void serverShutdownFreesPort() throws IOException {
+        server.shutdown();
+        GameServer rebound = new GameServer(serverPort);
+        try {
+            assertEquals(serverPort, rebound.getPort());
+        } finally {
+            rebound.shutdown();
+        }
+    }
+
+    //  GameClient tests
+
+    // connecting should make this client the active one
+    @Test
+    void clientConnectBecomesActive() throws Exception {
+        GameClient.shutdownActive();
+        connectPair();
+        assertSame(client, GameClient.getActive());
+    }
+
+    // connecting to nothing should throw
+    @Test
+    void clientConnectFailsWithNoServer() {
+        assertThrows(IOException.class, () -> client.connect("localhost", 6499));
+    }
+
+    // shutdownActive should clear the client reference
+    @Test
+    void clientShutdownActiveClearsInstance() throws Exception {
+        connectPair();
+        GameClient.shutdownActive();
+        assertNull(GameClient.getActive());
+    }
+
+    // client sends a message and the server gets it
+    @Test
+    void clientSendReachesServer() throws Exception {
+        AtomicReference<String> received = new AtomicReference<>();
+        CountDownLatch latch = new CountDownLatch(1);
+        server.setMessageHandler(msg -> { received.set(msg); latch.countDown(); });
+
+        connectPair();
+        client.send("HELLO_SERVER");
+
+        assertTrue(latch.await(3, TimeUnit.SECONDS));
+        assertEquals("HELLO_SERVER", received.get());
+    }
+
+    // send before connecting should not crash
+    @Test
+    void clientSendBeforeConnectDoesNothing() {
+        assertDoesNotThrow(() -> client.send("TOO_EARLY"));
+    }
+
+    // server pushes a message and the client handler gets it
+    @Test
+    void clientHandlerGetsMessageFromServer() throws Exception {
+        AtomicReference<String> received = new AtomicReference<>();
+        CountDownLatch latch = new CountDownLatch(1);
+        client.setMessageHandler(msg -> { received.set(msg); latch.countDown(); });
+
+        connectPair();
+        server.send("SERVER_PUSH");
+
+        assertTrue(latch.await(3, TimeUnit.SECONDS));
+        assertEquals("SERVER_PUSH", received.get());
+    }
+
+    // client gets several messages and they come in the right order
+    @Test
+    void clientHandlerGetsMessagesInOrder() throws Exception {
+        List<String> received = new ArrayList<>();
+        CountDownLatch latch = new CountDownLatch(3);
+        client.setMessageHandler(msg -> { received.add(msg); latch.countDown(); });
+
+        connectPair();
+        server.send("X");
+        server.send("Y");
+        server.send("Z");
+
+        assertTrue(latch.await(3, TimeUnit.SECONDS));
+        assertEquals(List.of("X", "Y", "Z"), received);
+    }
+
+    // client should get DISCONNECTED when the server closes
+    @Test
+    void clientGetsDisconnectedWhenServerLeaves() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<String> lastMsg = new AtomicReference<>();
+        client.setMessageHandler(msg -> {
+            lastMsg.set(msg);
+            if ("DISCONNECTED".equals(msg)) latch.countDown();
+        });
+
+        connectPair();
+        server.shutdown();
+
+        assertTrue(latch.await(3, TimeUnit.SECONDS));
+        assertEquals("DISCONNECTED", lastMsg.get());
+    }
+
+    // calling client shutdown on purpose should not trigger DISCONNECTED
+    @Test
+    void clientShutdownDoesNotFireDisconnected() throws Exception {
+        List<String> messages = new ArrayList<>();
+        client.setMessageHandler(messages::add);
+
+        connectPair();
+        client.shutdown();
+        Thread.sleep(400);
+
+        assertFalse(messages.contains("DISCONNECTED"));
+    }
+
+    // client sends, server echoes, client receives the echo
+    @Test
+    void fullRoundTripWorks() throws Exception {
+        AtomicReference<String> clientReceived = new AtomicReference<>();
+        CountDownLatch clientLatch = new CountDownLatch(1);
+        client.setMessageHandler(msg -> { clientReceived.set(msg); clientLatch.countDown(); });
+        server.setMessageHandler(msg -> server.send("ECHO:" + msg));
+
+        connectPair();
+        client.send("ROUND_TRIP");
+
+        assertTrue(clientLatch.await(3, TimeUnit.SECONDS));
+        assertEquals("ECHO:ROUND_TRIP", clientReceived.get());
+    }
+
+    @Test
+    void resetClientAllowsNewClientToConnect() throws Exception {
+        // first client connects
+        server.waitForClient();
+        GameClient firstClient = new GameClient();
+        firstClient.connect("localhost", serverPort);
+        Thread.sleep(250);
+
+        // reset first client connection
+        server.resetClient();
+        firstClient.shutdown();
+
+        // server waits for a new client again
+        server.waitForClient();
+
+        // simple holders :D
+        String[] received = new String[1];
+        boolean[] gotMessage = new boolean[1];
+
+        server.setMessageHandler(msg -> {
+            received[0] = msg;
+            gotMessage[0] = true;
+        });
+
+        // second client connects
+        GameClient secondClient = new GameClient();
+        try {
+            secondClient.connect("localhost", serverPort);
+            Thread.sleep(250);
+
+            secondClient.send("HELLO_AGAIN");
+            Thread.sleep(250);
+
+            assertTrue(gotMessage[0]);
+            assertEquals("HELLO_AGAIN", received[0]);
+        } finally {
+            secondClient.shutdown();
+        }
+    }
 }
