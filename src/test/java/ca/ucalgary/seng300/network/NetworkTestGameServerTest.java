@@ -132,4 +132,84 @@ public class NetworkTestGameServerTest {
         raw.close();
     }
 
+
+
+    // send with no client connected should not crash
+    @Test
+    void serverSendBeforeClientDoesNothing() {
+        assertDoesNotThrow(() -> server.send("TOO_EARLY"));
+    }
+
+    // client sends a message and the server handler gets it
+    @Test
+    void serverHandlerGetsMessageFromClient() throws Exception {
+        AtomicReference<String> received = new AtomicReference<>();
+        CountDownLatch latch = new CountDownLatch(1);
+        server.setMessageHandler(msg -> { received.set(msg); latch.countDown(); });
+
+        server.waitForClient();
+        Socket raw = new Socket("localhost", serverPort);
+        Thread.sleep(250);
+        writeLine(raw, "PING");
+
+        assertTrue(latch.await(3, TimeUnit.SECONDS));
+        assertEquals("PING", received.get());
+        raw.close();
+    }
+
+    // server gets several messages and they come in the right order
+    @Test
+    void serverHandlerGetsMessagesInOrder() throws Exception {
+        List<String> received = new ArrayList<>();
+        CountDownLatch latch = new CountDownLatch(3);
+        server.setMessageHandler(msg -> { received.add(msg); latch.countDown(); });
+
+        server.waitForClient();
+        Socket raw = new Socket("localhost", serverPort);
+        Thread.sleep(250);
+        writeLine(raw, "ONE");
+        writeLine(raw, "TWO");
+        writeLine(raw, "THREE");
+
+        assertTrue(latch.await(3, TimeUnit.SECONDS));
+        assertEquals(List.of("ONE", "TWO", "THREE"), received);
+        raw.close();
+    }
+
+    // server should get DISCONNECTED when the client closes
+    @Test
+    void serverGetsDisconnectedWhenClientLeaves() throws Exception {
+        CountDownLatch latch = new CountDownLatch(1);
+        AtomicReference<String> lastMsg = new AtomicReference<>();
+        server.setMessageHandler(msg -> {
+            lastMsg.set(msg);
+            if ("DISCONNECTED".equals(msg)) latch.countDown();
+        });
+
+        server.waitForClient();
+        Socket raw = new Socket("localhost", serverPort);
+        Thread.sleep(250);
+        raw.close();
+
+        assertTrue(latch.await(3, TimeUnit.SECONDS));
+        assertEquals("DISCONNECTED", lastMsg.get());
+    }
+
+    // calling shutdown on purpose should not trigger DISCONNECTED
+    @Test
+    void serverShutdownDoesNotFireDisconnected() throws Exception {
+        List<String> messages = new ArrayList<>();
+        server.setMessageHandler(messages::add);
+
+        server.waitForClient();
+        Socket raw = new Socket("localhost", serverPort);
+        Thread.sleep(250);
+        server.shutdown();
+        raw.close();
+        Thread.sleep(400);
+
+        assertFalse(messages.contains("DISCONNECTED"));
+    }
+
+
 }
