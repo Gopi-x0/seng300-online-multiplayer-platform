@@ -100,4 +100,23 @@ public class LobbyTests {
     public void removeNullPlayer() {
         assertFalse(session.removePlayer(null));
     }
+    @Test
+    // removing someone who isn't in the lobby should return false
+    public void removeNonexistentPlayer() {
+        assertFalse(session.removePlayer("ghost"));
+    }
+
+    @Test
+    // host getter should return the right username
+    public void hostUsernameCorrect() {
+        assertEquals("alice", session.getHostUsername());
+    }
+
+    @Test
+    // the player list should be read-only so nobody messes with it from outside
+    public void playerListIsUnmodifiable() {
+        List<String> players = session.getPlayers();
+        assertThrows(UnsupportedOperationException.class, () -> players.add("hacker"));
+    }
+
 }
