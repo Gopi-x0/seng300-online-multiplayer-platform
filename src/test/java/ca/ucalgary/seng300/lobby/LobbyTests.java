@@ -74,4 +74,30 @@ public class LobbyTests {
     public void rejectDuplicatePlayer() {
         assertFalse(session.addPlayer("alice"));
     }
+    @Test
+    // nobody should be able to join after the game starts
+    public void rejectJoinAfterGameStarted() {
+        session.startGame();
+        assertFalse(session.addPlayer("bob"));
+    }
+
+    @Test
+    // removing a normal player should work
+    public void removeNonHostPlayer() {
+        session.addPlayer("bob");
+        assertTrue(session.removePlayer("bob"));
+        assertEquals(1, session.getPlayerCount());
+    }
+
+    @Test
+    // host can't be removed from the lobby
+    public void cantRemoveHost() {
+        assertFalse(session.removePlayer("alice"));
+    }
+
+    @Test
+    // removing null shouldn't crash, just return false
+    public void removeNullPlayer() {
+        assertFalse(session.removePlayer(null));
+    }
 }
