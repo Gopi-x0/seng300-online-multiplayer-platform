@@ -118,5 +118,19 @@ public class LobbyTests {
         List<String> players = session.getPlayers();
         assertThrows(UnsupportedOperationException.class, () -> players.add("hacker"));
     }
+    @Test
+    // after removing a player, the lobby shouldn't be full anymore
+    public void notFullAfterRemoval() {
+        session.addPlayer("bob");
+        session.removePlayer("bob");
+        assertFalse(session.isFull());
+    }
 
+    @Test
+    // a new player should be able to join after someone leaves
+    public void canRejoinAfterRemoval() {
+        session.addPlayer("bob");
+        session.removePlayer("bob");
+        assertTrue(session.addPlayer("charlie"));
+    }
 }
