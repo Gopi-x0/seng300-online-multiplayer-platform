@@ -48,4 +48,30 @@ public class LobbyTests {
     public void notFullWithOnePlayer() {
         assertFalse(session.isFull());
     }
+    @Test
+    // adding a second player should work fine
+    public void addSecondPlayer() {
+        assertTrue(session.addPlayer("bob"));
+        assertEquals(2, session.getPlayerCount());
+    }
+
+    @Test
+    // lobby should be full once two players are in
+    public void fullAfterTwoPlayers() {
+        session.addPlayer("bob");
+        assertTrue(session.isFull());
+    }
+
+    @Test
+    // can't add a third player when the lobby is already full
+    public void rejectThirdPlayer() {
+        session.addPlayer("bob");
+        assertFalse(session.addPlayer("charlie"));
+    }
+
+    @Test
+    // same person shouldn't be able to join twice
+    public void rejectDuplicatePlayer() {
+        assertFalse(session.addPlayer("alice"));
+    }
 }
