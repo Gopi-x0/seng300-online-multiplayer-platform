@@ -31,4 +31,21 @@ public class LobbyTests {
     public void startsWithOnePlayer() {
         assertEquals(1, session.getPlayerCount());
     }
+    @Test
+    // make sure the lobby code we passed in is what we get back
+    public void lobbyCodeMatches() {
+        assertEquals("ABC12345", session.getLobbyCode());
+    }
+
+    @Test
+    // max players should be 2 since that's hardcoded
+    public void maxPlayersIsTwo() {
+        assertEquals(2, session.getMaxPlayers());
+    }
+
+    @Test
+    // lobby with just the host shouldn't be full yet
+    public void notFullWithOnePlayer() {
+        assertFalse(session.isFull());
+    }
 }
