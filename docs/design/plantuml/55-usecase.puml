@@ -1,0 +1,138 @@
+@startuml SGP-UseCases
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam shadowing false
+skinparam defaultFontSize 12
+skinparam actorStyle awesome
+skinparam usecaseBackgroundColor #E3F2FD
+skinparam usecaseBorderColor #1565C0
+skinparam rectangleBackgroundColor #F5F5F5
+
+title Student Gaming Platform — Use Case Diagram
+footer Iteration 3 · SENG 300 · University of Calgary
+
+actor "Player" as Player
+actor "Host Player" as Host
+actor "Guest Player" as Guest
+actor "sgp_users.dat\n(File System)" as FS <<system>>
+actor "TCP Network\n(localhost)" as TCP <<system>>
+
+rectangle "Student Gaming Platform" {
+
+    ' === Authentication ===
+    package "Authentication" {
+        usecase "Register Account" as UC_REG
+        usecase "Log In\n(email or username)" as UC_LOGIN
+        usecase "Log Out" as UC_LOGOUT
+        usecase "Forgot Password\n(contact admin)" as UC_FORGOT
+    }
+
+    ' === Profile & Settings ===
+    package "Profile & Settings" {
+        usecase "View Profile\nDashboard" as UC_PROFILE
+        usecase "View Game\nStatistics" as UC_STATS
+        usecase "Change Username" as UC_CHUSER
+        usecase "Change Email" as UC_CHEMAIL
+        usecase "Change Password" as UC_CHPASS
+        usecase "View Credits" as UC_CREDITS
+    }
+
+    ' === Game Selection ===
+    package "Game Selection" {
+        usecase "View Home Page\n(game cards + records)" as UC_HOME
+        usecase "View Self Records" as UC_SELFREC
+        usecase "View All Player\nRecords" as UC_ALLREC
+        usecase "Read TTT\nInstructions" as UC_INSTTTT
+        usecase "Read C4\nInstructions" as UC_INSTC4
+    }
+
+    ' === Lobby & Matchmaking ===
+    package "Lobby & Matchmaking" {
+        usecase "Choose Host\nor Join" as UC_LOBBY
+        usecase "Create Lobby\n(start server)" as UC_HOST
+        usecase "Join Lobby\n(enter code)" as UC_JOIN
+        usecase "Copy Lobby Code" as UC_COPY
+        usecase "Start Game" as UC_START
+    }
+
+    ' === Gameplay ===
+    package "Gameplay" {
+        usecase "Play Tic-Tac-Toe\n(local or networked)" as UC_PLAYTTT
+        usecase "Play Connect 4\n(local or networked)" as UC_PLAYC4
+        usecase "Send Chat\nMessage" as UC_CHAT
+        usecase "Receive Chat\nMessage" as UC_RCHAT
+        usecase "View Win / Lose\n/ Draw Result" as UC_RESULT
+    }
+
+    ' === Persistence ===
+    package "Data & Persistence" {
+        usecase "Record Game\nResult" as UC_RECORD
+        usecase "Save / Load\nUser Data" as UC_PERSIST
+        usecase "Seed Default\nUsers" as UC_SEED
+    }
+}
+
+' === Actor → Use Case Links ===
+
+Player --> UC_REG
+Player --> UC_LOGIN
+Player --> UC_LOGOUT
+Player --> UC_FORGOT
+Player --> UC_PROFILE
+Player --> UC_STATS
+Player --> UC_CHUSER
+Player --> UC_CHEMAIL
+Player --> UC_CHPASS
+Player --> UC_CREDITS
+Player --> UC_HOME
+Player --> UC_SELFREC
+Player --> UC_ALLREC
+Player --> UC_INSTTTT
+Player --> UC_INSTC4
+Player --> UC_LOBBY
+
+Host -up-> UC_HOST
+Host -up-> UC_COPY
+Host -up-> UC_START
+Host --> UC_PLAYTTT
+Host --> UC_PLAYC4
+Host --> UC_CHAT
+Host --> UC_RESULT
+
+Guest -up-> UC_JOIN
+Guest --> UC_PLAYTTT
+Guest --> UC_PLAYC4
+Guest --> UC_CHAT
+Guest --> UC_RESULT
+
+' === System Actor Links ===
+UC_PERSIST --> FS
+UC_RECORD --> FS
+UC_SEED --> FS
+UC_HOST --> TCP
+UC_JOIN --> TCP
+UC_PLAYTTT --> TCP
+UC_PLAYC4 --> TCP
+UC_CHAT --> TCP
+UC_RCHAT --> TCP
+
+' === Include / Extend relationships ===
+UC_PLAYTTT ..> UC_RECORD : <<include>>
+UC_PLAYC4 ..> UC_RECORD : <<include>>
+UC_PLAYTTT ..> UC_RESULT : <<include>>
+UC_PLAYC4 ..> UC_RESULT : <<include>>
+UC_RECORD ..> UC_PERSIST : <<include>>
+UC_REG ..> UC_PERSIST : <<include>>
+UC_LOGIN ..> UC_PERSIST : <<include>>
+UC_CHUSER ..> UC_PERSIST : <<include>>
+UC_CHEMAIL ..> UC_PERSIST : <<include>>
+UC_CHPASS ..> UC_PERSIST : <<include>>
+UC_HOST ..> UC_LOBBY : <<extend>>
+UC_JOIN ..> UC_LOBBY : <<extend>>
+UC_CHAT ..> UC_RCHAT : <<include>>
+
+' === Generalization ===
+Host --|> Player
+Guest --|> Player
+
+@enduml

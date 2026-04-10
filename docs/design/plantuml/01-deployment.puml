@@ -1,0 +1,60 @@
+@startuml SGP-Deployment
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam shadowing false
+skinparam defaultFontSize 12
+
+title Student Gaming Platform — Logical Deployment / Process Diagram
+footer Iteration 3 · SENG 300 · University of Calgary
+
+node "Host Machine (JVM Process)" as host {
+    component "MainApp\n(JavaFX)" as hostUI
+    component "GameServer\n(TCP ServerSocket)" as gameServer
+    component "GameSessionManager" as gsm
+    component "Connect4Game /\nTicTacToeEngine" as engines
+    component "UserManager\n+ sgp_users.dat" as userMgr
+    component "LobbyManager\n+ LobbySession" as lobbyMgr
+
+    hostUI --> gsm : submitMove / submitMoveTTT
+    gsm --> engines : validateMove / applyMove
+    hostUI --> gameServer : send(STATE / CHAT)
+    gameServer --> hostUI : receive(MOVE / CHAT / JOIN)
+    hostUI --> userMgr : register / login / recordGameResult
+    hostUI --> lobbyMgr : createLobby / removeLobby
+}
+
+node "Guest Machine (JVM Process)" as guest {
+    component "MainApp\n(JavaFX)" as guestUI
+    component "GameClient\n(TCP Socket)" as gameClient
+    component "UserManager\n+ sgp_users.dat" as guestUserMgr
+
+    guestUI --> gameClient : send(MOVE / CHAT / JOIN)
+    gameClient --> guestUI : receive(STATE / CHAT / START)
+    guestUI --> guestUserMgr : register / login / recordGameResult
+}
+
+gameServer <-down-> gameClient : **TCP localhost**\nports 5300-5325\nline-based protocol
+
+note right of gameServer
+  Protocol messages:
+  JOIN:<code>:<username>
+  JOINED:<hostName>
+  START
+  MOVE_TTT:<row>:<col>
+  MOVE_C4:<col>
+  STATE_TTT:<grid>:<activeId>:<status>:<r>:<c>
+  STATE_C4:<grid>:<symbol>:<status>:<col>
+  CHAT:<name>:<text>
+  PLAYER_LEFT
+  DISCONNECTED
+  LOBBY_CLOSED
+  ERROR:<message>
+end note
+
+note bottom of userMgr
+  File: sgp_users.dat
+  Pipe-delimited, one user per line
+  FileLock for concurrent safety
+end note
+
+@enduml

@@ -1,0 +1,73 @@
+@startuml SGP-Sequence-Chat-Disconnect
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam shadowing false
+skinparam defaultFontSize 11
+skinparam sequenceMessageAlign center
+
+title Sequence: In-Game Chat & Opponent Disconnect
+footer Iteration 3 · SENG 300
+
+actor "Host Player" as HostUser
+actor "Guest Player" as GuestUser
+participant "GameboardTTT /\nGameboardC4\n(Host)" as HostBoard
+participant "GameboardTTT /\nGameboardC4\n(Guest)" as GuestBoard
+participant "ChatWidget\n(Host)" as HostChat
+participant "ChatWidget\n(Guest)" as GuestChat
+participant "GameServer" as GS
+participant "GameClient" as GC
+participant "WinScreen" as WS
+
+== Chat Flow ==
+
+HostUser -> HostChat : types message, presses Enter
+HostChat -> HostChat : addUserMessage(text)
+HostChat -> HostBoard : sendHandler.accept(text)
+HostBoard -> GS : send("CHAT:HostName:Hello!")
+GS -> GC : "CHAT:HostName:Hello!"
+GC -> GuestBoard : handleNetworkMessage("CHAT:HostName:Hello!")
+GuestBoard -> GuestChat : receiveMessage("HostName", "Hello!")
+GuestChat -> GuestChat : addOpponentMessage("HostName", "Hello!")
+
+GuestUser -> GuestChat : types reply, presses Enter
+GuestChat -> GuestChat : addUserMessage(text)
+GuestChat -> GuestBoard : sendHandler.accept(text)
+GuestBoard -> GC : send("CHAT:GuestName:Hi there!")
+GC -> GS : "CHAT:GuestName:Hi there!"
+GS -> HostBoard : handleNetworkMessage("CHAT:GuestName:Hi there!")
+HostBoard -> HostChat : receiveMessage("GuestName", "Hi there!")
+HostChat -> HostChat : addOpponentMessage("GuestName", "Hi there!")
+
+== Opponent Disconnect (Guest leaves) ==
+
+GuestUser -> GuestBoard : closes window / navigates home
+GuestBoard -> GC : send("PLAYER_LEFT")
+GC -> GS : "PLAYER_LEFT"
+GS -> HostBoard : handleNetworkMessage("PLAYER_LEFT")
+HostBoard -> HostBoard : opponentLeft = true
+HostBoard -> HostChat : notifyOpponentLeft()
+HostChat -> HostChat : addSystemMessage("Opponent has left the chat.")\ndisable input
+
+note over GS, GC
+  If socket breaks before
+  PLAYER_LEFT is received,
+  the read thread fires
+  "DISCONNECTED" instead
+end note
+
+GS -> HostBoard : handleNetworkMessage("DISCONNECTED")
+HostBoard -> HostChat : addSystemMessage("Opponent has disconnected.")
+HostBoard -> HostBoard : gameOver = true
+HostBoard -> WS : WinScreen.showWin(gamePane, onDismiss, gameType)
+
+== MainApp Cleanup on Close ==
+
+HostUser -> HostBoard : clicks window close (X)
+note over HostBoard
+  MainApp.closeBtn.onAction:
+    GameServer.shutdownActive()
+    GameClient.shutdownActive()
+    primaryStage.close()
+end note
+
+@enduml

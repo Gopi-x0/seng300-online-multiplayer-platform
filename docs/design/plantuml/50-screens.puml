@@ -1,0 +1,192 @@
+@startuml SGP-UI-Screens
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam shadowing false
+skinparam classAttributeIconSize 0
+skinparam defaultFontSize 10
+
+title Student Gaming Platform — UI Screens Class Diagram
+footer ca.ucalgary.seng300.screens
+
+class MainApp <<Application>> {
+    - primaryStage : Stage
+    - appShell : BorderPane
+    - titleLabel : Label
+    - dragOffsetX, dragOffsetY : double
+    - maximized : boolean
+    - savedX, savedY, savedW, savedH : double
+    - resizing : boolean
+    - resizeDir : Cursor
+    __
+    + start(stage : Stage) : void
+    - setAppTitle(title : String) : void
+    - buildCustomTitleBar() : HBox
+    - toggleMaximize() : void
+    - enableEdgeResize(scene : Scene) : void
+    - showWelcomePage() : void
+    - showAuthenticationScreen() : void
+    - showHomePage() : void
+    - showProfileDashboard() : void
+    - showSettingsScreen() : void
+    - showInstructionsTTT() : void
+    - showInstructionsC4() : void
+    - showLobby(gameType : GameType) : void
+    - showHostLobby(gameType : GameType) : void
+    - showJoinLobby(gameType : GameType) : void
+    - showGameboard(gameType, p1Name, p2Name, isHost) : void
+    + {static} main(args : String[]) : void
+}
+
+class WelcomePage extends StackPane {
+    - {final} onContinue : Runnable
+    __
+    + WelcomePage(onContinue : Runnable)
+}
+
+class AuthenticationScreen extends StackPane {
+    - {final} onAuthSuccess : Runnable
+    __
+    + AuthenticationScreen(onAuthSuccess : Runnable)
+}
+
+class HomePage extends BorderPane {
+    - {final} onSettings : Runnable
+    - {final} onPlayTTT : Runnable
+    - {final} onPlayC4 : Runnable
+    - {final} onProfile : Runnable
+    - recordTable : TableView<RecordRow>
+    __
+    + HomePage(onSettings, onPlayTTT, onPlayC4, onProfile)
+}
+
+class SettingsScreen extends StackPane {
+    - {final} onBackToHome : Runnable
+    - {final} onLogout : Runnable
+    __
+    + SettingsScreen(onBackToHome, onLogout)
+}
+
+class ProfileDashboard extends VBox {
+    - {final} onBackToHome : Runnable
+    __
+    + ProfileDashboard(onBackToHome : Runnable)
+}
+
+class InstructionsTTT extends VBox {
+    - {final} onPlay : Runnable
+    - {final} onBack : Runnable
+    __
+    + InstructionsTTT(onPlay, onBack)
+}
+
+class InstructionsC4 extends VBox {
+    - {final} onPlay : Runnable
+    - {final} onBack : Runnable
+    __
+    + InstructionsC4(onPlay, onBack)
+}
+
+class Lobby extends StackPane {
+    - {final} gameName : String
+    - {final} onHost : Runnable
+    - {final} onJoin : Runnable
+    - {final} onBack : Runnable
+    __
+    + Lobby(gameName, gameType, onHost, onJoin, onBack)
+}
+
+class HostLobby extends StackPane {
+    - {final} gameName : String
+    - {final} gameType : GameType
+    - {final} onBack : Runnable
+    - {final} onStartGame : BiConsumer<String, String>
+    - session : LobbySession
+    - server : GameServer
+    - guestUsername : String
+    __
+    + HostLobby(gameName, gameType, onBack, onStartGame)
+    - handleMessage(msg : String) : void
+}
+
+class JoinLobby extends StackPane {
+    - {final} gameName : String
+    - {final} gameType : GameType
+    - {final} onBack : Runnable
+    - {final} onJoinSuccess : BiConsumer<String, String>
+    - hostName : String
+    - joinerName : String
+    - nextPortToTry : int
+    __
+    + JoinLobby(gameName, gameType, onBack, onJoinSuccess)
+    - tryNextPort() : void
+    - handleServerMessage(msg : String) : void
+}
+
+class GameboardTTT extends StackPane {
+    - cells : StackPane[3][3]
+    - {final} onNavigateHome : Runnable
+    - {final} player1Name, player2Name : String
+    - {final} isHost : boolean
+    - gameOver : boolean
+    - myTurn : boolean
+    - chat : ChatWidget
+    __
+    + GameboardTTT(onNavigateHome, p1Name, p2Name, isHost)
+}
+
+class GameboardC4 extends StackPane {
+    - circles : Circle[6][7]
+    - {final} onNavigateHome : Runnable
+    - {final} player1Name, player2Name : String
+    - {final} isHost : boolean
+    - gameOver : boolean
+    - myTurn : boolean
+    - chat : ChatWidget
+    __
+    + GameboardC4(onNavigateHome, p1Name, p2Name, isHost)
+}
+
+class ChatWidget extends VBox {
+    - {static} MAX_MESSAGE_LENGTH : int = 200
+    - messagesBox : VBox
+    - {final} myUsername : String
+    - {final} sendHandler : Consumer<String>
+    - disabled : boolean
+    __
+    + ChatWidget(myUsername, sendHandler)
+    + receiveMessage(username, text) : void
+    + addSystemMessage(text) : void
+    + notifyOpponentLeft() : void
+}
+
+class WinScreen extends StackPane {
+    + <<enum>> ResultType { WIN, LOSS, DRAW }
+    - {final} resultType : ResultType
+    - {final} onDismiss : Runnable
+    __
+    + WinScreen(resultType, gameType, onDismiss)
+    + displayWinner() : void
+    + {static} showWin(parentPane, onDismiss, gameType) : void
+    + {static} showLose(parentPane, onDismiss, gameType) : void
+    + {static} showDraw(parentPane, onDismiss, gameType) : void
+}
+
+' Navigation flow
+MainApp --> WelcomePage : creates
+MainApp --> AuthenticationScreen : creates
+MainApp --> HomePage : creates
+MainApp --> SettingsScreen : creates
+MainApp --> ProfileDashboard : creates
+MainApp --> InstructionsTTT : creates
+MainApp --> InstructionsC4 : creates
+MainApp --> Lobby : creates
+MainApp --> HostLobby : creates
+MainApp --> JoinLobby : creates
+MainApp --> GameboardTTT : creates
+MainApp --> GameboardC4 : creates
+GameboardTTT *-- ChatWidget : contains
+GameboardC4 *-- ChatWidget : contains
+GameboardTTT ..> WinScreen : shows overlay
+GameboardC4 ..> WinScreen : shows overlay
+
+@enduml
