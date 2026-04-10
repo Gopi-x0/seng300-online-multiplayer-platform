@@ -84,3 +84,4 @@ All diagrams live in `docs/design/plantuml/` (`.puml` source + `.png` render).
 | 70 | `70-state-lobby.puml` | State Machine | Lobby creation, matchmaking, and match lifecycle states                              |
 | 80 | `80-domain-persistence.puml` | Domain / ER | Persistence model - `UserData`, `sgp_users.dat`, `DatabaseStub` contract             |
 | 90 | `90-include-all.puml` | Umbrella Class | Condensed single-page view of all types and key relationships                        |
+| 95 | `95-test-coverage.puml` | Test Coverage Map | Test classes mapped to production packages they cover (unit + integration, 245 tests) |

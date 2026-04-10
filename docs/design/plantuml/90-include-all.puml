@@ -4,12 +4,159 @@ skinparam backgroundColor #FEFEFE
 skinparam shadowing false
 skinparam defaultFontSize 10
 skinparam packageStyle rectangle
+skinparam nodesep 50
+skinparam ranksep 40
 
 title Student Gaming Platform — Full System Class Overview (Umbrella)
 footer Iteration 3 · SENG 300 · University of Calgary
 caption This diagram provides a condensed view of every type in the system.\nFor full-depth members, see the per-package diagrams (10-model, 20-interfaces-engines, etc.).
 
+' ==================== SCREENS (top) ====================
+
+package "screens" #E8F5E9 {
+    together {
+        class MainApp <<Application>>
+        class WelcomePage
+        class AuthenticationScreen
+    }
+    together {
+        class HomePage
+        class SettingsScreen
+        class ProfileDashboard
+    }
+    together {
+        class InstructionsTTT
+        class InstructionsC4
+        class Lobby
+    }
+    together {
+        class HostLobby
+        class JoinLobby
+    }
+    together {
+        class GameboardTTT
+        class GameboardC4
+        class ChatWidget
+        class WinScreen
+    }
+}
+
+' ==================== SERVICE ====================
+
+package "service" #FFF3E0 {
+    class UserManager {
+        register()
+        login()
+        recordGameResult()
+        saveUsers()
+    }
+    class GameSessionManager {
+        startGame()
+        submitMove()
+        submitMoveTTT()
+        endGame()
+    }
+}
+
+' ==================== NETWORK ====================
+
+package "network" #FCE4EC {
+    together {
+        class GameServer {
+            port
+            send()
+            waitForClient()
+            shutdown()
+        }
+        class GameClient {
+            connect()
+            send()
+            shutdown()
+        }
+    }
+    together {
+        class LobbyManager {
+            createLobby()
+            removeLobby()
+        }
+        class LobbySession {
+            lobbyCode
+            players
+            addPlayer()
+            startGame()
+        }
+    }
+}
+
+' ==================== ENGINES ====================
+
+together {
+    package "connect4engine" #E0F7FA {
+        class Connect4Game implements GE
+        class Connect4State {
+            board, player1, player2
+            currentPlayer, status, winner
+        }
+        class Board {
+            grid : char 6x7
+            dropPiece()
+            checkWin()
+        }
+        class Player {
+            id
+            symbol
+        }
+    }
+
+    package "tictactoeengine" #E0F7FA {
+        class TicTacToeEngine implements GE
+        class "GameState (TTT)" as GTTT {
+            board : Symbol 3x3
+            activePlayerId
+            status, moveHistory
+        }
+        enum Symbol {
+            X
+            O
+            EMPTY
+        }
+        enum GameStatusTTT {
+            IN_PROGRESS
+            X_WINS
+            O_WINS
+            DRAW
+        }
+    }
+}
+
+' ==================== INTERFACES ====================
+
+package "interfaces" #FFFDE7 {
+    interface "GameEngine<S>" as GE {
+        createInitialState()
+        validateMove()
+        applyMove()
+        evaluateEnd()
+    }
+    class Move {
+        row, col
+        playerId, symbol
+    }
+    class MoveResult {
+        isValid, message
+        errorCode
+    }
+    enum ValidationCode {
+        CELL_OCCUPIED
+        OUT_OF_BOUNDS
+        WRONG_TURN
+        GAME_ALREADY_OVER
+        SUCCESS
+    }
+}
+
 ' ==================== MODEL ====================
+
 package "model" #F3E5F5 {
     class UserData {
         email, username, password
@@ -38,112 +185,8 @@ package "model" #F3E5F5 {
     }
 }
 
-' ==================== INTERFACES ====================
-package "interfaces" #FFFDE7 {
-    interface "GameEngine<S>" as GE {
-        createInitialState()
-        validateMove()
-        applyMove()
-        evaluateEnd()
-    }
-    class Move {
-        row, col
-        playerId, symbol
-    }
-    class MoveResult {
-        isValid, message
-        errorCode
-    }
-    enum ValidationCode {
-        CELL_OCCUPIED
-        OUT_OF_BOUNDS
-        WRONG_TURN
-        GAME_ALREADY_OVER
-        SUCCESS
-    }
-}
-
-' ==================== CONNECT 4 ====================
-package "connect4engine" #E0F7FA {
-    class Connect4Game implements GE
-    class Connect4State {
-        board, player1, player2
-        currentPlayer, status, winner
-    }
-    class Board {
-        grid : char 6x7
-        dropPiece()
-        checkWin()
-    }
-    class Player {
-        id
-        symbol
-    }
-}
-
-' ==================== TIC-TAC-TOE ====================
-package "tictactoeengine" #E0F7FA {
-    class TicTacToeEngine implements GE
-    class "GameState (TTT)" as GTTT {
-        board : Symbol 3x3
-        activePlayerId
-        status, moveHistory
-    }
-    enum Symbol {
-        X
-        O
-        EMPTY
-    }
-    enum GameStatusTTT {
-        IN_PROGRESS
-        X_WINS
-        O_WINS
-        DRAW
-    }
-}
-
-' ==================== NETWORK ====================
-package "network" #FCE4EC {
-    class GameServer {
-        port
-        send()
-        waitForClient()
-        shutdown()
-    }
-    class GameClient {
-        connect()
-        send()
-        shutdown()
-    }
-    class LobbyManager {
-        createLobby()
-        removeLobby()
-    }
-    class LobbySession {
-        lobbyCode
-        players
-        addPlayer()
-        startGame()
-    }
-}
-
-' ==================== SERVICE ====================
-package "service" #FFF3E0 {
-    class UserManager {
-        register()
-        login()
-        recordGameResult()
-        saveUsers()
-    }
-    class GameSessionManager {
-        startGame()
-        submitMove()
-        submitMoveTTT()
-        endGame()
-    }
-}
-
 ' ==================== STUBS ====================
+
 package "stubs" #EFEBE9 {
     class DatabaseStub {
         createUser()
@@ -159,60 +202,50 @@ package "stubs" #EFEBE9 {
     }
 }
 
-' ==================== SCREENS ====================
-package "screens" #E8F5E9 {
-    class MainApp <<Application>>
-    class WelcomePage
-    class AuthenticationScreen
-    class HomePage
-    class SettingsScreen
-    class ProfileDashboard
-    class InstructionsTTT
-    class InstructionsC4
-    class Lobby
-    class HostLobby
-    class JoinLobby
-    class GameboardTTT
-    class GameboardC4
-    class ChatWidget
-    class WinScreen
-}
-
 ' ==================== LAYOUT HINTS ====================
+
 screens -[hidden]down-> service
-service -[hidden]down-> interfaces
-model -[hidden]right-> interfaces
+service -[hidden]down-> network
+network -[hidden]down-> connect4engine
 connect4engine -[hidden]right-> tictactoeengine
-network -[hidden]right-> stubs
+interfaces -[hidden]right-> model
+model -[hidden]right-> stubs
 
 ' ==================== KEY RELATIONSHIPS ====================
-MainApp --> WelcomePage
-MainApp --> AuthenticationScreen
-MainApp --> HomePage
-MainApp --> GameboardTTT
-MainApp --> GameboardC4
 
-GameSessionManager --> GE
-GameSessionManager --> Connect4Game
-GameSessionManager --> TicTacToeEngine
-UserManager --> UserData
-GameSessionManager --> GameState
-GameSessionManager --> PlayerProfile
+' MainApp → screens (only a few key links to avoid fan-out)
+MainApp -down-> WelcomePage
+MainApp -down-> AuthenticationScreen
+MainApp -down-> HomePage
+MainApp -down-> GameboardTTT
+MainApp -down-> GameboardC4
 
-HostLobby --> GameServer
-HostLobby --> LobbyManager
-JoinLobby --> GameClient
-GameboardTTT --> GameSessionManager
-GameboardC4 --> GameSessionManager
-GameboardTTT *-- ChatWidget
-GameboardC4 *-- ChatWidget
+' Service → engines / model
+GameSessionManager -down-> GE
+GameSessionManager -down-> Connect4Game
+GameSessionManager -down-> TicTacToeEngine
+GameSessionManager -down-> GameState
+GameSessionManager -down-> PlayerProfile
+UserManager -down-> UserData
+
+' Screens → service / network
+HostLobby -down-> GameServer
+HostLobby -down-> LobbyManager
+JoinLobby -down-> GameClient
+GameboardTTT -down-> GameSessionManager
+GameboardC4 -down-> GameSessionManager
+
+' Composition / overlays
+GameboardTTT *-right- ChatWidget
+GameboardC4 *-right- ChatWidget
 GameboardTTT ..> WinScreen
 GameboardC4 ..> WinScreen
 
-Connect4Game --> Connect4State
-Connect4State --> Board
-Connect4State --> Player
-TicTacToeEngine --> GTTT
-DatabaseStub --> MatchRecord
+' Engine internals
+Connect4Game -down-> Connect4State
+Connect4State -right-> Board
+Connect4State -right-> Player
+TicTacToeEngine -down-> GTTT
+DatabaseStub -right-> MatchRecord
 
 @enduml

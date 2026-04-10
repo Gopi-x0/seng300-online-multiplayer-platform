@@ -1,0 +1,216 @@
+@startuml SGP-Test-Coverage
+!theme plain
+skinparam backgroundColor #FEFEFE
+skinparam shadowing false
+skinparam defaultFontSize 11
+skinparam packageStyle rectangle
+skinparam nodesep 60
+skinparam ranksep 30
+
+title Student Gaming Platform — Test Coverage Map
+footer Iteration 3 · SENG 300 · University of Calgary
+
+' ============================================================
+'  Layout: each test package sits ABOVE its production target.
+'  Short downward arrows keep lines from crossing.
+' ============================================================
+
+' --- Game Logic ---
+
+together {
+    package "test.gamelogic" as tgl #C5CAE9 {
+        class Connect4Test <<JUnit>> {
+            setup, move validation,
+            stacking, turn alternation,
+            wins (4 axes), draws, edges
+        }
+        class TicTacToeTest <<JUnit>> {
+            setup, placement, validation,
+            out-of-bounds, wrong turn,
+            occupied cell, wins, draws
+        }
+    }
+}
+
+together {
+    package "connect4engine" #E0F7FA {
+        class Connect4Game
+        class Connect4State
+    }
+
+    package "tictactoeengine" #E0F7FA {
+        class TicTacToeEngine
+    }
+}
+
+Connect4Test -down-> Connect4Game : covers
+Connect4Test -down-> Connect4State : covers
+TicTacToeTest -down-> TicTacToeEngine : covers
+
+' --- Lobby ---
+
+together {
+    package "test.lobby" as tlob #C5CAE9 {
+        class LobbyTests <<JUnit>> {
+            session lifecycle, add/remove,
+            full lobby, duplicates,
+            post-start rejection,
+            manager create/remove, code format
+        }
+    }
+}
+
+together {
+    package "network.lobby" #FCE4EC {
+        class LobbyManager
+        class LobbySession
+    }
+}
+
+LobbyTests -down-> LobbyManager : covers
+LobbyTests -down-> LobbySession : covers
+
+' --- Network ---
+
+together {
+    package "test.network" as tnet #C5CAE9 {
+        class NetworkTestGameServerTest <<JUnit>> {
+            server/client binding,
+            send/receive, ordering,
+            disconnect, reset-client,
+            echo, shutdown
+        }
+    }
+}
+
+together {
+    package "network" as pnet #FCE4EC {
+        class GameServer
+        class GameClient
+    }
+}
+
+NetworkTestGameServerTest -down-> GameServer : covers
+NetworkTestGameServerTest -down-> GameClient : covers
+
+' --- Service ---
+
+together {
+    package "test.service" as tsvc #C5CAE9 {
+        class GameSessionManagerTest <<JUnit>> {
+            start C4/TTT sessions,
+            valid & invalid moves,
+            state getters, end-game cleanup
+        }
+    }
+}
+
+together {
+    package "service" as psvc #FFF3E0 {
+        class UserManager
+        class GameSessionManager
+    }
+}
+
+GameSessionManagerTest -down-> GameSessionManager : covers
+
+' --- User / Model ---
+
+together {
+    package "test.user" as tusr #C5CAE9 {
+        class UserDataTest <<JUnit>> {
+            getters/setters, derived stats,
+            serialization round-trip, edges
+        }
+        class UserManagerTest <<JUnit>> {
+            register/login validation,
+            session mgmt, profile changes,
+            ranking, save/load persistence
+        }
+        class PlayerProfileTest <<JUnit>> {
+            constructor, getters,
+            null/empty handling
+        }
+        class InGamePlayerTests <<JUnit>> {
+            constructor, toString,
+            null/empty/edge inputs
+        }
+        class PlayerGameRecordsTests <<JUnit>> {
+            game outcome recording,
+            streak tracking, points boundaries
+        }
+    }
+}
+
+together {
+    package "model" #F3E5F5 {
+        class UserData
+        class PlayerProfile
+    }
+}
+
+UserDataTest -down-> UserData : covers
+UserManagerTest -down-> UserManager : covers
+PlayerProfileTest -down-> PlayerProfile : covers
+InGamePlayerTests -down-> PlayerProfile : covers
+PlayerGameRecordsTests -down-> UserManager : covers
+
+' --- Stubs ---
+
+together {
+    package "test.stubs" as tstub #C5CAE9 {
+        class DatabaseStubTest <<JUnit>> {
+            user CRUD, authentication,
+            field updates, deletion,
+            game results, leaderboards,
+            ranking, match history
+        }
+    }
+}
+
+together {
+    package "stubs" as pstub #EFEBE9 {
+        class DatabaseStub
+    }
+}
+
+DatabaseStubTest -down-> DatabaseStub : covers
+
+' --- Integration Tests ---
+
+package "test.integrationtest" as tint #B3E5FC {
+    class Connect4FullGameIntegrationTest <<JUnit>> {
+        register -> play -> win
+        (P2 vertical, P1 horizontal),
+        board & stat verification
+    }
+    class TicTacToeFullGameIntegrationTest <<JUnit>> {
+        register -> play -> win
+        (top-row, diagonal),
+        turn switch & stat updates
+    }
+    class DrawGameIntegrationTest <<JUnit>> {
+        TTT full-board draw,
+        draw detection, stat recording,
+        streak resets
+    }
+}
+
+Connect4FullGameIntegrationTest -down-> GameSessionManager : end-to-end
+Connect4FullGameIntegrationTest -down-> Connect4Game : end-to-end
+TicTacToeFullGameIntegrationTest -down-> GameSessionManager : end-to-end
+TicTacToeFullGameIntegrationTest -down-> TicTacToeEngine : end-to-end
+DrawGameIntegrationTest -down-> GameSessionManager : end-to-end
+
+' === Summary note ===
+
+note as N1
+  **245 / 245 tests passing**
+  ----
+  Unit tests: game logic, lobby, network,
+  service, user/model, stubs
+  Integration tests: full C4 & TTT games,
+  draw scenarios end-to-end
+end note
+
+@enduml
