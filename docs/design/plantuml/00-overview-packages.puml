@@ -4,19 +4,21 @@ skinparam backgroundColor #FEFEFE
 skinparam packageStyle rectangle
 skinparam shadowing false
 skinparam defaultFontSize 12
-skinparam nodesep 60
-skinparam ranksep 50
+skinparam nodesep 80
+skinparam ranksep 60
 
 title Student Gaming Platform — Package / Component Overview
 footer Iteration 3 · SENG 300 · University of Calgary
 
-' === Layered top-to-bottom layout ===
+' === Layer 1: Application ===
 
 together {
     package "MainApp" as mainapp <<Application>> #E3F2FD {
         [MainApp\n(JavaFX Application)\nCustom title bar\nScreen navigation\nTCP cleanup on close] as MA
     }
 }
+
+' === Layer 2: UI ===
 
 together {
     package "screens" as screens <<UI Layer>> #E8F5E9 {
@@ -37,6 +39,8 @@ together {
     }
 }
 
+' === Layer 3: Service + Network ===
+
 together {
     package "service" as service <<Service Layer>> #FFF3E0 {
         [UserManager\n(file persistence\nsgp_users.dat)] as svc1
@@ -50,6 +54,8 @@ together {
         [LobbySession] as n4
     }
 }
+
+' === Layer 4: Engines, Model, Interfaces, Stubs ===
 
 together {
     package "connect4engine" as c4engine <<Game Engine>> #E0F7FA {
@@ -65,6 +71,15 @@ together {
         [Symbol <<enum>>] as t3
         [GameStatusTicTacToeEngine <<enum>>] as t4
     }
+}
+
+together {
+    package "interfaces" as ifaces <<Platform Contracts>> #FFFDE7 {
+        [GameEngine<S>] as i1
+        [Move] as i2
+        [MoveResult] as i3
+        [ValidationCode <<enum>>] as i4
+    }
 
     package "model" as model <<Domain Model>> #F3E5F5 {
         [UserData] as m1
@@ -74,31 +89,33 @@ together {
         [PlayerProfile] as m5
     }
 
-    package "interfaces" as ifaces <<Platform Contracts>> #FFFDE7 {
-        [GameEngine<S>] as i1
-        [Move] as i2
-        [MoveResult] as i3
-        [ValidationCode <<enum>>] as i4
-    }
-
     package "stubs" as stubs <<Stub / Future DB>> #EFEBE9 {
         [DatabaseStub] as st1
         [MatchRecord] as st2
     }
 }
 
-' === Dependencies (package-level only, clean arrows) ===
+' === Layout hints to spread bottom packages ===
+c4engine -[hidden]right-> tttengine
+ifaces -[hidden]right-> model
+model -[hidden]right-> stubs
+
+' === Dependencies ===
 
 mainapp -down-> screens : navigates to
+
 screens -down-> service : uses
 screens -down-> network : creates /\nsends / receives
-screens -down-> model : reads DTOs
-service -down-> model : creates / updates
+
 service -down-> c4engine : delegates\nmoves
 service -down-> tttengine : delegates\nmoves
-service -down-> ifaces : uses Move,\nMoveResult
+
 c4engine -down-|> ifaces : implements\nGameEngine
 tttengine -down-|> ifaces : implements\nGameEngine
+
+service -down-> ifaces : uses Move,\nMoveResult
+service -down-> model : creates / updates
+screens -down-> model : reads DTOs
 c4engine -down-> model : reads\nGameStatus
 network -down-> model : reads\nGameType
 stubs -down-> model : uses\nUserData
