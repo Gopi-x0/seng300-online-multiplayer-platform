@@ -126,12 +126,12 @@ public class PlayerGameRecordsTests {
     void testRecordGameResultEdge_WinStreakUpdatesBestStreak() {
         UserManager.register("connect4new2@test.com", "password123");
         UserManager.login("connect4new2@test.com", "password123");
-        UserData user = UserManager.getCurrentUser();
 
-        // Win multiple games in a row to build best streak
         UserManager.recordGameResult("Connect 4", true, false);
         UserManager.recordGameResult("Connect 4", true, false);
         UserManager.recordGameResult("Connect 4", true, false);
+
+        UserData user = UserManager.getCurrentUser(); // fetch AFTER mutations
 
         assertEquals(3, user.getC4CurrentStreak(), "C4 current streak should be 3 after 3 consecutive wins");
         assertEquals(3, user.getC4BestStreak(), "C4 best streak should update to match current streak");
