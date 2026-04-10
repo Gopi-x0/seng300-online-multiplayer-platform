@@ -4,12 +4,9 @@ import ca.ucalgary.seng300.model.UserData;
 import ca.ucalgary.seng300.service.UserManager;
 import org.junit.jupiter.api.*;
 
-import java.io.File;
-import java.util.List;
-
 import static org.junit.jupiter.api.Assertions.*;
 
-public class playerGameRecordsTests {
+public class PlayerGameRecordsTests {
 
     @BeforeEach
     void setUp() {
