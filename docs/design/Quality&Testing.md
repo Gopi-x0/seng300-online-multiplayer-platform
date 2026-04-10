@@ -37,4 +37,6 @@ All tests require a **stock, unmodified `.dat` file** from the repository. If th
 - **PlayerProfileTest**: Constructor, getters, null/empty handling.
 
 ### Integration 
-- Full user-flow integration tests covering end-to-end platform scenarios are in progress.
+- **Connect4FullGameIntegrationTest**: Full Connect 4 games played through the platform from registration to game end, covering a Player 2 vertical win and a Player 1 horizontal win with board state and stat verification after each move.
+- **TicTacToeFullGameIntegrationTest**: Full Tic-Tac-Toe games played through the platform, covering a top-row win and a diagonal win with turn switching, cell verification, and post-game stat updates.
+- **DrawGameIntegrationTest**: Full draw scenarios for Tic-Tac-Toe where the board fills with no winner, verifying draw detection, stat recording for both players, and streak resets
